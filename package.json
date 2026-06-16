@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:catalog": "tsx scripts/import-catalog.ts",
+    "import:catalog:dry": "tsx scripts/import-catalog.ts --dry-run",
+    "import:catalog:sql": "tsx scripts/import-catalog.ts --sql",
+    "import:catalog:json": "tsx scripts/import-catalog.ts --json",
+    "supabase": "supabase",
+    "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-dev.ps1"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
@@ -23,7 +29,9 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "supabase": "^2.106.0",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   }
 }

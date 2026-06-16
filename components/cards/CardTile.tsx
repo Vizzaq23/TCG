@@ -1,4 +1,5 @@
 import type { Database } from "@/lib/types/database";
+import { CardImage } from "@/components/cards/CardImage";
 
 type Card = Database["public"]["Tables"]["cards"]["Row"];
 
@@ -10,13 +11,11 @@ type Props = {
 export function CardTile({ card, footer }: Props) {
   return (
     <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm shadow-black/20">
-      <div className="relative aspect-[5/7] w-full bg-zinc-950">
+      <div className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950">
         {card.image_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <CardImage
             src={card.image_url}
-            alt=""
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-contain"
             loading="lazy"
           />
         ) : (

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/types/database";
+import { CardImage } from "@/components/cards/CardImage";
 
 type UC = Database["public"]["Tables"]["user_collections"]["Row"];
 type Card = Database["public"]["Tables"]["cards"]["Row"];
@@ -76,8 +77,10 @@ export function CollectionRow({ row }: Props) {
       <div className="flex gap-3 sm:w-64 sm:flex-shrink-0">
         <div className="relative h-28 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-zinc-950 sm:h-32 sm:w-[5.5rem]">
           {card.image_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={card.image_url} alt="" className="h-full w-full object-cover" />
+            <CardImage
+              src={card.image_url}
+              className="absolute inset-0 h-full w-full object-contain"
+            />
           ) : (
             <div className="flex h-full items-center justify-center text-[10px] text-zinc-600">
               No art

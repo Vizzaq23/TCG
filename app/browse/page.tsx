@@ -3,6 +3,9 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { CardTile } from "@/components/cards/CardTile";
 import { BrowseToolbar } from "@/components/cards/BrowseToolbar";
 import { AddToCollectionButton } from "@/components/cards/AddToCollectionButton";
+import { Pagination } from "@/components/ui/Pagination";
+
+const PAGE_SIZE = 24;
 
 type SearchParams = {
   q?: string;
@@ -10,6 +13,7 @@ type SearchParams = {
   rarity?: string;
   color?: string;
   type?: string;
+  page?: string;
 };
 
 function uniqSorted(values: (string | null | undefined)[]) {
@@ -20,6 +24,31 @@ function uniqSorted(values: (string | null | undefined)[]) {
 
 function toOptions(values: string[]) {
   return values.map((v) => ({ value: v, label: v }));
+}
+
+function applyCardFilters<
+  T extends {
+    ilike: (column: string, pattern: string) => T;
+    eq: (column: string, value: string) => T;
+  },
+>(query: T, params: SearchParams, q?: string) {
+  let next = query;
+  if (q) {
+    next = next.ilike("name", `%${q}%`);
+  }
+  if (params.set_name) {
+    next = next.eq("set_name", params.set_name);
+  }
+  if (params.rarity) {
+    next = next.eq("rarity", params.rarity);
+  }
+  if (params.color) {
+    next = next.eq("color", params.color);
+  }
+  if (params.type) {
+    next = next.eq("type", params.type);
+  }
+  return next;
 }
 
 export default async function BrowsePage({
@@ -60,26 +89,39 @@ export default async function BrowsePage({
   const colorOptions = toOptions(uniqSorted(metaRows?.map((r) => r.color) ?? []));
   const typeOptions = toOptions(uniqSorted(metaRows?.map((r) => r.type) ?? []));
 
-  let query = supabase.from("cards").select("*").order("name", { ascending: true });
-
   const q = params.q?.trim();
-  if (q) {
-    query = query.ilike("name", `%${q}%`);
-  }
-  if (params.set_name) {
-    query = query.eq("set_name", params.set_name);
-  }
-  if (params.rarity) {
-    query = query.eq("rarity", params.rarity);
-  }
-  if (params.color) {
-    query = query.eq("color", params.color);
-  }
-  if (params.type) {
-    query = query.eq("type", params.type);
+
+  const rawPage = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
+
+  const { count: totalCount, error: countError } = await applyCardFilters(
+    supabase.from("cards").select("*", { count: "exact", head: true }),
+    params,
+    q,
+  );
+
+  if (countError) {
+    return (
+      <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+          {countError.message}
+        </p>
+      </main>
+    );
   }
 
-  const { data: cards, error } = await query;
+  const total = totalCount ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const currentPage = Math.min(rawPage, totalPages);
+  const from = (currentPage - 1) * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+
+  const { data: cards, error } = await applyCardFilters(
+    supabase.from("cards").select("*"),
+    params,
+    q,
+  )
+    .order("name", { ascending: true })
+    .range(from, to);
 
   if (error) {
     return (
@@ -117,16 +159,34 @@ export default async function BrowsePage({
           No cards match these filters. Try resetting or broadening your search.
         </p>
       ) : (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {cards.map((card) => (
-            <li key={card.id}>
-              <CardTile
-                card={card}
-                footer={<AddToCollectionButton cardId={card.id} />}
-              />
-            </li>
-          ))}
-        </ul>
+        <>
+          <p className="text-sm text-zinc-500">
+            Showing {(currentPage - 1) * PAGE_SIZE + 1}–
+            {Math.min(currentPage * PAGE_SIZE, total)} of {total} cards
+          </p>
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {cards.map((card) => (
+              <li key={card.id}>
+                <CardTile
+                  card={card}
+                  footer={<AddToCollectionButton cardId={card.id} />}
+                />
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            basePath="/browse"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            searchParams={{
+              q: params.q,
+              set_name: params.set_name,
+              rarity: params.rarity,
+              color: params.color,
+              type: params.type,
+            }}
+          />
+        </>
       )}
     </main>
   );

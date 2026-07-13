@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 
 type Props = {
@@ -27,10 +27,16 @@ export function ProfileAvatar({
   const [failed, setFailed] = useState(false);
   const initial = (name.trim()[0] ?? "?").toUpperCase();
 
+  // Reset error state when the image URL changes (e.g. after upload).
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
   if (src && !failed) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- arbitrary user avatar URLs
+      // eslint-disable-next-line @next/next/no-img-element -- storage / blob avatar URLs
       <img
+        key={src}
         src={src}
         alt=""
         onError={() => setFailed(true)}

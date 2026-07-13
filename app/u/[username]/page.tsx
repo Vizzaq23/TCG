@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import type { PublicCollectionRow, PublicShowcaseRow } from "@/lib/types/database";
+import { formatGradedBadge, isGradedEntry } from "@/lib/types/grading";
 import { CardImage } from "@/components/cards/CardImage";
+import { GradedSlab } from "@/components/cards/GradedSlab";
 import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
 
@@ -90,7 +92,9 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
+      <ShowcaseGlassCase cards={showcase} />
+
       <header className="space-y-2 border-b border-zinc-800 pb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-500">
           Public shelf
@@ -105,8 +109,6 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             : ""}
         </p>
       </header>
-
-      <ShowcaseGlassCase cards={showcase} />
 
       <PublicShelfToolbar
         username={profile.username}
@@ -123,48 +125,81 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {filtered.map((row) => (
-            <li key={row.collection_id}>
-              <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60">
-                <div className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950">
-                  {row.image_url ? (
-                    <CardImage
-                      src={row.image_url}
-                      className="absolute inset-0 h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-xs text-zinc-500">
-                      No image
-                    </div>
-                  )}
-                </div>
-                <div className="space-y-1 p-3">
-                  <h2 className="line-clamp-2 text-sm font-semibold text-white">
-                    {row.card_name}
-                  </h2>
-                  <p className="text-[11px] text-zinc-500">
-                    {[row.set_name, row.card_number].filter(Boolean).join(" · ")}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
-                      ×{row.quantity}
-                    </span>
-                    {row.condition && (
-                      <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
-                        {row.condition}
-                      </span>
-                    )}
-                    {row.is_for_trade && (
-                      <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
-                        For trade
-                      </span>
+          {filtered.map((row) => {
+            const graded = isGradedEntry(row);
+            return (
+              <li key={row.collection_id}>
+                <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60">
+                  <div
+                    className={[
+                      "relative w-full overflow-hidden bg-zinc-950",
+                      graded ? "flex justify-center px-3 py-4" : "aspect-[5/7]",
+                    ].join(" ")}
+                  >
+                    {graded && row.grading_company && row.grade != null ? (
+                      <GradedSlab
+                        cardName={row.card_name}
+                        cardImageUrl={row.image_url}
+                        setName={row.set_name}
+                        cardNumber={row.card_number}
+                        rarity={row.rarity}
+                        gradingCompany={row.grading_company}
+                        grade={row.grade}
+                        certNumber={row.cert_number}
+                        isBlackLabel={row.is_black_label}
+                        slabImageUrl={row.slab_image_url}
+                        size="md"
+                        className="!w-[85%] max-w-[11rem]"
+                        interactive={false}
+                      />
+                    ) : row.image_url ? (
+                      <CardImage
+                        src={row.image_url}
+                        className="absolute inset-0 h-full w-full object-contain"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-xs text-zinc-500">
+                        No image
+                      </div>
                     )}
                   </div>
-                </div>
-              </article>
-            </li>
-          ))}
+                  <div className="space-y-1 p-3">
+                    <h2 className="line-clamp-2 text-sm font-semibold text-white">
+                      {row.card_name}
+                    </h2>
+                    <p className="text-[11px] text-zinc-500">
+                      {[row.set_name, row.card_number].filter(Boolean).join(" · ")}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
+                        ×{row.quantity}
+                      </span>
+                      {graded && row.grading_company && row.grade != null ? (
+                        <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
+                          {formatGradedBadge(
+                            row.grading_company,
+                            row.grade,
+                            row.is_black_label,
+                          )}
+                        </span>
+                      ) : null}
+                      {!graded && row.condition ? (
+                        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
+                          {row.condition}
+                        </span>
+                      ) : null}
+                      {row.is_for_trade && (
+                        <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
+                          For trade
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>

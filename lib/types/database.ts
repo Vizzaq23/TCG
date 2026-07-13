@@ -106,6 +106,7 @@ export interface Database {
           condition: string | null;
           notes: string | null;
           is_for_trade: boolean;
+          showcase_slot: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -117,6 +118,7 @@ export interface Database {
           condition?: string | null;
           notes?: string | null;
           is_for_trade?: boolean;
+          showcase_slot?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -128,6 +130,7 @@ export interface Database {
           condition?: string | null;
           notes?: string | null;
           is_for_trade?: boolean;
+          showcase_slot?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -174,6 +177,14 @@ export interface Database {
         Args: Record<string, never>;
         Returns: CollectionStatsRow[];
       };
+      get_public_showcase: {
+        Args: { target_username: string };
+        Returns: PublicShowcaseRow[];
+      };
+      set_showcase_slot: {
+        Args: { p_collection_id: string; p_slot: number | null };
+        Returns: void;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -209,4 +220,15 @@ export type CollectionStatsRow = {
   unique_cards_owned: number;
   total_collection_views: number;
   cards_marked_for_trade: number;
+};
+
+export type PublicShowcaseRow = {
+  collection_id: string;
+  showcase_slot: number;
+  card_id: string;
+  card_number: string | null;
+  card_name: string;
+  set_name: string | null;
+  rarity: string | null;
+  image_url: string | null;
 };

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
-import type { PublicCollectionRow } from "@/lib/types/database";
+import type { PublicCollectionRow, PublicShowcaseRow } from "@/lib/types/database";
 import { CardImage } from "@/components/cards/CardImage";
 import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
+import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -70,6 +71,10 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     target_username: profile.username,
   });
 
+  const { data: showcaseRows } = await supabase.rpc("get_public_showcase", {
+    target_username: profile.username,
+  });
+
   if (error) {
     return (
       <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
@@ -81,6 +86,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   }
 
   const list = (rows ?? []) as PublicCollectionRow[];
+  const showcase = (showcaseRows ?? []) as PublicShowcaseRow[];
   const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
 
   return (
@@ -99,6 +105,8 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             : ""}
         </p>
       </header>
+
+      <ShowcaseGlassCase cards={showcase} />
 
       <PublicShelfToolbar
         username={profile.username}

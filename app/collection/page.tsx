@@ -6,6 +6,7 @@ import { UsernameForm } from "@/components/collection/UsernameForm";
 import { CollectionRow } from "@/components/collection/CollectionRow";
 import { CopyShareLink } from "@/components/collection/CopyShareLink";
 import { SetProgress } from "@/components/collection/SetProgress";
+import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
 import { computeSetProgress } from "@/lib/collection/set-progress";
 import type { CollectionStatsRow } from "@/lib/types/database";
 
@@ -105,6 +106,8 @@ export default async function CollectionPage() {
       </header>
 
       <UsernameForm currentUsername={profile.username} />
+
+      {rows && rows.length > 0 && <ShowcasePicker rows={rows} />}
 
       {setProgress.length > 0 && <SetProgress items={setProgress} />}
 

@@ -9,21 +9,17 @@ import type { FoilTier } from "@/lib/foil";
 
 type Props = {
   tier: FoilTier;
-  /** Pointer X as 0–100% */
   foilX: MotionValue<number>;
-  /** Pointer Y as 0–100% */
   foilY: MotionValue<number>;
   hovered: boolean;
   reduceMotion?: boolean;
   className?: string;
-  /** Soften intensity (e.g. card behind acrylic) */
   intensity?: number;
 };
 
 /**
- * GPU-friendly foil / holographic overlays. Effect strength scales with rarity tier.
- * Common = none; Uncommon = gloss; Rare = soft shine; SR = diagonal foil;
- * Secret = rainbow holo; Treasure/Manga/AA = premium multi-color foil.
+ * GPU-friendly foil overlays. Rainbow is strongest on SP/Secret/Manga;
+ * Super Rare gets a light prismatic hint.
  */
 export function CardFoil({
   tier,
@@ -35,14 +31,16 @@ export function CardFoil({
   intensity = 1,
 }: Props) {
   const pos = useMotionTemplate`${foilX}% ${foilY}%`;
+  const posAlt = useMotionTemplate`${foilY}% ${foilX}%`;
   const sweepX = useMotionTemplate`calc(${foilX}% - 40%)`;
 
   if (tier === "none" || reduceMotion) {
     return tier === "none" ? null : (
       <div
-        className={["card-foil card-foil--static-gloss pointer-events-none absolute inset-0", className].join(
-          " ",
-        )}
+        className={[
+          "card-foil card-foil--static-gloss pointer-events-none absolute inset-0",
+          className,
+        ].join(" ")}
         style={{ opacity: 0.22 * intensity }}
         aria-hidden
       />
@@ -52,6 +50,8 @@ export function CardFoil({
   const baseOpacity = (idle: number, active: number) =>
     (hovered ? active : idle) * intensity;
 
+  const showRainbow = tier === "super" || tier === "holo" || tier === "manga";
+
   return (
     <div
       className={["card-foil pointer-events-none absolute inset-0 overflow-hidden", className].join(
@@ -59,78 +59,106 @@ export function CardFoil({
       )}
       aria-hidden
     >
-      {/* Specular highlight — directional light following cursor */}
-      {(tier === "gloss" ||
-        tier === "rare" ||
-        tier === "super" ||
-        tier === "holo" ||
-        tier === "manga") && (
-        <motion.div
-          className="card-foil-specular absolute inset-0"
-          style={{
-            backgroundPosition: pos,
-            opacity: baseOpacity(
-              tier === "gloss" ? 0.18 : 0.22,
-              tier === "gloss" ? 0.38 : 0.48,
-            ),
-          }}
-        />
-      )}
+      <motion.div
+        className="card-foil-specular absolute inset-0"
+        style={{
+          backgroundPosition: pos,
+          opacity: baseOpacity(tier === "gloss" ? 0.18 : 0.22, tier === "gloss" ? 0.38 : 0.5),
+        }}
+      />
 
-      {/* Soft diagonal gloss for Rare+ */}
-      {(tier === "rare" || tier === "super" || tier === "holo" || tier === "manga") && (
+      {(tier === "rare" || showRainbow) && (
         <motion.div
           className="card-foil-shine absolute inset-0"
           style={{
             backgroundPosition: pos,
-            opacity: baseOpacity(0.2, 0.42),
+            opacity: baseOpacity(0.2, 0.44),
           }}
         />
       )}
 
-      {/* Stronger SR foil lines */}
-      {(tier === "super" || tier === "holo" || tier === "manga") && (
+      {showRainbow && (
         <motion.div
           className="card-foil-lines absolute inset-0"
           style={{
             backgroundPosition: pos,
-            opacity: baseOpacity(0.18, 0.36),
+            opacity: baseOpacity(0.16, 0.34),
           }}
         />
       )}
 
-      {/* Rainbow holographic — Secret / high end */}
+      {/* Light prism on Super Rare */}
+      {tier === "super" && (
+        <motion.div
+          className="card-foil-rainbow card-foil-rainbow--soft absolute inset-0"
+          style={{
+            backgroundPosition: pos,
+            opacity: baseOpacity(0.14, 0.32),
+          }}
+        />
+      )}
+
+      {/* Full rainbow — SP / Secret / AA */}
       {(tier === "holo" || tier === "manga") && (
-        <motion.div
-          className="card-foil-rainbow absolute inset-0"
-          style={{
-            backgroundPosition: pos,
-            opacity: baseOpacity(tier === "manga" ? 0.28 : 0.22, tier === "manga" ? 0.55 : 0.48),
-          }}
-        />
+        <>
+          <motion.div
+            className="card-foil-rainbow absolute inset-0"
+            style={{
+              backgroundPosition: pos,
+              opacity: baseOpacity(0.38, 0.72),
+            }}
+          />
+          <motion.div
+            className="card-foil-prism absolute inset-0"
+            style={{
+              backgroundPosition: posAlt,
+              opacity: baseOpacity(0.22, 0.48),
+            }}
+          />
+        </>
       )}
 
-      {/* Manga / Treasure premium multi-layer */}
       {tier === "manga" && (
+        <>
+          <motion.div
+            className="card-foil-manga absolute inset-0"
+            style={{
+              backgroundPosition: pos,
+              opacity: baseOpacity(0.34, 0.7),
+            }}
+          />
+          <motion.div
+            className="card-foil-gold absolute inset-0"
+            style={{
+              backgroundPosition: pos,
+              opacity: baseOpacity(0.24, 0.55),
+            }}
+          />
+        </>
+      )}
+
+      {tier === "holo" && (
         <motion.div
-          className="card-foil-manga absolute inset-0"
+          className="card-foil-gold absolute inset-0"
           style={{
             backgroundPosition: pos,
-            opacity: baseOpacity(0.25, 0.52),
+            opacity: baseOpacity(0.16, 0.4),
           }}
         />
       )}
 
-      {/* Soft light sweep on hover */}
-      {hovered && (
+      {hovered ? (
         <motion.div
-          className="card-foil-sweep absolute inset-0"
+          className={[
+            "card-foil-sweep absolute inset-0",
+            showRainbow && tier !== "super" ? "card-foil-sweep--rainbow" : "",
+          ].join(" ")}
           style={{
             x: sweepX,
-            opacity: 0.35 * intensity,
+            opacity: (showRainbow && tier !== "super" ? 0.5 : 0.35) * intensity,
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

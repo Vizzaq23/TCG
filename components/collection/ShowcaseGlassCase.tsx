@@ -42,7 +42,7 @@ function SleevedCard({
   foilY: MotionValue<number>;
   reduceMotion: boolean;
 }) {
-  const tier = getFoilTier(card.rarity);
+  const tier = getFoilTier(card.rarity, card.card_name);
 
   return (
     <div className="cs-sleeved relative w-full">
@@ -167,8 +167,8 @@ function ShowcaseItem({
           reduceMotion
             ? undefined
             : {
-                y: -18,
-                scale: 1.5,
+                y: -14,
+                scale: 1.2,
                 transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
               }
         }
@@ -333,12 +333,19 @@ function MobileCarousel({
 
 function WalnutStand() {
   return (
-    <div className="cs-stand relative z-0 mx-auto mt-1 w-[92%] max-w-3xl" aria-hidden>
-      <div className="cs-stand-surface mx-auto h-[14px] w-full rounded-[3px] sm:h-4" />
-      <div className="cs-stand-bevel mx-auto h-[6px] w-[98%] rounded-b-[2px]" />
-      <div className="cs-stand-body mx-auto mt-0 h-7 w-[78%] rounded-b-[4px] sm:h-8" />
-      <div className="cs-stand-plinth mx-auto mt-1.5 h-2.5 w-[64%] rounded-[2px]" />
-      <div className="cs-stand-shadow mx-auto mt-2 h-4 w-[70%] rounded-full" />
+    <div className="cs-stand relative z-0 mx-auto mt-0 w-[94%] max-w-3xl" aria-hidden>
+      <div className="cs-stand-shelf-shadow absolute -top-3 left-[4%] right-[4%] h-5 rounded-full" />
+      <div className="cs-stand-surface relative mx-auto h-[16px] w-full overflow-hidden rounded-[3px] sm:h-[18px]">
+        <div className="cs-stand-grain absolute inset-0" />
+        <div className="cs-stand-top-bevel absolute inset-x-0 top-0 h-[45%]" />
+        <div className="cs-stand-front-edge absolute inset-x-0 bottom-0 h-[38%]" />
+      </div>
+      <div className="cs-stand-bevel mx-auto h-[7px] w-[99%] rounded-b-[2px]" />
+      <div className="cs-stand-body relative mx-auto mt-0 h-8 w-[80%] overflow-hidden rounded-b-[5px] sm:h-9">
+        <div className="cs-stand-grain cs-stand-grain--body absolute inset-0" />
+      </div>
+      <div className="cs-stand-plinth mx-auto mt-1.5 h-3 w-[66%] rounded-[2px]" />
+      <div className="cs-stand-shadow mx-auto mt-2.5 h-5 w-[72%] rounded-full" />
     </div>
   );
 }

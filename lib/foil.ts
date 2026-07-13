@@ -4,20 +4,30 @@ export type FoilTier = "none" | "gloss" | "rare" | "super" | "holo" | "manga";
  * Map OPTCG (and common TCG) rarity strings to foil intensity.
  * Higher tiers are checked first so "Super Rare" does not fall through as "Rare".
  */
-export function getFoilTier(rarity: string | null | undefined): FoilTier {
-  if (!rarity) return "none";
-  const r = rarity.trim().toLowerCase();
+export function getFoilTier(
+  rarity: string | null | undefined,
+  cardName?: string | null,
+): FoilTier {
+  const r = (rarity ?? "").trim().toLowerCase();
+  const n = (cardName ?? "").trim().toLowerCase();
+  const hay = `${r} ${n}`;
 
   if (
-    r.includes("manga") ||
+    hay.includes("manga") ||
     r.includes("treasure") ||
-    r.includes("parallel") ||
-    r.includes("aa") ||
-    r.includes("alternate")
+    hay.includes("parallel") ||
+    hay.includes("alternate") ||
+    hay.includes("alt art")
   ) {
     return "manga";
   }
-  if (r.includes("secret") || r.includes("sp card") || r === "sp") {
+  if (
+    r.includes("secret") ||
+    r.includes("sp card") ||
+    r === "sp" ||
+    /\bsp\b/.test(hay) ||
+    /\baa\b/.test(hay)
+  ) {
     return "holo";
   }
   if (r.includes("super")) return "super";

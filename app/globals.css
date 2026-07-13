@@ -166,69 +166,103 @@ body {
 }
 
 /* Walnut display stand */
+.cs-stand-shelf-shadow {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 72%);
+  filter: blur(10px);
+  z-index: -1;
+}
+
 .cs-stand-surface {
+  background: linear-gradient(
+    90deg,
+    #3f2918 0%,
+    #6a4228 14%,
+    #8f5c36 30%,
+    #5e3a22 46%,
+    #a06d42 58%,
+    #734830 74%,
+    #4a2f1c 88%,
+    #3a2414 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 226, 190, 0.32),
+    0 10px 28px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 236, 205, 0.28),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.4);
+}
+
+.cs-stand-grain {
   background:
     repeating-linear-gradient(
-      92deg,
+      93deg,
       transparent 0px,
-      transparent 2px,
-      rgba(0, 0, 0, 0.04) 2px,
-      rgba(0, 0, 0, 0.04) 3px
+      transparent 1px,
+      rgba(0, 0, 0, 0.06) 1px,
+      rgba(0, 0, 0, 0.06) 2px,
+      transparent 3px,
+      transparent 7px,
+      rgba(255, 220, 180, 0.04) 7px,
+      rgba(255, 220, 180, 0.04) 8px
     ),
-    linear-gradient(
-      90deg,
-      #4a2f1c 0%,
-      #6b4228 12%,
-      #8a5a38 28%,
-      #6e452c 42%,
-      #9a6a44 55%,
-      #7a4d32 70%,
-      #5c3820 85%,
-      #4a2f1c 100%
-    );
-  box-shadow:
-    0 1px 0 rgba(255, 220, 180, 0.28),
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px rgba(255, 236, 205, 0.35),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.35);
-}
-
-.cs-stand-bevel {
-  background: linear-gradient(180deg, #3d2618, #2a1a10);
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.4);
-}
-
-.cs-stand-body {
-  background:
     repeating-linear-gradient(
       88deg,
       transparent 0px,
-      transparent 3px,
-      rgba(0, 0, 0, 0.05) 3px,
-      rgba(0, 0, 0, 0.05) 4px
-    ),
-    linear-gradient(
-      180deg,
-      #5c3822 0%,
-      #4a2c1a 40%,
-      #3a2214 100%
+      transparent 11px,
+      rgba(0, 0, 0, 0.05) 11px,
+      rgba(0, 0, 0, 0.05) 13px
     );
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+
+.cs-stand-grain--body {
+  opacity: 0.7;
+}
+
+.cs-stand-top-bevel {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 230, 190, 0.28) 0%,
+    rgba(255, 220, 180, 0.08) 55%,
+    transparent 100%
+  );
+}
+
+.cs-stand-front-edge {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.22) 40%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.08);
+}
+
+.cs-stand-bevel {
+  background: linear-gradient(180deg, #3a2416 0%, #24160e 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 220, 180, 0.12),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.35),
-    0 10px 28px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.cs-stand-body {
+  background: linear-gradient(180deg, #5a3620 0%, #3f2716 45%, #2c1a10 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.1),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .cs-stand-plinth {
-  background: linear-gradient(180deg, #2f1d12, #1e130c);
+  background: linear-gradient(180deg, #2a1a10, #160e08);
   box-shadow:
-    inset 0 1px 0 rgba(255, 220, 180, 0.08),
-    0 4px 12px rgba(0, 0, 0, 0.35);
+    inset 0 1px 0 rgba(255, 220, 180, 0.07),
+    0 6px 14px rgba(0, 0, 0, 0.4);
 }
 
 .cs-stand-shadow {
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45), transparent 70%);
-  filter: blur(8px);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
+  filter: blur(10px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -287,38 +321,70 @@ body {
 .card-foil-rainbow {
   background-image: linear-gradient(
     125deg,
-    rgba(255, 80, 180, 0) 15%,
-    rgba(255, 90, 200, 0.4) 32%,
-    rgba(80, 200, 255, 0.45) 46%,
-    rgba(255, 230, 90, 0.4) 58%,
-    rgba(120, 255, 170, 0.35) 68%,
-    rgba(255, 80, 180, 0) 82%
+    rgba(255, 40, 160, 0) 8%,
+    rgba(255, 60, 200, 0.7) 22%,
+    rgba(80, 140, 255, 0.75) 36%,
+    rgba(40, 255, 220, 0.65) 48%,
+    rgba(255, 230, 60, 0.7) 58%,
+    rgba(255, 120, 40, 0.6) 68%,
+    rgba(200, 80, 255, 0.65) 78%,
+    rgba(255, 40, 160, 0) 92%
   );
-  background-size: 240% 240%;
+  background-size: 280% 280%;
   mix-blend-mode: color-dodge;
-  transition: opacity 320ms ease;
+  transition: opacity 280ms ease;
+}
+
+.card-foil-rainbow--soft {
+  background-size: 220% 220%;
+  filter: saturate(0.85);
+}
+
+.card-foil-prism {
+  background-image: linear-gradient(
+    55deg,
+    rgba(100, 220, 255, 0) 15%,
+    rgba(100, 220, 255, 0.45) 30%,
+    rgba(255, 100, 220, 0.4) 45%,
+    rgba(255, 230, 100, 0.45) 55%,
+    rgba(120, 255, 180, 0.4) 70%,
+    rgba(100, 220, 255, 0) 85%
+  );
+  background-size: 260% 260%;
+  mix-blend-mode: screen;
+  transition: opacity 280ms ease;
 }
 
 .card-foil-manga {
   background-image:
-    radial-gradient(
-      circle at center,
-      rgba(255, 255, 255, 0.28) 0%,
-      transparent 40%
-    ),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.32) 0%, transparent 38%),
     linear-gradient(
       105deg,
-      rgba(255, 60, 160, 0) 10%,
-      rgba(255, 70, 190, 0.5) 28%,
-      rgba(90, 140, 255, 0.55) 42%,
-      rgba(255, 210, 70, 0.5) 55%,
-      rgba(80, 255, 200, 0.45) 68%,
-      rgba(190, 90, 255, 0.4) 78%,
-      rgba(255, 60, 160, 0) 90%
+      rgba(255, 40, 160, 0) 6%,
+      rgba(255, 70, 200, 0.7) 24%,
+      rgba(70, 130, 255, 0.72) 38%,
+      rgba(255, 220, 60, 0.65) 52%,
+      rgba(60, 255, 200, 0.6) 64%,
+      rgba(200, 80, 255, 0.55) 76%,
+      rgba(255, 40, 160, 0) 92%
     );
-  background-size: 150% 150%, 260% 260%;
+  background-size: 150% 150%, 300% 300%;
   mix-blend-mode: color-dodge;
-  transition: opacity 320ms ease;
+  transition: opacity 280ms ease;
+}
+
+.card-foil-gold {
+  background-image: linear-gradient(
+    130deg,
+    transparent 16%,
+    rgba(255, 200, 60, 0.22) 32%,
+    rgba(255, 230, 130, 0.62) 48%,
+    rgba(212, 160, 40, 0.28) 62%,
+    transparent 80%
+  );
+  background-size: 240% 240%;
+  mix-blend-mode: soft-light;
+  transition: opacity 280ms ease;
 }
 
 .card-foil-sweep {
@@ -333,6 +399,19 @@ body {
   );
   mix-blend-mode: soft-light;
   pointer-events: none;
+}
+
+.card-foil-sweep--rainbow {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 120, 220, 0.25) 28%,
+    rgba(120, 200, 255, 0.35) 45%,
+    rgba(255, 230, 100, 0.3) 58%,
+    rgba(120, 255, 200, 0.22) 70%,
+    transparent 100%
+  );
+  mix-blend-mode: color-dodge;
 }
 
 .card-foil--static-gloss {
@@ -404,13 +483,20 @@ body {
 }
 
 .graded-slab-glare {
-  background-image: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.08) 28%,
-    transparent 55%
-  );
-  background-size: 140% 140%;
+  background-image:
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.1) 26%,
+      transparent 52%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.12) 48%,
+      transparent 62%
+    );
+  background-size: 140% 140%, 200% 200%;
   mix-blend-mode: soft-light;
   z-index: 6;
   transition: opacity 280ms ease;
@@ -427,11 +513,29 @@ body {
   inset: 0;
   background: linear-gradient(
     105deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.28) 50%,
-    transparent 62%
+    transparent 36%,
+    rgba(255, 255, 255, 0.18) 48%,
+    transparent 60%
   );
-  animation: graded-slab-sheen 7s ease-in-out infinite;
+  animation: graded-slab-sheen 8s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+}
+
+.graded-slab-sheen::after {
+  content: "";
+  position: absolute;
+  top: 8%;
+  left: 6%;
+  width: 18%;
+  height: 55%;
+  border-radius: 40%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22),
+    transparent 70%
+  );
+  filter: blur(1px);
+  opacity: 0.55;
   mix-blend-mode: soft-light;
 }
 
@@ -444,18 +548,28 @@ body {
 .graded-slab-well {
   background: linear-gradient(180deg, rgba(12, 12, 14, 0.92), rgba(8, 8, 10, 0.98));
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 8px 20px rgba(0, 0, 0, 0.45);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 10px 24px rgba(0, 0, 0, 0.5),
+    inset 0 -4px 12px rgba(255, 255, 255, 0.04);
 }
 
 .graded-slab-well-glass {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    transparent 35%,
-    transparent 70%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      transparent 32%,
+      transparent 68%,
+      rgba(255, 255, 255, 0.05) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.03);
 }
 
 .graded-slab-label-inner {

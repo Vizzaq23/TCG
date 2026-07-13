@@ -156,7 +156,7 @@ export function GradedSlab({
   const foilY = externalFoilY ?? internalFoilY;
   const foilActive = foilHovered ?? hovered;
   const glarePos = useMotionTemplate`${foilX}% ${foilY}%`;
-  const foilTier = getFoilTier(rarity);
+  const foilTier = getFoilTier(rarity, cardName);
 
   const onMove = useCallback(
     (e: React.MouseEvent) => {

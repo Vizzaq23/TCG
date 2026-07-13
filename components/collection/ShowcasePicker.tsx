@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { CardImage } from "@/components/cards/CardImage";
+import { GradedSlab } from "@/components/cards/GradedSlab";
 import type { CollectionRowData } from "@/components/collection/CollectionRow";
+import { isGradedEntry, formatGradedBadge } from "@/lib/types/grading";
 
 type Props = {
   rows: CollectionRowData[];
@@ -45,9 +47,9 @@ export function ShowcasePicker({ rows }: Props) {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-sm font-semibold text-white">Top 3 showcase</h2>
+        <h2 className="text-sm font-semibold text-white">Collector&apos;s Showcase</h2>
         <p className="text-xs text-zinc-500">
-          Pick up to three cards to display in the glass case on your public profile.
+          Choose up to three prized collectibles for your public profile — raw cards or graded slabs.
         </p>
       </div>
 
@@ -67,15 +69,35 @@ export function ShowcasePicker({ rows }: Props) {
 
               {card && current ? (
                 <div className="mb-3 flex gap-2">
-                  <div className="relative h-16 w-11 flex-shrink-0 overflow-hidden rounded-md border border-zinc-700 bg-zinc-950">
-                    {card.image_url ? (
-                      <CardImage
-                        src={card.image_url}
-                        alt={card.name}
-                        className="absolute inset-0 h-full w-full object-contain"
-                      />
-                    ) : null}
-                  </div>
+                  {isGradedEntry(current) &&
+                  current.grading_company &&
+                  current.grade != null ? (
+                    <GradedSlab
+                      cardName={card.name}
+                      cardImageUrl={card.image_url}
+                      setName={card.set_name}
+                      cardNumber={card.card_number}
+                      rarity={card.rarity}
+                      gradingCompany={current.grading_company}
+                      grade={current.grade}
+                      certNumber={current.cert_number}
+                      isBlackLabel={current.is_black_label}
+                      slabImageUrl={current.slab_image_url}
+                      size="xs"
+                      interactive={false}
+                      className="flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="relative h-16 w-11 flex-shrink-0 overflow-hidden rounded-md border border-zinc-700 bg-zinc-950">
+                      {card.image_url ? (
+                        <CardImage
+                          src={card.image_url}
+                          alt={card.name}
+                          className="absolute inset-0 h-full w-full object-contain"
+                        />
+                      ) : null}
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-xs font-medium text-white">
                       {card.name}
@@ -83,6 +105,15 @@ export function ShowcasePicker({ rows }: Props) {
                     <p className="text-[10px] text-zinc-500">
                       {[card.set_name, card.card_number].filter(Boolean).join(" · ")}
                     </p>
+                    {isGradedEntry(current) && current.grading_company && current.grade != null ? (
+                      <p className="mt-1 text-[10px] font-semibold text-amber-300/90">
+                        {formatGradedBadge(
+                          current.grading_company,
+                          current.grade,
+                          current.is_black_label,
+                        )}
+                      </p>
+                    ) : null}
                   </div>
                 </div>
               ) : (
@@ -116,6 +147,9 @@ export function ShowcasePicker({ rows }: Props) {
                     return (
                       <option key={row.id} value={row.id} disabled={Boolean(inOtherSlot)}>
                         {c.name}
+                        {isGradedEntry(row) && row.grading_company && row.grade != null
+                          ? ` · ${formatGradedBadge(row.grading_company, row.grade, row.is_black_label)}`
+                          : ""}
                         {inOtherSlot ? ` (slot ${row.showcase_slot})` : ""}
                       </option>
                     );

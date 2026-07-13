@@ -7,9 +7,10 @@ import { CopyShareLink } from "@/components/collection/CopyShareLink";
 import { SetProgress } from "@/components/collection/SetProgress";
 import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
 import { ProfileSettingsForm } from "@/components/profile/ProfileSettingsForm";
+import { TradeAlertsPanel } from "@/components/trades/TradeAlertsPanel";
 import { computeSetProgress } from "@/lib/collection/set-progress";
 import { isProfileAccent } from "@/lib/profile";
-import type { CollectionStatsRow } from "@/lib/types/database";
+import type { CollectionStatsRow, TradeAlertHitRow } from "@/lib/types/database";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
@@ -70,6 +71,20 @@ export default async function CollectionPage() {
     (rows ?? []).map((r) => ({ card_id: r.card_id })),
   );
 
+  const { data: tradeAlerts } = await supabase
+    .from("trade_alerts")
+    .select("id, card_id, cards ( name, set_name, card_number )")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  const { data: alertHits } = await supabase.rpc("get_trade_alert_hits");
+
+  const { count: pendingTradeCount } = await supabase
+    .from("trade_offers")
+    .select("id", { count: "exact", head: true })
+    .eq("to_user_id", user.id)
+    .eq("status", "pending");
+
   return (
     <PageContainer as="main" className="flex flex-col gap-10 py-8 sm:py-10">
       <header className="space-y-5">
@@ -79,12 +94,19 @@ export default async function CollectionPage() {
           description={
             profile.display_name
               ? `Signed in as ${profile.display_name}`
-              : "Manage quantity, condition, grades, and your public shelf."
+              : "Manage quantity, condition, grades, value, and your public shelf."
           }
           actions={
             <>
               <Button href={`/u/${encodeURIComponent(profile.username)}`} size="md">
                 View public page
+              </Button>
+              <Button href="/collection/portfolio" size="md" variant="secondary">
+                Portfolio
+              </Button>
+              <Button href="/collection/trades" size="md" variant="secondary">
+                Trades
+                {pendingTradeCount ? ` (${pendingTradeCount})` : ""}
               </Button>
               <CopyShareLink username={profile.username} />
             </>
@@ -105,7 +127,7 @@ export default async function CollectionPage() {
       <section className="space-y-4">
         <SectionHeader
           title="Your cards"
-          description="Edit quantities, conditions, grades, and trade status."
+          description="Edit quantities, conditions, grades, estimated value, and trade status."
         />
         {rowsError ? (
           <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
@@ -130,6 +152,22 @@ export default async function CollectionPage() {
       </section>
 
       {setProgress.length > 0 && <SetProgress items={setProgress} />}
+
+      <section className="space-y-4">
+        <SectionHeader
+          title="Trade alerts"
+          description="Watch catalog cards and see when other collectors mark them for trade."
+          actions={
+            <Button href="/compare" size="sm" variant="ghost">
+              Compare collectors
+            </Button>
+          }
+        />
+        <TradeAlertsPanel
+          alerts={tradeAlerts ?? []}
+          hits={(alertHits ?? []) as TradeAlertHitRow[]}
+        />
+      </section>
 
       <ProfileSettingsForm
         profile={{

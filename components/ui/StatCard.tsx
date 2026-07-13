@@ -4,11 +4,12 @@ import { cn } from "@/lib/cn";
 type Props = {
   label: string;
   value: string;
+  hint?: string;
   className?: string;
   icon?: ReactNode;
 };
 
-export function StatCard({ label, value, className, icon }: Props) {
+export function StatCard({ label, value, hint, className, icon }: Props) {
   return (
     <div
       className={cn(
@@ -26,6 +27,7 @@ export function StatCard({ label, value, className, icon }: Props) {
       <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-tight text-white">
         {value}
       </p>
+      {hint ? <p className="mt-1 text-[11px] leading-snug text-zinc-500">{hint}</p> : null}
     </div>
   );
 }

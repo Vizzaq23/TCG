@@ -14,6 +14,7 @@ import { GradedSlab } from "@/components/cards/GradedSlab";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { centsToInputValue, parseDollarsToCents } from "@/lib/money";
 
 type UC = Database["public"]["Tables"]["user_collections"]["Row"];
 type Card = Database["public"]["Tables"]["cards"]["Row"];
@@ -51,6 +52,9 @@ export function CollectionRow({ row }: Props) {
   const [certNumber, setCertNumber] = useState(row.cert_number ?? "");
   const [slabImageUrl, setSlabImageUrl] = useState(row.slab_image_url ?? "");
   const [isBlackLabel, setIsBlackLabel] = useState(row.is_black_label ?? false);
+  const [estimatedValue, setEstimatedValue] = useState(
+    centsToInputValue(row.estimated_value_cents),
+  );
   const [pending, setPending] = useState<"save" | "remove" | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -79,6 +83,15 @@ export function CollectionRow({ row }: Props) {
     const blackLabel =
       isGraded && gradingCompany === "BGS" && gradeValue === 10 && isBlackLabel;
 
+    let valueCents: number | null = null;
+    if (estimatedValue.trim()) {
+      valueCents = parseDollarsToCents(estimatedValue);
+      if (valueCents == null) {
+        setMessage("Estimated value must be a non-negative dollar amount.");
+        return;
+      }
+    }
+
     setPending("save");
     const supabase = createClient();
     const { error } = await supabase
@@ -94,6 +107,7 @@ export function CollectionRow({ row }: Props) {
         cert_number: isGraded ? certNumber.trim() || null : null,
         slab_image_url: isGraded ? slabImageUrl.trim() || null : null,
         is_black_label: blackLabel,
+        estimated_value_cents: valueCents,
       })
       .eq("id", row.id);
     setPending(null);
@@ -281,6 +295,16 @@ export function CollectionRow({ row }: Props) {
           </Field>
         )}
 
+        <Field label="Est. value (USD)" className="text-xs">
+          <Input
+            type="text"
+            inputMode="decimal"
+            value={estimatedValue}
+            onChange={(e) => setEstimatedValue(e.target.value)}
+            placeholder="e.g. 12.50"
+            className="py-1.5 text-sm"
+          />
+        </Field>
         <Field label="Notes" className="text-xs sm:col-span-2 lg:col-span-2">
           <Input
             value={notes}

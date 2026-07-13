@@ -31,6 +31,19 @@ type Props = {
 };
 
 export function ProfileSettingsForm({ profile }: Props) {
+  // Remount when server profile changes after save/refresh so local state stays in sync.
+  const syncKey = [
+    profile.username,
+    profile.displayName ?? "",
+    profile.avatarUrl ?? "",
+    profile.bio ?? "",
+    profile.accent,
+  ].join("|");
+
+  return <ProfileSettingsFormInner key={syncKey} profile={profile} />;
+}
+
+function ProfileSettingsFormInner({ profile }: Props) {
   const router = useRouter();
   const [username, setUsername] = useState(profile.username);
   const [displayName, setDisplayName] = useState(profile.displayName ?? "");
@@ -44,15 +57,6 @@ export function ProfileSettingsForm({ profile }: Props) {
   const [success, setSuccess] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  // Stay in sync when the server refreshes profile props.
-  useEffect(() => {
-    setUsername(profile.username);
-    setDisplayName(profile.displayName ?? "");
-    setAvatarUrl(profile.avatarUrl);
-    setBio(profile.bio ?? "");
-    setAccent(isProfileAccent(profile.accent) ? profile.accent : "amber");
-  }, [profile]);
 
   useEffect(() => {
     return () => {

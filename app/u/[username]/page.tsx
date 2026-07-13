@@ -8,10 +8,14 @@ import { CardImage } from "@/components/cards/CardImage";
 import { GradedSlab } from "@/components/cards/GradedSlab";
 import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
+import { ActivityFeed } from "@/components/collection/ActivityFeed";
+import { TradeOfferButton } from "@/components/trades/TradeOfferButton";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
+import type { ActivityEventRow } from "@/lib/activity";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -88,6 +92,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     target_username: profile.username,
   });
 
+  const { data: activityRows } = await supabase.rpc("get_public_activity", {
+    target_username: profile.username,
+    p_limit: 15,
+  });
+
   if (error) {
     return (
       <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
@@ -100,7 +109,10 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
 
   const list = (rows ?? []) as PublicCollectionRow[];
   const showcase = (showcaseRows ?? []) as PublicShowcaseRow[];
+  const activity = (activityRows ?? []) as ActivityEventRow[];
   const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
+  const isOwner = Boolean(viewer && viewer.id === profile.id);
+  const isSignedIn = Boolean(viewer);
   const accent = getProfileAccent(
     isProfileAccent(profile.accent) ? profile.accent : "amber",
   );
@@ -149,6 +161,14 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
         totalCount={list.length}
         filteredCount={filtered.length}
       />
+
+      <section className="space-y-3">
+        <SectionHeader
+          title="Recent activity"
+          description="Adds, trade flags, and showcase updates."
+        />
+        <ActivityFeed events={activity} />
+      </section>
 
       {!filtered.length ? (
         <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
@@ -222,6 +242,15 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                         <Badge tone="success">For trade</Badge>
                       ) : null}
                     </div>
+                    {row.is_for_trade ? (
+                      <TradeOfferButton
+                        collectionId={row.collection_id}
+                        cardName={row.card_name}
+                        ownerUsername={profile.username}
+                        isSignedIn={isSignedIn}
+                        isOwner={isOwner}
+                      />
+                    ) : null}
                   </div>
                 </article>
               </li>

@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "import:catalog": "tsx scripts/import-catalog.ts",
     "import:catalog:dry": "tsx scripts/import-catalog.ts --dry-run",
     "import:catalog:sql": "tsx scripts/import-catalog.ts --sql",
@@ -33,6 +35,7 @@
     "supabase": "^2.106.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

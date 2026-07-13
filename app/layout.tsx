@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -20,10 +20,17 @@ export const metadata: Metadata = {
   },
   description:
     "Catalog your One Piece TCG collection, showcase graded slabs and prized cards, and share a premium public profile.",
+  applicationName: "One Piece TCG Shelf",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "TCG Shelf",
+  },
   openGraph: {
     title: "One Piece TCG Shelf",
     description:
-      "Catalog. Showcase. Share. Track cards, grades, and trades — then present your favorites in a lit glass case.",
+      "Catalog. Showcase. Share. Track cards, grades, trades, and portfolio value — then present your favorites in a lit glass case.",
     type: "website",
   },
   twitter: {
@@ -32,6 +39,10 @@ export const metadata: Metadata = {
     description:
       "Catalog your collection, showcase your top cards, and share a premium public shelf.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f59e0b",
 };
 
 export default function RootLayout({

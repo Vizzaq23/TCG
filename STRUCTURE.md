@@ -6,12 +6,15 @@ Guide to the One Piece TCG Shelf repo. Paths follow the source tree (excluding `
 TCG/
 ├── app/                    # Next.js App Router (pages, layouts, API)
 ├── components/             # React UI by domain
+├── docs/                   # API docs + OpenAPI
 ├── lib/                    # Shared utilities, types, Supabase clients
 ├── scripts/                # Dev / import tooling
 ├── supabase/               # DB config + migrations
-├── public/                 # Static assets
+├── public/                 # Static assets + PWA manifest/icons
+├── .github/workflows/      # CI (lint, test, build)
 ├── middleware.ts           # Auth gate + session refresh
 ├── package.json
+├── vitest.config.ts
 ├── README.md
 └── STRUCTURE.md            # This file
 ```
@@ -45,7 +48,7 @@ Next.js App Router. Each folder is a URL segment unless noted.
 
 ```
 app/
-├── layout.tsx              # Root layout: fonts, header, global SVG filter
+├── layout.tsx              # Root layout: fonts, header, PWA metadata, SVG filter
 ├── page.tsx                # Landing (/) — One Piece–themed hero
 ├── loading.tsx             # Root route skeleton
 ├── not-found.tsx           # Global 404
@@ -53,15 +56,19 @@ app/
 ├── favicon.ico
 ├── api/
 │   ├── avatar/route.ts     # POST/DELETE profile photo (service-role upload)
-│   └── card-image/route.ts # Proxy for official card art hosts
+│   ├── card-image/route.ts # Proxy for official card art hosts
+│   └── v1/                 # Public JSON API (profile, collection, showcase, activity, trades)
 ├── auth/
 │   └── callback/route.ts   # OAuth / email-confirm code exchange → redirect
 ├── browse/
 │   ├── page.tsx            # Catalog grid + filters
 │   └── loading.tsx
 ├── collection/
-│   ├── page.tsx            # Signed-in collection dashboard
+│   ├── page.tsx            # Signed-in collection dashboard (value, alerts)
+│   ├── trades/page.tsx     # Trade offers inbox
 │   └── loading.tsx
+├── compare/
+│   └── page.tsx            # Compare two collectors’ shelves
 ├── login/
 │   ├── page.tsx            # Sign in (+ ?next=)
 │   └── loading.tsx
@@ -69,7 +76,7 @@ app/
 │   ├── page.tsx            # Create account
 │   └── loading.tsx
 └── u/[username]/
-    ├── page.tsx            # Public collector shelf
+    ├── page.tsx            # Public collector shelf + activity + trade CTAs
     ├── loading.tsx
     └── not-found.tsx       # Unknown username
 ```

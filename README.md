@@ -5,9 +5,16 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 ## Features
 
 - **Catalog browse** — search and filter cards; add to your collection
-- **Collection dashboard** — edit quantities, conditions, graded slabs, trade flags
+- **Collection dashboard** — edit quantities, conditions, graded slabs, trade flags, estimated values
+- **Portfolio stats** — collection value total and 30-day change from daily snapshots
+- **Trade offers** — request / accept / decline on for-trade cards (`/collection/trades`)
+- **Activity feed** — public profile events (adds, trades, showcase, values)
+- **Trade alerts** — watchlist when others list a card for trade
+- **Compare collectors** — overlap / unique cards between two usernames (`/compare`)
 - **Collector’s Showcase** — pick up to three prized cards/slabs for your public shelf
 - **Public profiles** — shareable shelf with trade filter and view analytics
+- **Public API** — documented JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
+- **PWA** — installable web app manifest
 - **Profile customization** — display name, bio, accent theme, drag-and-drop avatar
 - **Auth** — email/password via Supabase (safe redirects after sign-in)
 
@@ -63,6 +70,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint |
+| `npm test` | Vitest unit tests |
 | `npm run setup` | Local Supabase + `.env.local` (Windows) |
 | `npm run import:catalog` | Upsert card catalog into Supabase |
 | `npm run supabase` | Supabase CLI passthrough |

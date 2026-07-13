@@ -119,6 +119,7 @@ export interface Database {
           cert_number: string | null;
           slab_image_url: string | null;
           is_black_label: boolean;
+          estimated_value_cents: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -137,6 +138,7 @@ export interface Database {
           cert_number?: string | null;
           slab_image_url?: string | null;
           is_black_label?: boolean;
+          estimated_value_cents?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -155,6 +157,7 @@ export interface Database {
           cert_number?: string | null;
           slab_image_url?: string | null;
           is_black_label?: boolean;
+          estimated_value_cents?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -186,6 +189,128 @@ export interface Database {
           },
         ];
       };
+      collection_value_snapshots: {
+        Row: {
+          id: string;
+          user_id: string;
+          total_value_cents: number;
+          recorded_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          total_value_cents: number;
+          recorded_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          total_value_cents?: number;
+          recorded_at?: string;
+        };
+        Relationships: [];
+      };
+      trade_offers: {
+        Row: {
+          id: string;
+          from_user_id: string;
+          to_user_id: string;
+          target_collection_id: string;
+          message: string | null;
+          status: "pending" | "accepted" | "declined" | "cancelled";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          from_user_id: string;
+          to_user_id: string;
+          target_collection_id: string;
+          message?: string | null;
+          status?: "pending" | "accepted" | "declined" | "cancelled";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          from_user_id?: string;
+          to_user_id?: string;
+          target_collection_id?: string;
+          message?: string | null;
+          status?: "pending" | "accepted" | "declined" | "cancelled";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "trade_offers_target_collection_id_fkey";
+            columns: ["target_collection_id"];
+            isOneToOne: false;
+            referencedRelation: "user_collections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      activity_events: {
+        Row: {
+          id: string;
+          profile_id: string;
+          event_type: string;
+          payload: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          event_type: string;
+          payload?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          profile_id?: string;
+          event_type?: string;
+          payload?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      trade_alerts: {
+        Row: {
+          id: string;
+          user_id: string;
+          card_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          card_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          card_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "trade_alerts_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "trade_alerts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -208,6 +333,26 @@ export interface Database {
       set_showcase_slot: {
         Args: { p_collection_id: string; p_slot: number | null };
         Returns: void;
+      };
+      create_trade_offer: {
+        Args: { p_target_collection_id: string; p_message?: string | null };
+        Returns: string;
+      };
+      respond_trade_offer: {
+        Args: { p_offer_id: string; p_action: string };
+        Returns: void;
+      };
+      get_public_activity: {
+        Args: { target_username: string; p_limit?: number };
+        Returns: ActivityEventRpcRow[];
+      };
+      get_trade_alert_hits: {
+        Args: Record<string, never>;
+        Returns: TradeAlertHitRow[];
+      };
+      compare_collectors: {
+        Args: { username_a: string; username_b: string };
+        Returns: CompareCollectorsRow[];
       };
     };
     Enums: Record<string, never>;
@@ -250,6 +395,33 @@ export type CollectionStatsRow = {
   unique_cards_owned: number;
   total_collection_views: number;
   cards_marked_for_trade: number;
+  portfolio_value_cents?: number;
+  portfolio_value_cents_30d_ago?: number | null;
+  valued_cards_count?: number;
+};
+
+export type ActivityEventRpcRow = {
+  id: string;
+  event_type: string;
+  payload: Json;
+  created_at: string;
+};
+
+export type TradeAlertHitRow = {
+  alert_id: string;
+  card_id: string;
+  card_name: string;
+  owner_username: string;
+  collection_id: string;
+};
+
+export type CompareCollectorsRow = {
+  card_id: string;
+  card_name: string;
+  set_name: string | null;
+  card_number: string | null;
+  owned_by_a: boolean;
+  owned_by_b: boolean;
 };
 
 export type PublicShowcaseRow = {

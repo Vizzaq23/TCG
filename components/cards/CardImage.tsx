@@ -21,9 +21,17 @@ type Props = {
   alt?: string;
   className?: string;
   loading?: "lazy" | "eager";
+  /** Subtle unsharp + contrast (default on) */
+  sharpen?: boolean;
 };
 
-export function CardImage({ src, alt = "", className, loading }: Props) {
+export function CardImage({
+  src,
+  alt = "",
+  className,
+  loading,
+  sharpen = true,
+}: Props) {
   const [failed, setFailed] = useState(false);
   const resolvedSrc = cardImageSrc(src);
 
@@ -40,7 +48,7 @@ export function CardImage({ src, alt = "", className, loading }: Props) {
     <img
       src={resolvedSrc}
       alt={alt}
-      className={className}
+      className={[sharpen ? "card-art" : "", className].filter(Boolean).join(" ")}
       loading={loading}
       referrerPolicy="no-referrer"
       decoding="async"

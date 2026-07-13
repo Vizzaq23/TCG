@@ -22,6 +22,19 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Subtle unsharp + punch so scaled card art stays crisp */
+.card-art {
+  filter: url(#card-sharpen) contrast(1.06) saturate(1.05) brightness(1.015);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@supports not (filter: url(#card-sharpen)) {
+  .card-art {
+    filter: contrast(1.08) saturate(1.06) brightness(1.02);
+  }
+}
+
 @keyframes showcase-ambient-shift {
   0%,
   100% {
@@ -165,104 +178,223 @@ body {
   filter: blur(5px);
 }
 
-/* Walnut display stand */
-.cs-stand-shelf-shadow {
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 72%);
-  filter: blur(10px);
+/* Walnut display stand — layered wood with SVG grain */
+.cs-stand-contact {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45), transparent 70%);
+  filter: blur(8px);
   z-index: -1;
 }
 
-.cs-stand-surface {
-  background: linear-gradient(
-    90deg,
-    #3f2918 0%,
-    #6a4228 14%,
-    #8f5c36 30%,
-    #5e3a22 46%,
-    #a06d42 58%,
-    #734830 74%,
-    #4a2f1c 88%,
-    #3a2414 100%
-  );
-  box-shadow:
-    0 1px 0 rgba(255, 226, 190, 0.32),
-    0 10px 28px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 236, 205, 0.28),
-    inset 0 -2px 3px rgba(0, 0, 0, 0.4);
+.cs-wood {
+  background-color: #5c3a22;
 }
 
-.cs-stand-grain {
+.cs-wood--top {
   background:
+    /* growth rings / boards */
     repeating-linear-gradient(
-      93deg,
+      91deg,
       transparent 0px,
-      transparent 1px,
-      rgba(0, 0, 0, 0.06) 1px,
-      rgba(0, 0, 0, 0.06) 2px,
-      transparent 3px,
-      transparent 7px,
-      rgba(255, 220, 180, 0.04) 7px,
-      rgba(255, 220, 180, 0.04) 8px
+      transparent 18px,
+      rgba(30, 14, 6, 0.18) 18px,
+      rgba(30, 14, 6, 0.18) 20px,
+      transparent 22px,
+      transparent 47px,
+      rgba(255, 210, 150, 0.06) 47px,
+      rgba(255, 210, 150, 0.06) 49px
     ),
     repeating-linear-gradient(
-      88deg,
+      89deg,
       transparent 0px,
-      transparent 11px,
-      rgba(0, 0, 0, 0.05) 11px,
-      rgba(0, 0, 0, 0.05) 13px
+      transparent 3px,
+      rgba(20, 10, 4, 0.12) 3px,
+      rgba(20, 10, 4, 0.12) 4px
+    ),
+    linear-gradient(
+      90deg,
+      #3a2414 0%,
+      #6b4228 8%,
+      #8a5634 18%,
+      #4e301c 28%,
+      #a06a40 38%,
+      #6e4428 48%,
+      #8f5a36 58%,
+      #523218 68%,
+      #9a6840 78%,
+      #5a3820 88%,
+      #3a2414 100%
     );
+}
+
+.cs-wood--edge {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.14) 2px,
+      rgba(0, 0, 0, 0.14) 3px
+    ),
+    linear-gradient(
+      180deg,
+      #7a4a2c 0%,
+      #5a3420 35%,
+      #3e2414 70%,
+      #2a180e 100%
+    );
+}
+
+.cs-wood--column {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 5px,
+      rgba(0, 0, 0, 0.1) 5px,
+      rgba(0, 0, 0, 0.1) 6px
+    ),
+    linear-gradient(
+      90deg,
+      #2c180e 0%,
+      #5a3620 12%,
+      #6e4428 30%,
+      #4a2c18 50%,
+      #6a4226 70%,
+      #4e301c 88%,
+      #2c180e 100%
+    );
+}
+
+.cs-wood--base {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(0, 0, 0, 0.12) 4px,
+      rgba(0, 0, 0, 0.12) 5px
+    ),
+    linear-gradient(180deg, #4a2e1a 0%, #2e1a10 55%, #1a0e08 100%);
+}
+
+.cs-wood-svg {
+  background: #5c3a22;
   mix-blend-mode: multiply;
-  opacity: 0.85;
+  pointer-events: none;
 }
 
-.cs-stand-grain--body {
-  opacity: 0.7;
+.cs-stand-deck {
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
 }
 
-.cs-stand-top-bevel {
+.cs-stand-deck-top {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 190, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cs-stand-polish {
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 236, 205, 0.08) 40%,
+    rgba(255, 255, 255, 0.12) 48%,
+    rgba(255, 236, 205, 0.06) 56%,
+    transparent 75%
+  );
+  mix-blend-mode: soft-light;
+}
+
+.cs-stand-deck-highlight {
   background: linear-gradient(
     180deg,
-    rgba(255, 230, 190, 0.28) 0%,
-    rgba(255, 220, 180, 0.08) 55%,
+    rgba(255, 236, 205, 0.28) 0%,
+    rgba(255, 220, 180, 0.06) 60%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.cs-stand-lip {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.12),
+    0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.cs-stand-lip-shade {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 220, 180, 0.1) 0%,
+    transparent 28%,
+    rgba(0, 0, 0, 0.25) 65%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+.cs-stand-lip-catch {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 230, 190, 0.35) 20%,
+    rgba(255, 236, 205, 0.45) 50%,
+    rgba(255, 230, 190, 0.35) 80%,
+    transparent
+  );
+}
+
+.cs-stand-underhang {
+  background: linear-gradient(180deg, #1a0e08, #0c0704);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 2px 2px;
+}
+
+.cs-stand-column {
+  border-radius: 0 0 4px 4px;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 220, 180, 0.06),
+    0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.cs-stand-column-sides {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.35) 0%,
+    transparent 14%,
+    transparent 86%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+}
+
+.cs-stand-column-recess {
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.25),
+    inset 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.cs-stand-base {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 180, 0.14),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.cs-stand-base-bevel {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 230, 190, 0.18) 0%,
     transparent 100%
   );
 }
 
-.cs-stand-front-edge {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.22) 40%,
-    rgba(0, 0, 0, 0.45) 100%
-  );
-  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.08);
+.cs-stand-base-floor {
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.45));
 }
 
-.cs-stand-bevel {
-  background: linear-gradient(180deg, #3a2416 0%, #24160e 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(0, 0, 0, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.25);
-}
-
-.cs-stand-body {
-  background: linear-gradient(180deg, #5a3620 0%, #3f2716 45%, #2c1a10 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 220, 180, 0.1),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
-    0 12px 30px rgba(0, 0, 0, 0.35);
-}
-
-.cs-stand-plinth {
-  background: linear-gradient(180deg, #2a1a10, #160e08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 220, 180, 0.07),
-    0 6px 14px rgba(0, 0, 0, 0.4);
-}
-
-.cs-stand-shadow {
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
-  filter: blur(10px);
+.cs-stand-floor-shadow {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+  filter: blur(12px);
 }
 
 @media (prefers-reduced-motion: reduce) {

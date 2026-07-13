@@ -232,6 +232,7 @@ function ShowcaseItem({
                 alt=""
                 className="h-full w-full object-contain opacity-40"
                 loading="lazy"
+                sharpen={false}
               />
             ) : null}
           </div>
@@ -333,19 +334,81 @@ function MobileCarousel({
 
 function WalnutStand() {
   return (
-    <div className="cs-stand relative z-0 mx-auto mt-0 w-[94%] max-w-3xl" aria-hidden>
-      <div className="cs-stand-shelf-shadow absolute -top-3 left-[4%] right-[4%] h-5 rounded-full" />
-      <div className="cs-stand-surface relative mx-auto h-[16px] w-full overflow-hidden rounded-[3px] sm:h-[18px]">
-        <div className="cs-stand-grain absolute inset-0" />
-        <div className="cs-stand-top-bevel absolute inset-x-0 top-0 h-[45%]" />
-        <div className="cs-stand-front-edge absolute inset-x-0 bottom-0 h-[38%]" />
+    <div className="cs-stand relative z-0 mx-auto mt-2 w-[96%] max-w-[52rem]" aria-hidden>
+      <svg className="pointer-events-none absolute h-0 w-0 overflow-hidden" aria-hidden>
+        <defs>
+          <filter id="walnut-noise" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.04 0.9"
+              numOctaves="4"
+              seed="7"
+              stitchTiles="stitch"
+              result="noise"
+            />
+            <feColorMatrix
+              in="noise"
+              type="matrix"
+              values="0 0 0 0 0.28
+                      0 0 0 0 0.14
+                      0 0 0 0 0.06
+                      0 0 0 0.55 0"
+            />
+          </filter>
+          <filter id="walnut-pores" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="turbulence"
+              baseFrequency="0.7"
+              numOctaves="2"
+              seed="3"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.15
+                      0 0 0 0 0.08
+                      0 0 0 0 0.03
+                      0 0 0 0.35 0"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      <div className="cs-stand-contact absolute -top-2 left-[8%] right-[8%] h-4" />
+
+      <div className="cs-stand-deck relative mx-auto">
+        <div className="cs-stand-deck-top relative h-[11px] overflow-hidden rounded-t-[4px] sm:h-[13px]">
+          <div className="cs-wood cs-wood--top absolute inset-0" />
+          <div className="cs-wood-svg absolute inset-0 opacity-70" style={{ filter: "url(#walnut-noise)" }} />
+          <div className="cs-wood-svg absolute inset-0 opacity-40" style={{ filter: "url(#walnut-pores)" }} />
+          <div className="cs-stand-polish absolute inset-0" />
+          <div className="cs-stand-deck-highlight absolute inset-x-0 top-0 h-1/2" />
+        </div>
+        <div className="cs-stand-lip relative h-[14px] overflow-hidden sm:h-[16px]">
+          <div className="cs-wood cs-wood--edge absolute inset-0" />
+          <div className="cs-wood-svg absolute inset-0 opacity-55" style={{ filter: "url(#walnut-noise)" }} />
+          <div className="cs-stand-lip-shade absolute inset-0" />
+          <div className="cs-stand-lip-catch absolute inset-x-[6%] top-0 h-px" />
+        </div>
       </div>
-      <div className="cs-stand-bevel mx-auto h-[7px] w-[99%] rounded-b-[2px]" />
-      <div className="cs-stand-body relative mx-auto mt-0 h-8 w-[80%] overflow-hidden rounded-b-[5px] sm:h-9">
-        <div className="cs-stand-grain cs-stand-grain--body absolute inset-0" />
+
+      <div className="cs-stand-underhang mx-auto h-[6px] w-[99.5%]" />
+
+      <div className="cs-stand-column relative mx-auto h-10 w-[74%] overflow-hidden sm:h-11">
+        <div className="cs-wood cs-wood--column absolute inset-0" />
+        <div className="cs-wood-svg absolute inset-0 opacity-60" style={{ filter: "url(#walnut-noise)" }} />
+        <div className="cs-stand-column-sides absolute inset-0" />
+        <div className="cs-stand-column-recess absolute inset-x-[18%] inset-y-[12%] rounded-sm" />
       </div>
-      <div className="cs-stand-plinth mx-auto mt-1.5 h-3 w-[66%] rounded-[2px]" />
-      <div className="cs-stand-shadow mx-auto mt-2.5 h-5 w-[72%] rounded-full" />
+
+      <div className="cs-stand-base relative mx-auto mt-1.5 h-[15px] w-[58%] overflow-hidden rounded-[3px] sm:h-[17px]">
+        <div className="cs-wood cs-wood--base absolute inset-0" />
+        <div className="cs-wood-svg absolute inset-0 opacity-50" style={{ filter: "url(#walnut-noise)" }} />
+        <div className="cs-stand-base-bevel absolute inset-x-0 top-0 h-[40%]" />
+        <div className="cs-stand-base-floor absolute inset-x-0 bottom-0 h-[35%]" />
+      </div>
+
+      <div className="cs-stand-floor-shadow mx-auto mt-2 h-6 w-[64%]" />
     </div>
   );
 }

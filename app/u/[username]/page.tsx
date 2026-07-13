@@ -4,8 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import type { PublicCollectionRow } from "@/lib/types/database";
 import { CardImage } from "@/components/cards/CardImage";
+import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 
-type Props = { params: Promise<{ username: string }> };
+type Props = {
+  params: Promise<{ username: string }>;
+  searchParams: Promise<{ trade?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
@@ -20,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PublicProfilePage({ params }: Props) {
+export default async function PublicProfilePage({ params, searchParams }: Props) {
   if (!isSupabaseConfigured()) {
     return (
       <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
@@ -32,7 +36,9 @@ export default async function PublicProfilePage({ params }: Props) {
   }
 
   const { username } = await params;
+  const { trade } = await searchParams;
   const slug = decodeURIComponent(username).toLowerCase();
+  const tradeOnly = trade === "1";
 
   const supabase = await createClient();
 
@@ -75,6 +81,7 @@ export default async function PublicProfilePage({ params }: Props) {
   }
 
   const list = (rows ?? []) as PublicCollectionRow[];
+  const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
@@ -86,17 +93,29 @@ export default async function PublicProfilePage({ params }: Props) {
           {profile.display_name ?? profile.username}
         </h1>
         <p className="text-sm text-zinc-400">
-          @{profile.username} · {list.length} entr{list.length === 1 ? "y" : "ies"} on shelf
+          @{profile.username}
+          {profile.display_name && profile.display_name !== profile.username
+            ? ` · ${profile.display_name}`
+            : ""}
         </p>
       </header>
 
-      {!list.length ? (
+      <PublicShelfToolbar
+        username={profile.username}
+        tradeOnly={tradeOnly}
+        totalCount={list.length}
+        filteredCount={filtered.length}
+      />
+
+      {!filtered.length ? (
         <p className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
-          This collector has not added any cards yet.
+          {tradeOnly
+            ? "No cards are marked for trade right now."
+            : "This collector has not added any cards yet."}
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {list.map((row) => (
+          {filtered.map((row) => (
             <li key={row.collection_id}>
               <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60">
                 <div className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950">

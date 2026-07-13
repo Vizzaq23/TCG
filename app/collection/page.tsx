@@ -4,6 +4,9 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { CollectionStats } from "@/components/collection/CollectionStats";
 import { UsernameForm } from "@/components/collection/UsernameForm";
 import { CollectionRow } from "@/components/collection/CollectionRow";
+import { CopyShareLink } from "@/components/collection/CopyShareLink";
+import { SetProgress } from "@/components/collection/SetProgress";
+import { computeSetProgress } from "@/lib/collection/set-progress";
 import type { CollectionStatsRow } from "@/lib/types/database";
 
 export default async function CollectionPage() {
@@ -53,6 +56,15 @@ export default async function CollectionPage() {
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
+  const { data: catalogCards } = await supabase
+    .from("cards")
+    .select("id, set_name");
+
+  const setProgress = computeSetProgress(
+    catalogCards ?? [],
+    (rows ?? []).map((r) => ({ card_id: r.card_id })),
+  );
+
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
       <header className="space-y-3">
@@ -72,12 +84,15 @@ export default async function CollectionPage() {
               )}
             </p>
           </div>
-          <Link
-            href={`/u/${encodeURIComponent(profile.username)}`}
-            className="inline-flex items-center justify-center rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:border-amber-500/50 hover:text-white"
-          >
-            View public page
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={`/u/${encodeURIComponent(profile.username)}`}
+              className="inline-flex items-center justify-center rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-100 transition hover:border-amber-500/50 hover:text-white"
+            >
+              View public page
+            </Link>
+            <CopyShareLink username={profile.username} />
+          </div>
         </div>
         {statsError ? (
           <p className="text-sm text-amber-200/90">
@@ -90,6 +105,8 @@ export default async function CollectionPage() {
       </header>
 
       <UsernameForm currentUsername={profile.username} />
+
+      {setProgress.length > 0 && <SetProgress items={setProgress} />}
 
       {rowsError ? (
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">

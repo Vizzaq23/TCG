@@ -31,6 +31,8 @@ export interface Database {
           username: string;
           display_name: string | null;
           avatar_url: string | null;
+          bio: string | null;
+          accent: string;
           created_at: string;
         };
         Insert: {
@@ -38,6 +40,8 @@ export interface Database {
           username: string;
           display_name?: string | null;
           avatar_url?: string | null;
+          bio?: string | null;
+          accent?: string;
           created_at?: string;
         };
         Update: {
@@ -45,6 +49,8 @@ export interface Database {
           username?: string;
           display_name?: string | null;
           avatar_url?: string | null;
+          bio?: string | null;
+          accent?: string;
           created_at?: string;
         };
         Relationships: [];

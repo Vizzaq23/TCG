@@ -2,12 +2,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { CollectionStats } from "@/components/collection/CollectionStats";
-import { UsernameForm } from "@/components/collection/UsernameForm";
 import { CollectionRow } from "@/components/collection/CollectionRow";
 import { CopyShareLink } from "@/components/collection/CopyShareLink";
 import { SetProgress } from "@/components/collection/SetProgress";
 import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
+import { ProfileSettingsForm } from "@/components/profile/ProfileSettingsForm";
 import { computeSetProgress } from "@/lib/collection/set-progress";
+import { isProfileAccent } from "@/lib/profile";
 import type { CollectionStatsRow } from "@/lib/types/database";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -35,7 +36,7 @@ export default async function CollectionPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("username, display_name")
+    .select("username, display_name, avatar_url, bio, accent")
     .eq("id", user.id)
     .single();
 
@@ -130,7 +131,15 @@ export default async function CollectionPage() {
 
       {setProgress.length > 0 && <SetProgress items={setProgress} />}
 
-      <UsernameForm currentUsername={profile.username} />
+      <ProfileSettingsForm
+        profile={{
+          username: profile.username,
+          displayName: profile.display_name,
+          avatarUrl: profile.avatar_url,
+          bio: profile.bio,
+          accent: isProfileAccent(profile.accent) ? profile.accent : "amber",
+        }}
+      />
     </PageContainer>
   );
 }

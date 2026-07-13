@@ -349,10 +349,7 @@ function WalnutStand() {
             <feColorMatrix
               in="noise"
               type="matrix"
-              values="0 0 0 0 0.28
-                      0 0 0 0 0.14
-                      0 0 0 0 0.06
-                      0 0 0 0.55 0"
+              values="0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0 0.06 0 0 0 0.55 0"
             />
           </filter>
           <filter id="walnut-pores" x="0%" y="0%" width="100%" height="100%">
@@ -365,10 +362,7 @@ function WalnutStand() {
             />
             <feColorMatrix
               type="matrix"
-              values="0 0 0 0 0.15
-                      0 0 0 0 0.08
-                      0 0 0 0 0.03
-                      0 0 0 0.35 0"
+              values="0 0 0 0 0.15 0 0 0 0 0.08 0 0 0 0 0.03 0 0 0 0.35 0"
             />
           </filter>
         </defs>

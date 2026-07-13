@@ -10,6 +10,8 @@ import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -49,7 +51,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, username, display_name, created_at")
+    .select("id, username, display_name, avatar_url, bio, accent, created_at")
     .eq("username", slug)
     .maybeSingle();
 
@@ -67,9 +69,16 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     notFound();
   }
 
-  await supabase.rpc("record_collection_view", {
-    target_username: profile.username,
-  });
+  const {
+    data: { user: viewer },
+  } = await supabase.auth.getUser();
+
+  // Skip analytics call when the owner is browsing their own shelf.
+  if (!viewer || viewer.id !== profile.id) {
+    await supabase.rpc("record_collection_view", {
+      target_username: profile.username,
+    });
+  }
 
   const { data: rows, error } = await supabase.rpc("get_public_collection", {
     target_username: profile.username,
@@ -92,24 +101,46 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const list = (rows ?? []) as PublicCollectionRow[];
   const showcase = (showcaseRows ?? []) as PublicShowcaseRow[];
   const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
+  const accent = getProfileAccent(
+    isProfileAccent(profile.accent) ? profile.accent : "amber",
+  );
+  const titleName = profile.display_name ?? profile.username;
 
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
       <ShowcaseGlassCase cards={showcase} />
 
-      <header className="space-y-2 border-b border-zinc-800/80 pb-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-500/90">
-          Public shelf
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          {profile.display_name ?? profile.username}
-        </h1>
-        <p className="text-sm text-zinc-400">
-          @{profile.username}
-          {profile.display_name && profile.display_name !== profile.username
-            ? ` · ${profile.display_name}`
-            : ""}
-        </p>
+      <header
+        className="space-y-4 border-b border-zinc-800/80 pb-8"
+        style={{
+          borderImage: `linear-gradient(90deg, ${accent.swatch}55, transparent) 1`,
+        }}
+      >
+        <div className="flex items-start gap-4">
+          <ProfileAvatar
+            src={profile.avatar_url}
+            name={titleName}
+            size="lg"
+            accentColor={accent.swatch}
+          />
+          <div className="min-w-0 space-y-2">
+            <p
+              className="text-[11px] font-semibold uppercase tracking-[0.22em]"
+              style={{ color: accent.swatch }}
+            >
+              Public shelf
+            </p>
+            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              {titleName}
+            </h1>
+            <p className="text-sm text-zinc-400">@{profile.username}</p>
+            {profile.bio ? (
+              <p className="max-w-2xl text-sm leading-relaxed text-zinc-300">
+                {profile.bio}
+              </p>
+            ) : null}
+          </div>
+        </div>
       </header>
 
       <PublicShelfToolbar

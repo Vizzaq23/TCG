@@ -6,11 +6,18 @@ import { SignOutButton } from "@/components/layout/SignOutButton";
 import { HeaderNav } from "@/components/layout/HeaderNav";
 import { HeaderSignInLink } from "@/components/layout/HeaderSignInLink";
 import { Button } from "@/components/ui/Button";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import { cn } from "@/lib/cn";
 
 export async function SiteHeader() {
   let user: { email?: string } | null = null;
-  let profile: { username: string } | null = null;
+  let profile: {
+    username: string;
+    display_name: string | null;
+    avatar_url: string | null;
+    accent: string;
+  } | null = null;
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
@@ -19,14 +26,17 @@ export async function SiteHeader() {
     if (data.user) {
       const { data: prof } = await supabase
         .from("profiles")
-        .select("username")
+        .select("username, display_name, avatar_url, accent")
         .eq("id", data.user.id)
         .maybeSingle();
       profile = prof;
     }
   }
 
-  const initial = (profile?.username?.[0] ?? user?.email?.[0] ?? "?").toUpperCase();
+  const accent = getProfileAccent(
+    profile && isProfileAccent(profile.accent) ? profile.accent : "amber",
+  );
+  const label = profile?.display_name || profile?.username || user?.email || "?";
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur">
@@ -55,12 +65,15 @@ export async function SiteHeader() {
               {profile ? (
                 <Link
                   href={`/u/${encodeURIComponent(profile.username)}`}
-                  className="flex max-w-[9rem] items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition hover:border-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
+                  className="flex max-w-[10rem] items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition hover:border-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
                   title={`@${profile.username}`}
                 >
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-[11px] font-bold text-amber-300">
-                    {initial}
-                  </span>
+                  <ProfileAvatar
+                    src={profile.avatar_url}
+                    name={label}
+                    size="sm"
+                    accentColor={accent.swatch}
+                  />
                   <span className="hidden truncate text-xs text-zinc-300 sm:inline">
                     @{profile.username}
                   </span>

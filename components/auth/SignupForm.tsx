@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isValidUsername, normalizeUsername } from "@/lib/validators/username";
+import { Field, Input } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
+import { safeNextPath } from "@/lib/auth/safe-next";
 
-export function SignupForm() {
-  const router = useRouter();
+type Props = { nextPath?: string };
+
+export function SignupForm({ nextPath = "/collection" }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -27,13 +30,14 @@ export function SignupForm() {
       return;
     }
 
+    const destination = safeNextPath(nextPath);
     setPending(true);
     const supabase = createClient();
     const { data, error: signError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/collection`,
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
       },
     });
     if (signError) {
@@ -62,8 +66,7 @@ export function SignupForm() {
     setPending(false);
 
     if (data.session) {
-      router.push("/collection");
-      router.refresh();
+      window.location.assign(destination);
       return;
     }
 
@@ -75,59 +78,49 @@ export function SignupForm() {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {error && (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+        <p className="rounded-[12px] border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
           {error}
         </p>
       )}
       {info && (
-        <p className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
+        <p className="rounded-[12px] border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
           {info}
         </p>
       )}
-      <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-zinc-400">Public username (optional)</span>
-        <input
+      <Field
+        label="Public username (optional)"
+        hint="Used in your public link: /u/yourname"
+      >
+        <Input
           type="text"
           autoComplete="username"
           placeholder="e.g. east_blue_collector"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-white outline-none ring-amber-500/0 transition focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/30"
         />
-        <span className="text-xs text-zinc-500">
-          Used in your public link: /u/yourname
-        </span>
-      </label>
-      <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-zinc-400">Email</span>
-        <input
+      </Field>
+      <Field label="Email">
+        <Input
           type="email"
           autoComplete="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-white outline-none ring-amber-500/0 transition focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/30"
         />
-      </label>
-      <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-zinc-400">Password</span>
-        <input
+      </Field>
+      <Field label="Password">
+        <Input
           type="password"
           autoComplete="new-password"
           required
           minLength={6}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-white outline-none ring-amber-500/0 transition focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/30"
         />
-      </label>
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-2 rounded-lg bg-amber-500 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400 disabled:opacity-50"
-      >
+      </Field>
+      <Button type="submit" loading={pending} disabled={pending} className="mt-1 w-full" size="lg">
         {pending ? "Creating account…" : "Create account"}
-      </button>
+      </Button>
     </form>
   );
 }

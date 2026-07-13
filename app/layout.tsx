@@ -19,7 +19,19 @@ export const metadata: Metadata = {
     template: "%s · One Piece TCG Shelf",
   },
   description:
-    "Browse One Piece cards, track your collection, and share a public shelf with collectors.",
+    "Catalog your One Piece TCG collection, showcase graded slabs and prized cards, and share a premium public profile.",
+  openGraph: {
+    title: "One Piece TCG Shelf",
+    description:
+      "Catalog. Showcase. Share. Track cards, grades, and trades — then present your favorites in a lit glass case.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "One Piece TCG Shelf",
+    description:
+      "Catalog your collection, showcase your top cards, and share a premium public shelf.",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +44,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-50">
+      <body className="flex min-h-full flex-col bg-background text-foreground">
         {/* Shared SVG filter for card art sharpening */}
         <svg
           aria-hidden

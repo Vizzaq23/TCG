@@ -1,4 +1,5 @@
 import type { CollectionStatsRow } from "@/lib/types/database";
+import { StatCard } from "@/components/ui/StatCard";
 
 type Props = { stats: CollectionStatsRow | null };
 
@@ -15,15 +16,7 @@ export function CollectionStats({ stats }: Props) {
   return (
     <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {items.map((item) => (
-        <div
-          key={item.label}
-          className="rounded-xl border border-zinc-800 bg-zinc-900/50 px-4 py-3"
-        >
-          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-            {item.label}
-          </p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{item.value}</p>
-        </div>
+        <StatCard key={item.label} label={item.label} value={item.value} />
       ))}
     </section>
   );

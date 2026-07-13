@@ -2,16 +2,25 @@
 
 :root {
   --background: #09090b;
+  --bg-elevated: #141210;
+  --bg-sunken: #080807;
   --foreground: #fafafa;
   --muted: #a1a1aa;
+  --fg-faint: #71717a;
   --card: #18181b;
   --border: #27272a;
+  --border-subtle: rgba(255, 236, 205, 0.08);
   --accent: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-muted: rgba(245, 158, 11, 0.14);
+  --radius-md: 12px;
+  --radius-lg: 16px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -20,6 +29,112 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    110deg,
+    rgba(39, 39, 42, 0.9) 0%,
+    rgba(63, 63, 70, 0.75) 40%,
+    rgba(39, 39, 42, 0.9) 80%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    background: rgba(39, 39, 42, 0.95);
+  }
+}
+
+/* Soft page wash for marketing / elevated shells */
+.page-ambient {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -8%, rgba(255, 244, 220, 0.09), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 90% 20%, rgba(245, 158, 11, 0.05), transparent 50%),
+    var(--background);
+}
+
+/* Home — Grand Line night sea + straw-gold horizon */
+.home-ambient {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -15%, rgba(255, 196, 72, 0.18), transparent 52%),
+    radial-gradient(ellipse 55% 40% at 12% 70%, rgba(14, 116, 144, 0.22), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 88% 75%, rgba(30, 64, 175, 0.18), transparent 50%),
+    linear-gradient(180deg, #070b14 0%, #0a1220 42%, #08090f 100%);
+}
+
+.home-ambient::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24' fill='none'%3E%3Cpath d='M0 14c10 0 10-8 20-8s10 8 20 8 10-8 20-8 10 8 20 8 10-8 20-8 10 8 20 8' stroke='%23f59e0b' stroke-opacity='0.07' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: center bottom 18%;
+  background-size: 180px 24px;
+  mask-image: linear-gradient(180deg, transparent 40%, black 75%);
+}
+
+.home-ambient > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-horizon {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(251, 191, 36, 0.35) 20%,
+    rgba(255, 236, 179, 0.55) 50%,
+    rgba(251, 191, 36, 0.35) 80%,
+    transparent
+  );
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.25);
+}
+
+@keyframes home-compass-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes home-beacon {
+  0%,
+  100% {
+    opacity: 0.55;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.45);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.9);
+  }
+}
+
+.home-compass-ring {
+  animation: home-beacon 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-compass-ring {
+    animation: none;
+  }
 }
 
 /* Subtle unsharp + punch so scaled card art stays crisp */

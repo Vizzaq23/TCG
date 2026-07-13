@@ -11,6 +11,9 @@ import {
 } from "@/lib/types/grading";
 import { CardImage } from "@/components/cards/CardImage";
 import { GradedSlab } from "@/components/cards/GradedSlab";
+import { Field, Input, Select } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 type UC = Database["public"]["Tables"]["user_collections"]["Row"];
 type Card = Database["public"]["Tables"]["cards"]["Row"];
@@ -65,7 +68,10 @@ export function CollectionRow({ row }: Props) {
     }
 
     const gradeValue = isGraded ? Number.parseFloat(grade) : null;
-    if (isGraded && (gradeValue == null || Number.isNaN(gradeValue) || gradeValue < 1 || gradeValue > 10)) {
+    if (
+      isGraded &&
+      (gradeValue == null || Number.isNaN(gradeValue) || gradeValue < 1 || gradeValue > 10)
+    ) {
       setMessage("Grade must be between 1 and 10.");
       return;
     }
@@ -115,7 +121,7 @@ export function CollectionRow({ row }: Props) {
   const previewGraded = isGraded && gradingCompany && grade;
 
   return (
-    <li className="flex flex-col gap-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row">
+    <li className="flex flex-col gap-4 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row">
       <div className="flex gap-3 sm:w-72 sm:flex-shrink-0">
         {previewGraded ? (
           <GradedSlab
@@ -134,7 +140,7 @@ export function CollectionRow({ row }: Props) {
             className="flex-shrink-0"
           />
         ) : (
-          <div className="relative h-28 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-zinc-950 sm:h-32 sm:w-[5.5rem]">
+          <div className="relative h-28 w-20 flex-shrink-0 overflow-hidden rounded-[12px] border border-zinc-800 bg-zinc-950 sm:h-32 sm:w-[5.5rem]">
             {card.image_url ? (
               <CardImage
                 src={card.image_url}
@@ -147,34 +153,37 @@ export function CollectionRow({ row }: Props) {
             )}
           </div>
         )}
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-1.5">
           <p className="font-semibold text-white">{card.name}</p>
           <p className="text-xs text-zinc-500">
             {[card.set_name, card.card_number].filter(Boolean).join(" · ")}
           </p>
-          {previewGraded ? (
-            <p className="mt-1.5 text-[11px] font-semibold text-amber-300/90">
-              {gradingCompany} {grade}
-              {gradingCompany === "BGS" && grade === "10" && isBlackLabel
-                ? " Black Label"
-                : ""}
-              {certNumber ? ` · #${certNumber}` : ""}
-            </p>
-          ) : null}
+          <div className="flex flex-wrap gap-1.5">
+            {previewGraded ? (
+              <Badge tone="accent">
+                {gradingCompany} {grade}
+                {gradingCompany === "BGS" && grade === "10" && isBlackLabel
+                  ? " Black Label"
+                  : ""}
+              </Badge>
+            ) : (
+              <Badge>Raw</Badge>
+            )}
+            {forTrade ? <Badge tone="success">For trade</Badge> : null}
+          </div>
         </div>
       </div>
 
       <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <label className="flex flex-col gap-1 text-xs text-zinc-400">
-          Quantity
-          <input
+        <Field label="Quantity" className="text-xs">
+          <Input
             type="number"
             min={1}
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
+            className="py-1.5 text-sm"
           />
-        </label>
+        </Field>
 
         <label className="flex items-center gap-2 self-end pb-2 text-xs text-zinc-300">
           <input
@@ -187,133 +196,130 @@ export function CollectionRow({ row }: Props) {
               if (next && !grade) setGrade("10");
               if (!next) setIsBlackLabel(false);
             }}
-            className="size-4 rounded border-zinc-600"
+            className="size-4 rounded border-zinc-600 accent-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
           />
           Graded slab
         </label>
 
         {isGraded ? (
           <>
-            <label className="flex flex-col gap-1 text-xs text-zinc-400">
-              Grading company
-              <select
+            <Field label="Grading company" className="text-xs">
+              <Select
                 value={gradingCompany}
                 onChange={(e) => {
                   const next = e.target.value as GradingCompany;
                   setGradingCompany(next);
                   if (next !== "BGS") setIsBlackLabel(false);
                 }}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
+                className="py-1.5 text-sm"
               >
                 {GRADING_COMPANIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>
                 ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-zinc-400">
-              Grade
-              <select
+              </Select>
+            </Field>
+            <Field label="Grade" className="text-xs">
+              <Select
                 value={grade}
                 onChange={(e) => {
                   const next = e.target.value;
                   setGrade(next);
                   if (next !== "10") setIsBlackLabel(false);
                 }}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
+                className="py-1.5 text-sm"
               >
                 {GRADE_OPTIONS.map((g) => (
                   <option key={g} value={String(g)}>
                     {Number.isInteger(g) ? g : g.toFixed(1)}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
             {gradingCompany === "BGS" && grade === "10" ? (
               <label className="flex items-center gap-2 text-xs text-zinc-300 sm:col-span-2">
                 <input
                   type="checkbox"
                   checked={isBlackLabel}
                   onChange={(e) => setIsBlackLabel(e.target.checked)}
-                  className="size-4 rounded border-zinc-600"
+                  className="size-4 rounded border-zinc-600 accent-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
                 />
                 Black Label
               </label>
             ) : null}
-            <label className="flex flex-col gap-1 text-xs text-zinc-400 sm:col-span-2">
-              Certification number
-              <input
+            <Field label="Certification number" className="text-xs sm:col-span-2">
+              <Input
                 value={certNumber}
                 onChange={(e) => setCertNumber(e.target.value)}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
                 placeholder="Optional"
+                className="py-1.5 text-sm"
               />
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-zinc-400 sm:col-span-2">
-              Slab image URL
-              <input
+            </Field>
+            <Field label="Slab image URL" className="text-xs sm:col-span-2">
+              <Input
                 value={slabImageUrl}
                 onChange={(e) => setSlabImageUrl(e.target.value)}
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
                 placeholder="Optional override photo"
+                className="py-1.5 text-sm"
               />
-            </label>
+            </Field>
           </>
         ) : (
-          <label className="flex flex-col gap-1 text-xs text-zinc-400">
-            Condition
-            <select
+          <Field label="Condition" className="text-xs">
+            <Select
               value={condition}
               onChange={(e) => setCondition(e.target.value)}
-              className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
+              className="py-1.5 text-sm"
             >
               {CONDITIONS.map((c) => (
                 <option key={c || "none"} value={c}>
                   {c || "Not set"}
                 </option>
               ))}
-            </select>
-          </label>
+            </Select>
+          </Field>
         )}
 
-        <label className="flex flex-col gap-1 text-xs text-zinc-400 sm:col-span-2 lg:col-span-2">
-          Notes
-          <input
+        <Field label="Notes" className="text-xs sm:col-span-2 lg:col-span-2">
+          <Input
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-sm text-white"
             placeholder="Language, memories…"
+            className="py-1.5 text-sm"
           />
-        </label>
+        </Field>
         <label className="flex items-center gap-2 text-xs text-zinc-300 sm:col-span-2 lg:col-span-1">
           <input
             type="checkbox"
             checked={forTrade}
             onChange={(e) => setForTrade(e.target.checked)}
-            className="size-4 rounded border-zinc-600"
+            className="size-4 rounded border-zinc-600 accent-amber-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
           />
           For trade
         </label>
       </div>
 
       <div className="flex flex-col gap-2 sm:w-36 sm:flex-shrink-0">
-        <button
+        <Button
           type="button"
+          size="sm"
           onClick={save}
           disabled={pending !== null}
-          className="rounded-lg bg-amber-500 py-2 text-xs font-semibold text-zinc-950 hover:bg-amber-400 disabled:opacity-50"
+          loading={pending === "save"}
         >
           {pending === "save" ? "Saving…" : "Save changes"}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          size="sm"
+          variant="destructive"
           onClick={remove}
           disabled={pending !== null}
-          className="rounded-lg border border-red-500/50 py-2 text-xs font-semibold text-red-200 hover:bg-red-950/40 disabled:opacity-50"
+          loading={pending === "remove"}
         >
           {pending === "remove" ? "Removing…" : "Remove"}
-        </button>
+        </Button>
         {message && <p className="text-[11px] text-red-300">{message}</p>}
       </div>
     </li>

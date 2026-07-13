@@ -10,7 +10,7 @@ type Props = {
 
 export function CardTile({ card, footer }: Props) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60 shadow-sm shadow-black/20">
+    <article className="flex flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/60 shadow-sm shadow-black/20 transition hover:border-zinc-700">
       <div className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950">
         {card.image_url ? (
           <CardImage

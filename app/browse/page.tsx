@@ -4,6 +4,8 @@ import { CardTile } from "@/components/cards/CardTile";
 import { BrowseToolbar } from "@/components/cards/BrowseToolbar";
 import { AddToCollectionButton } from "@/components/cards/AddToCollectionButton";
 import { Pagination } from "@/components/ui/Pagination";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 const PAGE_SIZE = 24;
 
@@ -58,12 +60,12 @@ export default async function BrowsePage({
 }) {
   if (!isSupabaseConfigured()) {
     return (
-      <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
+      <PageContainer as="main" className="py-10">
         <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-100">
           Configure Supabase in <code className="rounded bg-zinc-900 px-1">.env.local</code>{" "}
           to load the card catalog.
         </p>
-      </main>
+      </PageContainer>
     );
   }
 
@@ -76,11 +78,11 @@ export default async function BrowsePage({
 
   if (metaError) {
     return (
-      <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
+      <PageContainer as="main" className="py-10">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {metaError.message}
         </p>
-      </main>
+      </PageContainer>
     );
   }
 
@@ -101,11 +103,11 @@ export default async function BrowsePage({
 
   if (countError) {
     return (
-      <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
+      <PageContainer as="main" className="py-10">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {countError.message}
         </p>
-      </main>
+      </PageContainer>
     );
   }
 
@@ -125,22 +127,21 @@ export default async function BrowsePage({
 
   if (error) {
     return (
-      <main className="mx-auto max-w-6xl flex-1 px-4 py-10 sm:px-6">
+      <PageContainer as="main" className="py-10">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {error.message}
         </p>
-      </main>
+      </PageContainer>
     );
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold text-white sm:text-3xl">Browse cards</h1>
-        <p className="max-w-2xl text-sm text-zinc-400">
-          Search and filter the catalog. Sign in to add cards to your shelf.
-        </p>
-      </header>
+    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
+      <SectionHeader
+        as="h1"
+        title="Browse cards"
+        description="Search and filter the catalog. Sign in to add cards to your shelf."
+      />
 
       <BrowseToolbar
         q={q}
@@ -155,7 +156,7 @@ export default async function BrowsePage({
       />
 
       {!cards?.length ? (
-        <p className="rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-6 text-center text-sm text-zinc-400">
+        <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/50 px-4 py-8 text-center text-sm text-zinc-400">
           No cards match these filters. Try resetting or broadening your search.
         </p>
       ) : (
@@ -188,6 +189,6 @@ export default async function BrowsePage({
           />
         </>
       )}
-    </main>
+    </PageContainer>
   );
 }

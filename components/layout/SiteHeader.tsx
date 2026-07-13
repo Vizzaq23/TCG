@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { SignOutButton } from "@/components/layout/SignOutButton";
-
-const navLink =
-  "rounded-md px-3 py-2 text-sm font-medium text-zinc-300 transition hover:bg-zinc-800 hover:text-white";
+import { HeaderNav } from "@/components/layout/HeaderNav";
+import { HeaderSignInLink } from "@/components/layout/HeaderSignInLink";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 
 export async function SiteHeader() {
   let user: { email?: string } | null = null;
@@ -24,43 +26,60 @@ export async function SiteHeader() {
     }
   }
 
+  const initial = (profile?.username?.[0] ?? user?.email?.[0] ?? "?").toUpperCase();
+
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
         <Link
           href="/"
-          className="text-sm font-semibold tracking-tight text-white sm:text-base"
+          className={cn(
+            "group flex items-center gap-2 rounded-md text-sm font-semibold tracking-tight text-white sm:text-[15px]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
+          )}
         >
-          One Piece TCG Shelf
+          <span
+            aria-hidden
+            className="h-5 w-0.5 rounded-full bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.45)]"
+          />
+          <span>
+            One Piece{" "}
+            <span className="text-zinc-400 group-hover:text-zinc-300">TCG Shelf</span>
+          </span>
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2" aria-label="Main">
-          <Link href="/browse" className={navLink}>
-            Browse
-          </Link>
-          <Link href="/collection" className={navLink}>
-            My collection
-          </Link>
+
+        <div className="flex items-center gap-1 sm:gap-2">
+          <HeaderNav />
           {user ? (
-            <div className="ml-1 flex items-center gap-2 pl-2 sm:ml-2 sm:pl-3 sm:border-l sm:border-zinc-800">
-              {profile && (
+            <div className="ml-1 flex items-center gap-2 border-l border-zinc-800 pl-2 sm:ml-2 sm:pl-3">
+              {profile ? (
                 <Link
                   href={`/u/${encodeURIComponent(profile.username)}`}
-                  className="hidden max-w-[10rem] truncate text-xs text-zinc-400 underline-offset-4 hover:text-zinc-200 hover:underline sm:inline"
+                  className="flex max-w-[9rem] items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition hover:border-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
+                  title={`@${profile.username}`}
                 >
-                  @{profile.username}
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-[11px] font-bold text-amber-300">
+                    {initial}
+                  </span>
+                  <span className="hidden truncate text-xs text-zinc-300 sm:inline">
+                    @{profile.username}
+                  </span>
                 </Link>
-              )}
+              ) : null}
               <SignOutButton />
             </div>
           ) : (
-            <Link
-              href="/login"
-              className="ml-1 rounded-md bg-amber-500 px-3 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400"
+            <Suspense
+              fallback={
+                <Button href="/login?next=/collection" size="sm" className="ml-1">
+                  Sign in
+                </Button>
+              }
             >
-              Sign in
-            </Link>
+              <HeaderSignInLink />
+            </Suspense>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );

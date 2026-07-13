@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { isValidUsername, normalizeUsername } from "@/lib/validators/username";
+import { Field, Input } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 
 type Props = { currentUsername: string };
 
@@ -49,32 +51,42 @@ export function UsernameForm({ currentUsername }: Props) {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row sm:items-end"
-    >
-      <label className="flex min-w-0 flex-1 flex-col gap-1 text-xs text-zinc-400">
-        Public username
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white outline-none focus:border-amber-500/60"
-          autoComplete="username"
-        />
-        <span className="text-[11px] text-zinc-500">
-          Your share link: /u/{value || "…"}
+    <details className="group rounded-[14px] border border-zinc-800/80 bg-zinc-950/40 open:bg-zinc-900/30">
+      <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-zinc-400 transition hover:text-zinc-200 [&::-webkit-details-marker]:hidden">
+        <span className="flex items-center justify-between gap-3">
+          <span>
+            Profile settings
+            <span className="ml-2 font-normal text-zinc-600">@{currentUsername}</span>
+          </span>
+          <span className="text-xs text-zinc-600 group-open:hidden">Edit</span>
+          <span className="hidden text-xs text-zinc-600 group-open:inline">Close</span>
         </span>
-      </label>
-      <button
-        type="submit"
-        disabled={pending || value === currentUsername}
-        className="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-white disabled:opacity-40"
+      </summary>
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col gap-3 border-t border-zinc-800/80 px-4 py-4 sm:flex-row sm:items-end"
       >
-        {pending ? "Saving…" : "Save username"}
-      </button>
-      {error && (
-        <p className="text-sm text-red-300 sm:col-span-2 sm:w-full">{error}</p>
-      )}
-    </form>
+        <Field
+          label="Public username"
+          hint={`Your share link: /u/${value || "…"}`}
+          error={error}
+          className="min-w-0 flex-1"
+        >
+          <Input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            autoComplete="username"
+          />
+        </Field>
+        <Button
+          type="submit"
+          variant="secondary"
+          loading={pending}
+          disabled={pending || value === currentUsername}
+        >
+          {pending ? "Saving…" : "Save username"}
+        </Button>
+      </form>
+    </details>
   );
 }

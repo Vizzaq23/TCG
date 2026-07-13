@@ -8,6 +8,8 @@ import { CardImage } from "@/components/cards/CardImage";
 import { GradedSlab } from "@/components/cards/GradedSlab";
 import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { Badge } from "@/components/ui/Badge";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -92,11 +94,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8">
+    <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
       <ShowcaseGlassCase cards={showcase} />
 
-      <header className="space-y-2 border-b border-zinc-800 pb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-500">
+      <header className="space-y-2 border-b border-zinc-800/80 pb-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-500/90">
           Public shelf
         </p>
         <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -118,7 +120,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
       />
 
       {!filtered.length ? (
-        <p className="rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
+        <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
           {tradeOnly
             ? "No cards are marked for trade right now."
             : "This collector has not added any cards yet."}
@@ -129,7 +131,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             const graded = isGradedEntry(row);
             return (
               <li key={row.collection_id}>
-                <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/60">
+                <article className="flex flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/60 transition hover:border-zinc-700">
                   <div
                     className={[
                       "relative w-full overflow-hidden bg-zinc-950",
@@ -172,28 +174,22 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                       {[row.set_name, row.card_number].filter(Boolean).join(" · ")}
                     </p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
-                        ×{row.quantity}
-                      </span>
+                      {row.quantity > 1 ? <Badge>×{row.quantity}</Badge> : null}
                       {graded && row.grading_company && row.grade != null ? (
-                        <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
+                        <Badge tone="accent">
                           {formatGradedBadge(
                             row.grading_company,
                             row.grade,
                             row.is_black_label,
                           )}
-                        </span>
+                        </Badge>
                       ) : null}
                       {!graded && row.condition ? (
-                        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-200">
-                          {row.condition}
-                        </span>
+                        <Badge>{row.condition}</Badge>
                       ) : null}
-                      {row.is_for_trade && (
-                        <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-200">
-                          For trade
-                        </span>
-                      )}
+                      {row.is_for_trade ? (
+                        <Badge tone="success">For trade</Badge>
+                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -202,6 +198,6 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
           })}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

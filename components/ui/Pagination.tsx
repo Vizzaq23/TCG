@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 
 type Props = {
   basePath: string;
@@ -25,6 +26,16 @@ function buildHref(
   return qs ? `${basePath}?${qs}` : basePath;
 }
 
+const linkClass = cn(
+  "inline-flex min-w-9 items-center justify-center rounded-[12px] border border-zinc-700 px-3 py-1.5 text-sm font-medium text-zinc-200 transition",
+  "hover:border-zinc-500 hover:bg-zinc-900",
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
+);
+
+const activeClass = cn(
+  "inline-flex min-w-9 items-center justify-center rounded-[12px] border border-amber-500/60 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-200",
+);
+
 export function Pagination({
   basePath,
   currentPage,
@@ -42,11 +53,6 @@ export function Pagination({
   const end = Math.min(totalPages, start + windowSize - 1);
   start = Math.max(1, end - windowSize + 1);
   for (let p = start; p <= end; p++) pageNumbers.push(p);
-
-  const linkClass =
-    "inline-flex min-w-9 items-center justify-center rounded-lg border border-zinc-700 px-3 py-1.5 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-900";
-  const activeClass =
-    "inline-flex min-w-9 items-center justify-center rounded-lg border border-amber-500/60 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-200";
 
   return (
     <nav

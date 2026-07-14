@@ -29,7 +29,6 @@ const FALLBACK: HeroPreviewCard[] = [
     setName: "Romance Dawn",
     cardNumber: "OP01-025",
     rarity: "Super Rare",
-    graded: { company: "PSA", grade: 10 },
   },
   {
     name: "Nami",

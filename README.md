@@ -4,6 +4,20 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 
 **Live demo:** [tcg-lyart.vercel.app](https://tcg-lyart.vercel.app/)
 
+## Screenshots
+
+### Home
+
+![Home — Grand Line hero and treasure showcase](./docs/screenshots/home.png)
+
+### Browse
+
+![Browse catalog with search and filters](./docs/screenshots/browse.png)
+
+### Collector’s Showcase
+
+![Prized collectibles in graded slabs](./docs/screenshots/showcase.png)
+
 ## Features
 
 - **Catalog browse** — search and filter; add cards to your collection

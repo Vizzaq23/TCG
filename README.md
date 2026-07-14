@@ -2,22 +2,24 @@
 
 A collector platform for the **One Piece Card Game**. Browse the catalog, track what you own (quantity, condition, grades, trades), pin a three-card **Collector’s Showcase**, and share a public profile at `/u/yourname`.
 
+**Live demo:** [tcg-lyart.vercel.app](https://tcg-lyart.vercel.app/)
+
 ## Features
 
-- **Catalog browse** — search and filter cards; add to your collection
-- **Collection dashboard** — edit quantities, conditions, graded slabs, trade flags, estimated values
-- **Portfolio stats** — collection value from cached JustTCG market prices × quantity (manual overrides win); graded slabs show underlying raw market only
-- **Live market prices** — `card_prices` cache, browse/detail badges, CLI/cron sync (no browser JustTCG calls)
-- **Trade offers** — request / accept / decline on for-trade cards (`/collection/trades`)
-- **Activity feed** — public profile events (adds, trades, showcase, values)
-- **Trade alerts** — watchlist when others list a card for trade
-- **Compare collectors** — overlap / unique cards between two usernames (`/compare`)
-- **Collector’s Showcase** — pick up to three prized cards/slabs for your public shelf
-- **Public profiles** — shareable shelf with trade filter and view analytics
-- **Public API** — documented JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
-- **PWA** — installable web app manifest
-- **Profile customization** — display name, bio, accent theme, drag-and-drop avatar
-- **Auth** — email/password via Supabase (safe redirects after sign-in)
+- **Catalog browse** — search and filter; add cards to your collection
+- **Collection dashboard** — quantities, conditions, graded slabs, trade flags, estimated values
+- **Portfolio stats** — value from cached market prices × quantity (manual overrides win)
+- **Live market prices** — server-side JustTCG sync into `card_prices` (no browser API calls)
+- **Trade offers** — request / accept / decline on for-trade cards
+- **Activity feed** — public profile events (adds, trades, showcase updates)
+- **Trade alerts** — watchlist when others list a card you want
+- **Compare collectors** — overlap and unique cards between two usernames
+- **Collector’s Showcase** — pin up to three prized cards or slabs on your public shelf
+- **Public profiles** — shareable `/u/you` shelf with trade filter and view analytics
+- **Public API** — JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
+- **PWA** — installable web app
+- **Profile customization** — display name, bio, accent theme, avatar upload
+- **Auth** — email/password via Supabase
 
 ## Stack
 
@@ -75,8 +77,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-**TLS note (Windows / antivirus):** If the terminal shows `UNABLE_TO_VERIFY_LEAF_SIGNATURE` talking to Supabase, Node is not trusting a local intercepting CA. `npm run dev` / `build` / `start` / `prices:sync` already pass `--use-system-ca`, and auth runs in Next.js **Proxy** (Node runtime) instead of Edge middleware. Restart the dev server after pulling these changes.
-
 ## Scripts
 
 | Command | Description |
@@ -103,6 +103,6 @@ Open [http://localhost:3000](http://localhost:3000).
 
 See **[STRUCTURE.md](./STRUCTURE.md)** for a folder/file tree with explanations of every important path.
 
-## Docs for agents
+## Troubleshooting
 
-- `AGENTS.md` / `CLAUDE.md` — Next.js version notes for coding agents
+**TLS / `UNABLE_TO_VERIFY_LEAF_SIGNATURE` (Windows antivirus):** Node may not trust a local intercepting CA. Dev, build, start, and price-sync scripts already pass `--use-system-ca`; auth uses the Next.js Proxy (Node runtime). Restart the dev server after pulling related changes.

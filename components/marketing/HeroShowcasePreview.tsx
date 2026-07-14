@@ -52,53 +52,37 @@ export function HeroShowcasePreview({ cards = FALLBACK, className, themed }: Pro
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-[18px]",
-        themed
-          ? "border border-amber-500/20 shadow-[0_40px_100px_rgba(0,0,0,0.5),0_0_60px_rgba(14,116,144,0.12)]"
-          : "border border-[rgba(255,236,205,0.08)] shadow-[0_40px_100px_rgba(0,0,0,0.45)]",
-        themed
-          ? "bg-[linear-gradient(180deg,#0c1524_0%,#0a1018_45%,#08090f_100%)]"
-          : "bg-[linear-gradient(180deg,#141210_0%,#0c0b0a_45%,#080807_100%)]",
+        "home-showcase relative overflow-hidden",
+        themed ? "home-showcase--deck" : "rounded-[14px] border border-[rgba(255,236,205,0.08)] bg-[#12100e]",
         "min-h-[22rem] sm:min-h-[26rem]",
         className,
       )}
       aria-hidden
     >
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0",
-          themed
-            ? "bg-[radial-gradient(ellipse_at_50%_0%,rgba(251,191,36,0.16),transparent_50%),radial-gradient(ellipse_at_80%_90%,rgba(14,116,144,0.15),transparent_45%)]"
-            : "bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,248,230,0.12),transparent_55%)]",
-        )}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.55)_100%)]" />
-
-      <div className="relative flex h-full flex-col justify-end px-4 pb-8 pt-10 sm:px-8 sm:pb-10">
+      <div className="relative flex h-full flex-col justify-end px-4 pb-7 pt-9 sm:px-8 sm:pb-9">
         <p
           className={cn(
-            "mb-6 text-center text-[10px] font-semibold uppercase tracking-[0.28em]",
-            themed ? "text-sky-300/75" : "text-amber-200/70",
+            "mb-5 text-center text-[11px] font-medium tracking-[0.14em]",
+            themed ? "text-[#c4a574]/80" : "text-amber-200/70",
           )}
         >
-          {themed ? "Treasure Showcase" : "Collector's Showcase"}
+          {themed ? "Treasure showcase" : "Collector's Showcase"}
         </p>
 
-        <div className="flex items-end justify-center gap-2 sm:gap-4">
+        <div className="relative z-[1] flex items-end justify-center gap-2 sm:gap-3">
           {display.map((card, i) => {
-            const lift = i === 1 ? "-translate-y-3 sm:-translate-y-5 scale-110 z-10" : "z-0";
+            const lift = i === 1 ? "-translate-y-3 sm:-translate-y-4 scale-[1.08] z-10" : "z-0";
             return (
               <div
                 key={`${card.name}-${i}`}
-                className={cn(
-                  "w-[28%] max-w-[8.5rem] transition-transform duration-500",
-                  lift,
-                )}
+                className={cn("w-[28%] max-w-[8.5rem]", lift)}
               >
                 <div
                   className={cn(
-                    "rounded-[12px] bg-zinc-950/80 p-1 shadow-[0_18px_40px_rgba(0,0,0,0.55)]",
-                    themed ? "border border-amber-500/20" : "border border-white/10",
+                    "rounded-[6px] bg-zinc-950 p-[3px]",
+                    themed
+                      ? "border border-[#5c4630]/70 shadow-[0_14px_28px_rgba(0,0,0,0.55)]"
+                      : "border border-white/10 shadow-[0_18px_40px_rgba(0,0,0,0.55)]",
                   )}
                 >
                   {card.graded ? (
@@ -115,7 +99,7 @@ export function HeroShowcasePreview({ cards = FALLBACK, className, themed }: Pro
                       interactive={false}
                     />
                   ) : (
-                    <div className="relative aspect-[5/7] overflow-hidden rounded-[8px] bg-zinc-900">
+                    <div className="relative aspect-[5/7] overflow-hidden rounded-[4px] bg-zinc-900">
                       {card.imageUrl ? (
                         <CardImage
                           src={card.imageUrl}
@@ -123,8 +107,8 @@ export function HeroShowcasePreview({ cards = FALLBACK, className, themed }: Pro
                           className="absolute inset-0 h-full w-full object-contain"
                         />
                       ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gradient-to-b from-sky-950 to-zinc-950 p-2 text-center">
-                          <span className="text-[9px] font-semibold text-amber-400/80">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gradient-to-b from-[#1a2433] to-zinc-950 p-2 text-center">
+                          <span className="text-[9px] font-semibold text-[#c4a574]/80">
                             {card.rarity ?? "Card"}
                           </span>
                           <span className="line-clamp-3 text-[10px] font-medium text-zinc-200">
@@ -140,14 +124,12 @@ export function HeroShowcasePreview({ cards = FALLBACK, className, themed }: Pro
           })}
         </div>
 
-        <div
-          className={cn(
-            "mx-auto mt-6 h-2 w-[70%] rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.5)]",
-            themed
-              ? "bg-gradient-to-r from-transparent via-amber-700/70 to-transparent"
-              : "bg-gradient-to-r from-transparent via-[#5c3d1e]/80 to-transparent",
-          )}
-        />
+        {/* Physical shelf */}
+        <div className="home-showcase-shelf" aria-hidden>
+          <div className="home-showcase-shelf-top" />
+          <div className="home-showcase-shelf-face" />
+          <div className="home-showcase-shelf-shadow" />
+        </div>
       </div>
     </div>
   );

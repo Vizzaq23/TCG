@@ -154,13 +154,13 @@ export async function searchCards(
   params: SearchCardsParams,
   options?: JustTcgRequestOptions,
 ): Promise<JustTcgCard[]> {
+  // JustTCG accepts `q` (not a duplicate `query` key — that can 400).
   const data = await justTcgFetch<unknown>(
     "cards",
     {
       params: {
         game: params.game,
         q: params.query,
-        query: params.query,
         number: params.number,
         set: params.set,
         cardId: params.cardId,

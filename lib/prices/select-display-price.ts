@@ -30,8 +30,14 @@ function normalizeCondition(value: string): string {
   return v;
 }
 
-function printingRank(printing: string): number {
-  return printing.trim().toLowerCase() === "normal" ? 0 : 1;
+function isAltPrinting(printing: string): boolean {
+  return /alt|parallel|special|manga|illustration|showcase|borderless/i.test(printing);
+}
+
+function printingRank(printing: string, preferAlt: boolean): number {
+  const alt = isAltPrinting(printing);
+  if (preferAlt) return alt ? 0 : printing.trim().toLowerCase() === "normal" ? 2 : 1;
+  return printing.trim().toLowerCase() === "normal" ? 0 : alt ? 1 : 2;
 }
 
 /**
@@ -42,11 +48,19 @@ export function selectDisplayPrice(input: {
   variants: PriceVariantRow[];
   preferredCondition?: string | null;
   isGraded?: boolean;
+  /** When true (catalog parallel / alt art), prefer non-Normal printings. */
+  preferAltPrinting?: boolean;
   fallbackMarketCents?: number | null;
   fallbackFetchedAt?: string | null;
 }): DisplayPrice {
-  const { variants, preferredCondition, isGraded, fallbackMarketCents, fallbackFetchedAt } =
-    input;
+  const {
+    variants,
+    preferredCondition,
+    isGraded,
+    preferAltPrinting = false,
+    fallbackMarketCents,
+    fallbackFetchedAt,
+  } = input;
 
   const priced = variants.filter(
     (v) =>
@@ -64,7 +78,9 @@ export function selectDisplayPrice(input: {
     const pool2 = pool.length ? pool : priced;
 
     chosen = [...pool2].sort((a, b) => {
-      const pr = printingRank(a.printing) - printingRank(b.printing);
+      const pr =
+        printingRank(a.printing, preferAltPrinting) -
+        printingRank(b.printing, preferAltPrinting);
       if (pr !== 0) return pr;
       const at = a.fetched_at ? new Date(a.fetched_at).getTime() : 0;
       const bt = b.fetched_at ? new Date(b.fetched_at).getTime() : 0;

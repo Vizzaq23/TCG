@@ -89,11 +89,26 @@ export async function POST(request: Request) {
       const result = await lookupOnePieceCard({
         cardNumber: row.card_number,
         name: row.name,
+        setName: row.set_name,
         justtcgCardId: row.justtcg_card_id,
         tcgplayerProductId: row.tcgplayer_product_id,
       });
       if (!result.card) {
         missed.push({ id: row.id, reason: result.failure?.reason ?? "No match" });
+        // Drop stale wrong matches so the UI does not keep showing a bad price.
+        if (
+          row.market_price_cents != null &&
+          /weak|refus|no reliable/i.test(result.failure?.reason ?? "")
+        ) {
+          await admin
+            .from("cards")
+            .update({
+              market_price_cents: null,
+              market_price_updated_at: null,
+              justtcg_card_id: null,
+            })
+            .eq("id", row.id);
+        }
         if (result.failure?.rateLimited) break;
         continue;
       }
@@ -101,6 +116,8 @@ export async function POST(request: Request) {
         admin,
         cardId: row.id,
         justTcgCard: result.card,
+        justtcgSetId: row.justtcg_set_id,
+        catalogCardNumber: row.card_number,
       });
       updated.push(row.id);
     } catch (err) {

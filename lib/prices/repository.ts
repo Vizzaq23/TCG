@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/types/database";
 import type { JustTcgCard } from "@/lib/justtcg/types";
 import { dollarsToCents } from "@/lib/money";
-import { pickNearMintVariant } from "@/lib/justtcg/match";
+import { parseOptcgNumber, pickNearMintVariant } from "@/lib/justtcg/match";
 import { isPriceFresh } from "@/lib/prices/freshness";
 import type { PriceVariantRow } from "@/lib/prices/select-display-price";
 
@@ -60,8 +60,10 @@ export async function upsertJustTcgVariants(input: {
   cardId: string;
   justTcgCard: JustTcgCard;
   justtcgSetId?: string | null;
+  /** Catalog card_number — used to denorm alt printing for parallels. */
+  catalogCardNumber?: string | null;
 }): Promise<{ upserted: number; nmCents: number | null }> {
-  const { admin, cardId, justTcgCard, justtcgSetId } = input;
+  const { admin, cardId, justTcgCard, justtcgSetId, catalogCardNumber } = input;
   const fetchedAt = new Date().toISOString();
   let upserted = 0;
 
@@ -127,7 +129,14 @@ export async function upsertJustTcgVariants(input: {
     upserted += 1;
   }
 
-  const nm = pickNearMintVariant(justTcgCard.variants ?? []);
+  // Catalog parallels (_pN) should denorm an alt/parallel printing, not base Normal.
+  const preferAlt =
+    parseOptcgNumber(catalogCardNumber)?.parallelIndex != null ||
+    parseOptcgNumber(justTcgCard.number)?.parallelIndex != null ||
+    /alt|parallel|manga|illustration/i.test(`${justTcgCard.name} ${justTcgCard.details ?? ""}`);
+  const nm = pickNearMintVariant(justTcgCard.variants ?? [], {
+    preferAltPrinting: preferAlt,
+  });
   const nmCents = nm ? dollarsToCents(nm.price) : null;
 
   await admin

@@ -66,75 +66,361 @@ body {
     var(--background);
 }
 
-/* Home — Grand Line night sea + straw-gold horizon */
+/* Home — captain’s shelf / quiet Grand Line interior */
 .home-ambient {
+  --home-gold: #c4a574;
+  --home-gold-bright: #d4b483;
+  --home-deep: #0a1018;
+  --home-navy: #0d1520;
+  --home-parchment: #e4d4b5;
+  --home-ink: #3a2a18;
+  --home-red: #8b2e2e;
+
   position: relative;
   isolation: isolate;
+  overflow: clip;
   background:
-    radial-gradient(ellipse 90% 55% at 50% -15%, rgba(255, 196, 72, 0.18), transparent 52%),
-    radial-gradient(ellipse 55% 40% at 12% 70%, rgba(14, 116, 144, 0.22), transparent 55%),
-    radial-gradient(ellipse 50% 35% at 88% 75%, rgba(30, 64, 175, 0.18), transparent 50%),
-    linear-gradient(180deg, #070b14 0%, #0a1220 42%, #08090f 100%);
+    linear-gradient(180deg, #0b121c 0%, #0a1018 55%, #080c12 100%);
 }
 
+/* Soft vignette over the chart so copy stays readable */
 .home-ambient::before {
   content: "";
   pointer-events: none;
   position: absolute;
   inset: 0;
-  z-index: 0;
-  opacity: 0.45;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24' fill='none'%3E%3Cpath d='M0 14c10 0 10-8 20-8s10 8 20 8 10-8 20-8 10 8 20 8 10-8 20-8 10 8 20 8' stroke='%23f59e0b' stroke-opacity='0.07' stroke-width='1'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: center bottom 18%;
-  background-size: 180px 24px;
-  mask-image: linear-gradient(180deg, transparent 40%, black 75%);
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 75% 65% at 50% 36%, transparent 10%, rgba(6, 14, 24, 0.62) 100%),
+    linear-gradient(180deg, rgba(6, 14, 24, 0.35) 0%, transparent 32%, rgba(6, 14, 24, 0.55) 100%);
 }
 
-.home-ambient > * {
+.home-ambient::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+.home-ambient > *:not(.home-sunny-backdrop) {
+  position: relative;
+  z-index: 2;
+}
+
+.home-sunny-backdrop {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.home-grand-line-photo {
+  object-fit: cover;
+  object-position: center 40%;
+  opacity: 0.85;
+}
+
+.home-map-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(6, 14, 24, 0.72) 0%, rgba(6, 14, 24, 0.4) 42%, rgba(6, 14, 24, 0.55) 100%),
+    linear-gradient(180deg, rgba(6, 14, 24, 0.45) 0%, rgba(6, 14, 24, 0.2) 38%, rgba(6, 14, 24, 0.65) 100%);
+}
+
+@media (max-width: 1023px) {
+  .home-grand-line-photo {
+    opacity: 0.7;
+    object-position: center center;
+  }
+
+  .home-map-scrim {
+    background:
+      linear-gradient(180deg, rgba(6, 14, 24, 0.65) 0%, rgba(6, 14, 24, 0.4) 40%, rgba(6, 14, 24, 0.72) 100%);
+  }
+}
+
+.home-hero {
+  position: relative;
+}
+
+.home-hero-copy {
+  text-shadow: 0 1px 12px rgba(5, 9, 16, 0.55);
+}
+
+.home-brand {
+  font-family: var(--font-home-display), Impact, sans-serif;
+  letter-spacing: 0.03em;
+  line-height: 0.94;
+  color: var(--home-gold-bright);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Home CTAs — sharper, gold-edged, not SaaS pills */
+.home-btn {
+  border-radius: 4px !important;
+  letter-spacing: 0.02em;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+}
+
+.home-btn-primary {
+  background: #b8893d !important;
+  color: #0a1018 !important;
+  border: 1px solid #d4b483 !important;
+}
+
+.home-btn-primary:hover {
+  background: #c99a4e !important;
+}
+
+.home-btn-secondary {
+  background: transparent !important;
+  color: #e8dcc4 !important;
+  border: 1px solid rgba(196, 165, 116, 0.45) !important;
+}
+
+.home-btn-secondary:hover {
+  background: rgba(196, 165, 116, 0.08) !important;
+  border-color: rgba(196, 165, 116, 0.7) !important;
+}
+
+/* Rope divider */
+.home-rope {
+  position: relative;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-rope::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(196, 165, 116, 0.35) 0 6px,
+    rgba(196, 165, 116, 0.08) 6px 10px
+  );
+  transform: translateY(-50%);
+}
+
+.home-rope-knot {
   position: relative;
   z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(196, 165, 116, 0.55);
+  background: #0a1018;
+  box-shadow: 0 0 0 3px #0a1018;
 }
 
-.home-horizon {
+/* Treasure showcase — dark wood / ship deck */
+.home-showcase--deck {
+  border-radius: 6px;
+  border: 1px solid rgba(92, 70, 48, 0.55);
+  background:
+    linear-gradient(180deg, rgba(28, 20, 14, 0.96) 0%, rgba(16, 12, 10, 0.98) 55%, rgba(12, 10, 9, 1) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(212, 180, 131, 0.08),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.4);
+}
+
+.home-showcase--deck::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 18px,
+    rgba(0, 0, 0, 0.35) 18px 19px
+  );
+}
+
+.home-showcase-shelf {
+  position: relative;
+  z-index: 0;
+  margin: -0.35rem auto 0;
+  width: 86%;
+  max-width: 22rem;
+}
+
+.home-showcase-shelf-top {
+  height: 7px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #6b5338 0%, #4a3826 100%);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.home-showcase-shelf-face {
+  height: 11px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(180deg, #3d2e1e 0%, #241a12 100%);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-top: none;
+}
+
+.home-showcase-shelf-shadow {
+  margin: 0 auto;
+  width: 92%;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45), transparent 70%);
+  filter: blur(2px);
+}
+
+/* Wanted posters */
+.home-wanted-poster {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 2px;
+  border: 1px solid rgba(90, 62, 32, 0.55);
+  background:
+    linear-gradient(160deg, rgba(244, 230, 200, 0.97), rgba(220, 198, 158, 0.95)),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(58, 42, 24, 0.035) 2px,
+      rgba(58, 42, 24, 0.035) 3px
+    );
+  padding: 1.05rem 0.8rem 1.15rem;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(255, 248, 230, 0.35),
+    inset 0 0 28px rgba(90, 62, 32, 0.08);
+  color: var(--home-ink);
+  transform: rotate(var(--poster-tilt, -0.7deg));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-wanted-poster::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgba(90, 62, 32, 0.22);
+}
+
+.home-crew-sign:nth-child(2) .home-wanted-poster {
+  --poster-tilt: 0.9deg;
+}
+
+.home-crew-sign:nth-child(3) .home-wanted-poster {
+  --poster-tilt: -1.1deg;
+}
+
+.home-crew-sign:nth-child(4) .home-wanted-poster {
+  --poster-tilt: 0.4deg;
+}
+
+.home-wanted-poster:hover {
+  transform: rotate(0deg) translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.38);
+}
+
+.home-wanted-stamp {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.45rem;
+  z-index: 2;
+  padding: 0.15rem 0.3rem;
+  border: 1.5px solid rgba(139, 46, 46, 0.45);
+  border-radius: 1px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(139, 46, 46, 0.55);
+  transform: rotate(12deg);
+  opacity: 0.85;
+}
+
+.home-wanted-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(58, 42, 24, 0.7);
+}
+
+.home-wanted-rule {
+  width: 62%;
   height: 1px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(251, 191, 36, 0.35) 20%,
-    rgba(255, 236, 179, 0.55) 50%,
-    rgba(251, 191, 36, 0.35) 80%,
+    rgba(58, 42, 24, 0.35) 20%,
+    rgba(58, 42, 24, 0.35) 80%,
     transparent
   );
-  box-shadow: 0 0 24px rgba(245, 158, 11, 0.25);
 }
 
-@keyframes home-compass-spin {
-  to {
-    transform: rotate(360deg);
-  }
+.home-crew-seal {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(107, 68, 35, 0.4);
+  background: rgba(196, 165, 116, 0.12);
 }
 
-@keyframes home-beacon {
-  0%,
-  100% {
-    opacity: 0.55;
-    box-shadow: 0 0 6px rgba(251, 191, 36, 0.45);
-  }
-  50% {
-    opacity: 1;
-    box-shadow: 0 0 14px rgba(251, 191, 36, 0.9);
-  }
+.home-wanted-name {
+  font-size: 1.65rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: #1c140c;
+  text-align: center;
 }
 
-.home-compass-ring {
-  animation: home-beacon 2.8s ease-in-out infinite;
+.home-wanted-bounty {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a4e1e;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .home-compass-ring {
-    animation: none;
-  }
+.home-wanted-bounty span {
+  opacity: 0.6;
+  margin-right: 0.3rem;
+  color: var(--home-red);
+}
+
+.home-wanted-flavor {
+  font-size: 0.74rem;
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(58, 42, 24, 0.68);
+}
+
+.home-coord {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.home-benefit-mark {
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  bottom: 0.2rem;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(196, 165, 116, 0.55), rgba(196, 165, 116, 0.08));
 }
 
 /* Subtle unsharp + punch so scaled card art stays crisp */

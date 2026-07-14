@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { MarketPrice } from "@/components/prices/MarketPrice";
 import { PriceChangeBadge } from "@/components/prices/PriceChangeBadge";
 import { PriceLastUpdated } from "@/components/prices/PriceLastUpdated";
+import { parseOptcgNumber } from "@/lib/justtcg/match";
 import { selectDisplayPrice, type PriceVariantRow } from "@/lib/prices/select-display-price";
 
 type Props = { params: Promise<{ cardId: string }> };
@@ -58,6 +59,7 @@ export default async function CardDetailPage({ params }: Props) {
   const variants = (priceRows ?? []) as PriceVariantRow[];
   const display = selectDisplayPrice({
     variants,
+    preferAltPrinting: parseOptcgNumber(card.card_number)?.parallelIndex != null,
     fallbackMarketCents: card.market_price_cents,
     fallbackFetchedAt: card.market_price_updated_at,
   });

@@ -75,6 +75,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+**TLS note (Windows / antivirus):** If the terminal shows `UNABLE_TO_VERIFY_LEAF_SIGNATURE` talking to Supabase, Node is not trusting a local intercepting CA. `npm run dev` / `build` / `start` / `prices:sync` already pass `--use-system-ca`, and auth runs in Next.js **Proxy** (Node runtime) instead of Edge middleware. Restart the dev server after pulling these changes.
+
 ## Scripts
 
 | Command | Description |

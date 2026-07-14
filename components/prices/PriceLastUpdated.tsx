@@ -6,7 +6,7 @@ type Props = {
 export function PriceLastUpdated({ fetchedAt, className }: Props) {
   if (!fetchedAt) {
     return (
-      <p className={className ?? "text-[10px] text-zinc-600"}>Market not synced yet</p>
+      <p className={className ?? "text-[10px] text-zinc-600"}>Prices not updated yet</p>
     );
   }
   const d = new Date(fetchedAt);

@@ -6,6 +6,7 @@
 export { isJustTcgConfigured, listGames, listSets, searchCards, getCardsByBatch } from "@/lib/justtcg/client";
 export {
   JUSTTCG_GAME_CANDIDATES,
+  MIN_ACCEPT_SCORE,
   parseOptcgNumber,
   scoreCardMatch,
   pickBestCard,

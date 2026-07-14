@@ -1,3 +1,4 @@
+import { parseOptcgNumber } from "@/lib/justtcg/match";
 import { selectDisplayPrice, type PriceVariantRow } from "@/lib/prices/select-display-price";
 
 export type CollectionValueItem = {
@@ -51,6 +52,7 @@ export function buildCollectionValueItems(
       variants: variantsByCardId.get(row.card_id) ?? [],
       preferredCondition: row.is_graded ? null : row.condition,
       isGraded: row.is_graded,
+      preferAltPrinting: parseOptcgNumber(card.card_number)?.parallelIndex != null,
       fallbackMarketCents: card.market_price_cents,
       fallbackFetchedAt: card.market_price_updated_at,
     });

@@ -73,4 +73,24 @@ describe("selectDisplayPrice", () => {
     expect(result.marketPriceCents).toBeNull();
     expect(result.unavailable).toBe(true);
   });
+
+  it("prefers alt printing when requested", () => {
+    const result = selectDisplayPrice({
+      variants: [
+        {
+          market_price_cents: 100,
+          printing: "Normal",
+          condition: "Near Mint",
+        },
+        {
+          market_price_cents: 800,
+          printing: "Alternate Art",
+          condition: "Near Mint",
+        },
+      ],
+      preferAltPrinting: true,
+    });
+    expect(result.marketPriceCents).toBe(800);
+    expect(result.printing).toBe("Alternate Art");
+  });
 });

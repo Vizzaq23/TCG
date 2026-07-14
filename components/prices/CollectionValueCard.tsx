@@ -15,8 +15,8 @@ export function CollectionValueCard({ summary }: Props) {
           {formatUsdCents(summary.estimatedValueCents)}
         </p>
         <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-500">
-          Estimate from JustTCG market prices × quantity (manual overrides win). Graded slabs use
-          underlying raw market unless you set a manual value. Not financial advice.
+          Market price × quantity, unless you set a manual value. Graded slabs show underlying raw
+          market only. Not financial advice.
         </p>
       </div>
 
@@ -25,7 +25,11 @@ export function CollectionValueCard({ summary }: Props) {
         <StatCard
           label="Unpriced"
           value={String(summary.unpricedCards)}
-          hint={summary.unpricedCards > 0 ? "Run npm run prices:sync" : "Fully priced"}
+          hint={
+            summary.unpricedCards > 0
+              ? "Waiting on next market refresh"
+              : "Fully priced"
+          }
         />
         <StatCard
           label="Most valuable"

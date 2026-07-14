@@ -2,7 +2,11 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
 import { safeNextPath } from "@/lib/auth/safe-next";
 
-export async function middleware(request: NextRequest) {
+/**
+ * Next.js 16 Proxy (Node.js runtime). Prefer this over deprecated Edge middleware
+ * so Supabase auth can use the OS certificate store (--use-system-ca).
+ */
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
@@ -17,9 +21,23 @@ export async function middleware(request: NextRequest) {
 
   const { supabase, supabaseResponse } = await createMiddlewareClient(request);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: Awaited<
+    ReturnType<typeof supabase.auth.getUser>
+  >["data"]["user"] = null;
+
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // TLS / network blips (e.g. UNABLE_TO_VERIFY_LEAF_SIGNATURE) should not
+    // take down every page — treat as signed-out for this request.
+    if (pathname.startsWith("/collection")) {
+      const login = new URL("/login", request.url);
+      login.searchParams.set("next", pathname);
+      return NextResponse.redirect(login);
+    }
+    return supabaseResponse;
+  }
 
   if (pathname.startsWith("/collection") && !user) {
     const login = new URL("/login", request.url);

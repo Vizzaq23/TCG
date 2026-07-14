@@ -5,6 +5,8 @@ import {
   HeroShowcasePreview,
   type HeroPreviewCard,
 } from "@/components/marketing/HeroShowcasePreview";
+import { HomeSunnyBackdrop } from "@/components/marketing/HomeSunnyBackdrop";
+import { CrewSignsStrip } from "@/components/marketing/CrewSignsStrip";
 import { isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
@@ -57,40 +59,38 @@ export default async function HomePage() {
 
   return (
     <main className={`home-ambient flex flex-1 flex-col ${display.variable}`}>
-      <PageContainer className="flex flex-col gap-12 py-10 sm:gap-14 sm:py-14 lg:py-16">
-        <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-300/90">
-              <span
-                aria-hidden
-                className="home-compass-ring inline-block h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-              />
-              Grand Line collectors
-            </div>
+      <HomeSunnyBackdrop />
 
-            <div className="space-y-3">
-              <p className="text-sm font-semibold tracking-tight text-sky-300/80">
+      <PageContainer className="flex flex-col gap-12 py-10 sm:gap-14 sm:py-14 lg:py-16">
+        <section className="home-hero grid items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12">
+          <div className="home-hero-copy space-y-5">
+            <div className="space-y-2.5">
+              <h1 className="home-brand max-w-[13ch] text-5xl sm:text-6xl lg:text-[4.25rem]">
                 One Piece TCG Shelf
-              </p>
-              <h1
-                className="max-w-[14ch] text-5xl leading-[0.95] tracking-wide text-white sm:text-6xl lg:text-7xl"
+              </h1>
+              <p
+                className="max-w-[20ch] text-xl leading-snug tracking-[0.02em] text-[#f0e6d0] sm:text-2xl"
                 style={{ fontFamily: "var(--font-home-display), Impact, sans-serif" }}
               >
                 Your treasure, on the shelf.
-              </h1>
+              </p>
             </div>
 
-            <p className="max-w-md text-base leading-relaxed text-zinc-300/90 sm:text-lg">
-              Chart every card from Romance Dawn onward — track grades, quantities,
-              conditions, and trades, then spotlight your legends in a premium public
-              showcase worth sharing.
+            <p className="max-w-md text-base leading-relaxed text-zinc-400 sm:text-[1.05rem]">
+              Chart the Grand Line of your collection — then spotlight your legends for the crew
+              to see.
             </p>
 
-            <div className="flex flex-wrap gap-3">
-              <Button href="/browse" size="lg">
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Button href="/browse" size="lg" className="home-btn home-btn-primary">
                 Browse the catalog
               </Button>
-              <Button href="/login?next=/collection" variant="secondary" size="lg">
+              <Button
+                href="/login?next=/collection"
+                variant="secondary"
+                size="lg"
+                className="home-btn home-btn-secondary"
+              >
                 Open your shelf
               </Button>
             </div>
@@ -99,19 +99,20 @@ export default async function HomePage() {
           <HeroShowcasePreview cards={previewCards} themed />
         </section>
 
-        <div className="home-horizon" aria-hidden />
+        <div className="home-rope" aria-hidden>
+          <span className="home-rope-knot" />
+        </div>
 
-        <section className="grid gap-6 sm:grid-cols-3 sm:gap-8">
+        <CrewSignsStrip />
+
+        <section className="grid gap-7 sm:grid-cols-3 sm:gap-8">
           {benefits.map((item, i) => (
-            <div key={item.title} className="relative space-y-2 pl-4">
-              <span
-                aria-hidden
-                className="absolute left-0 top-1 h-full w-0.5 rounded-full bg-gradient-to-b from-amber-400/70 to-sky-500/20"
-              />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-400/70">
-                {String(i + 1).padStart(2, "0")} · Set sail
+            <div key={item.title} className="home-benefit relative space-y-2 pl-4">
+              <span aria-hidden className="home-benefit-mark" />
+              <p className="text-[11px] font-medium tracking-[0.08em] text-[#c4a574]/70">
+                {String(i + 1).padStart(2, "0")}
               </p>
-              <h2 className="text-base font-semibold text-white">{item.title}</h2>
+              <h2 className="text-base font-semibold text-[#f0e6d0]">{item.title}</h2>
               <p className="text-sm leading-relaxed text-zinc-400">{item.body}</p>
             </div>
           ))}

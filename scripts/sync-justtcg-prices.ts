@@ -132,6 +132,7 @@ async function main() {
         lookupOnePieceCard({
           cardNumber: card.card_number,
           name: card.name,
+          setName: card.set_name,
           justtcgCardId: card.justtcg_card_id,
           tcgplayerProductId: card.tcgplayer_product_id,
         }),
@@ -140,6 +141,21 @@ async function main() {
       if (!result.card) {
         missed += 1;
         console.log(`MISS ${card.card_number ?? card.id} ${card.name}: ${result.failure?.reason ?? "no match"}`);
+        // Clear previously stored wrong matches so collectors do not see bad prices.
+        if (
+          card.market_price_cents != null &&
+          /weak|refus|no reliable/i.test(result.failure?.reason ?? "")
+        ) {
+          await admin
+            .from("cards")
+            .update({
+              market_price_cents: null,
+              market_price_updated_at: null,
+              justtcg_card_id: null,
+            })
+            .eq("id", card.id);
+          console.log(`  cleared stale price for ${card.card_number ?? card.id}`);
+        }
         if (result.failure?.rateLimited) {
           console.error("Rate limited — stopping run.");
           break;
@@ -150,10 +166,11 @@ async function main() {
           cardId: card.id,
           justTcgCard: result.card,
           justtcgSetId: card.justtcg_set_id,
+          catalogCardNumber: card.card_number,
         });
         updated += 1;
         console.log(
-          `OK ${card.card_number ?? card.id} → ${result.card.name} variants=${upserted} nm=${nmCents != null ? (nmCents / 100).toFixed(2) : "—"}`,
+          `OK ${card.card_number ?? card.id} → ${result.card.name} #${result.card.number} [${result.card.set_name ?? result.card.set}] variants=${upserted} nm=${nmCents != null ? (nmCents / 100).toFixed(2) : "—"}`,
         );
       }
     } catch (err) {

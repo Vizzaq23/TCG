@@ -321,9 +321,7 @@ export function CollectionRow({ row }: Props) {
             </p>
           ) : (
             <p className="mt-1 text-[10px] text-zinc-600">
-              No cached market price yet. Run{" "}
-              <code className="text-zinc-400">npm run prices:sync</code> or enter a manual
-              estimate.
+              No market price yet — enter a manual estimate, or wait for the next price refresh.
             </p>
           )}
         </Field>

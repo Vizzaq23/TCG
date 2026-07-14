@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
-import type { CollectionStatsRow } from "@/lib/types/database";
 import { buildHoldings, type PortfolioSnapshot } from "@/lib/portfolio";
 import {
   buildCollectionValueItems,
@@ -35,10 +34,6 @@ export default async function PortfolioPage() {
   if (!user) {
     redirect("/login?next=/collection/portfolio");
   }
-
-  const { data: statsRows, error: statsError } =
-    await supabase.rpc("get_collection_stats");
-  const stats = (statsRows as CollectionStatsRow[] | null)?.[0] ?? null;
 
   const { data: rows, error: rowsError } = await supabase
     .from("user_collections")
@@ -85,7 +80,7 @@ export default async function PortfolioPage() {
       <SectionHeader
         as="h1"
         title="Portfolio"
-        description="Estimated collection value from cached JustTCG market prices (manual overrides win)."
+        description="Market estimate of your shelf. Your manual values always take priority."
         actions={
           <>
             <Button href="/collection" size="sm" variant="secondary">
@@ -98,28 +93,14 @@ export default async function PortfolioPage() {
         }
       />
 
-      <div className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-3">
         <p className="text-sm text-zinc-400">
-          Prices are cache-first. Operators refresh with{" "}
-          <code className="text-zinc-300">npm run prices:sync</code> or{" "}
-          <code className="text-zinc-300">POST /api/admin/prices/refresh</code>.
+          Market prices refresh on a schedule — this page never calls the pricing API live.
         </p>
-        <PriceLastUpdated fetchedAt={latestFetch} className="mt-1 text-[11px] text-zinc-500" />
+        <PriceLastUpdated fetchedAt={latestFetch} className="text-[11px] text-zinc-500" />
       </div>
 
-      {statsError ? (
-        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-100">
-          Stats unavailable: {statsError.message}. Apply the card_prices migration if needed.
-        </p>
-      ) : (
-        <CollectionValueCard summary={summary} />
-      )}
-
-      {stats && summary.pricedCards === 0 && stats.portfolio_value_cents ? (
-        <p className="text-xs text-zinc-500">
-          RPC portfolio total {stats.portfolio_value_cents}¢ (includes denormalized market fields).
-        </p>
-      ) : null}
+      <CollectionValueCard summary={summary} />
 
       {rowsError ? (
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">

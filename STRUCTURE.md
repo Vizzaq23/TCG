@@ -12,7 +12,7 @@ TCG/
 ├── supabase/               # DB config + migrations
 ├── public/                 # Static assets + PWA manifest/icons
 ├── .github/workflows/      # CI (lint, test, build)
-├── middleware.ts           # Auth gate + session refresh
+├── proxy.ts                # Auth gate + session refresh (Node runtime)
 ├── package.json
 ├── vitest.config.ts
 ├── README.md
@@ -35,7 +35,7 @@ TCG/
 | `next-env.d.ts` | Next-generated TypeScript refs |
 | `postcss.config.mjs` | PostCSS / Tailwind pipeline |
 | `eslint.config.mjs` | ESLint flat config |
-| `middleware.ts` | Protects `/collection`; redirects signed-in users away from `/login` & `/signup`; refreshes Supabase cookies |
+| `proxy.ts` | Protects `/collection`; redirects signed-in users away from `/login` & `/signup`; refreshes Supabase cookies (Node.js runtime) |
 | `.env.local` | Local secrets (not committed) |
 | `.env.local.example` | Template for env vars |
 | `.env.example` | Same keys as `.env.local.example` (no secrets) |
@@ -212,7 +212,7 @@ lib/
 ├── supabase/
 │   ├── client.ts           # Browser Supabase client
 │   ├── server.ts           # Server Components / Route Handlers
-│   └── middleware.ts       # Cookie-aware client for middleware
+│   └── middleware.ts       # Cookie-aware client for proxy / session refresh
 ├── types/
 │   ├── database.ts         # Generated-style DB types
 │   └── grading.ts          # Companies, grades, helpers
@@ -291,7 +291,7 @@ Default Next.js static SVGs (`next.svg`, `vercel.svg`, etc.). App imagery mostly
 
 ```
 Browser
-  → middleware.ts (session + /collection guard)
+  → proxy.ts (session + /collection guard, Node runtime)
   → app/*/page.tsx (Server Components)
        ↔ lib/supabase/server.ts → Supabase Postgres / Auth
   → Client components (forms, showcase, upload)

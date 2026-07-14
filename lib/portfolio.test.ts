@@ -101,7 +101,29 @@ describe("portfolio holdings", () => {
     expect(valued.map((h) => h.id)).toEqual(["b", "a"]);
     expect(valued[0].lineCents).toBe(2000);
     expect(valued[1].lineCents).toBe(1000);
+    expect(valued[0].priceSource).toBe("manual");
     expect(unpriced).toHaveLength(1);
+  });
+
+  it("uses market price when manual estimate is missing", () => {
+    const { valued } = buildHoldings([
+      {
+        id: "m",
+        quantity: 2,
+        estimated_value_cents: null,
+        is_for_trade: false,
+        is_graded: false,
+        cards: {
+          name: "Market card",
+          set_name: "OP01",
+          card_number: "001",
+          image_url: null,
+          market_price_cents: 350,
+        },
+      },
+    ]);
+    expect(valued[0].lineCents).toBe(700);
+    expect(valued[0].priceSource).toBe("market");
   });
 
   it("labels 30-day delta", () => {

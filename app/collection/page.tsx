@@ -8,8 +8,14 @@ import { SetProgress } from "@/components/collection/SetProgress";
 import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
 import { ProfileSettingsForm } from "@/components/profile/ProfileSettingsForm";
 import { TradeAlertsPanel } from "@/components/trades/TradeAlertsPanel";
+import { CollectionValueCard } from "@/components/prices/CollectionValueCard";
 import { computeSetProgress } from "@/lib/collection/set-progress";
 import { isProfileAccent } from "@/lib/profile";
+import {
+  buildCollectionValueItems,
+  summarizeCollectionValue,
+} from "@/lib/prices/collection-value";
+import type { PriceVariantRow } from "@/lib/prices/select-display-price";
 import type { CollectionStatsRow, TradeAlertHitRow } from "@/lib/types/database";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -61,6 +67,46 @@ export default async function CollectionPage() {
     .select("*, cards (*)")
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
+
+  const cardIds = [...new Set((rows ?? []).map((r) => r.card_id))];
+  const variantsByCard = new Map<string, PriceVariantRow[]>();
+  if (cardIds.length) {
+    const { data: priceRows } = await supabase
+      .from("card_prices")
+      .select(
+        "card_id, market_price_cents, printing, condition, price_change_24h_pct, price_change_7d_pct, fetched_at",
+      )
+      .eq("provider", "justtcg")
+      .in("card_id", cardIds);
+    for (const row of priceRows ?? []) {
+      const list = variantsByCard.get(row.card_id) ?? [];
+      list.push(row);
+      variantsByCard.set(row.card_id, list);
+    }
+  }
+
+  const valueSummary = summarizeCollectionValue(
+    buildCollectionValueItems(
+      (rows ?? []).map((r) => ({
+        id: r.id,
+        card_id: r.card_id,
+        quantity: r.quantity,
+        estimated_value_cents: r.estimated_value_cents,
+        condition: r.condition,
+        is_graded: r.is_graded,
+        cards: r.cards
+          ? {
+              name: r.cards.name,
+              set_name: r.cards.set_name,
+              card_number: r.cards.card_number,
+              market_price_cents: r.cards.market_price_cents,
+              market_price_updated_at: r.cards.market_price_updated_at,
+            }
+          : null,
+      })),
+      variantsByCard,
+    ),
+  );
 
   const { data: catalogCards } = await supabase
     .from("cards")
@@ -120,6 +166,7 @@ export default async function CollectionPage() {
         ) : (
           <CollectionStats stats={stats} />
         )}
+        {(rows?.length ?? 0) > 0 ? <CollectionValueCard summary={valueSummary} /> : null}
       </header>
 
       {rows && rows.length > 0 && <ShowcasePicker rows={rows} />}

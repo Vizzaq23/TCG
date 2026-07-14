@@ -16,12 +16,15 @@ import { GradedSlab } from "@/components/cards/GradedSlab";
 import { getFoilTier } from "@/lib/foil";
 import type { PublicShowcaseRow } from "@/lib/types/database";
 import { formatGradedBadge, isGradedEntry } from "@/lib/types/grading";
+import { formatUsdCents } from "@/lib/money";
+
+type ShowcaseCard = PublicShowcaseRow & { market_price_cents?: number | null };
 
 type Props = {
-  cards: PublicShowcaseRow[];
+  cards: ShowcaseCard[];
 };
 
-type DisplayCard = PublicShowcaseRow & { slot: number };
+type DisplayCard = ShowcaseCard & { slot: number };
 
 function rarityLabel(rarity: string | null): string | null {
   if (!rarity) return null;
@@ -246,6 +249,12 @@ function ShowcaseItem({
         {card.set_name ? (
           <p className="mt-0.5 line-clamp-1 text-[11px] tracking-wide text-zinc-500">
             {card.set_name}
+          </p>
+        ) : null}
+        {card.market_price_cents != null ? (
+          <p className="mt-1 text-[11px] tabular-nums text-amber-200/80">
+            {formatUsdCents(card.market_price_cents)}
+            {graded ? " raw" : ""}
           </p>
         ) : null}
         <div className="mt-2.5 flex flex-wrap items-center justify-center gap-1.5">

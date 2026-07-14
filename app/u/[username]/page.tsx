@@ -16,6 +16,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import type { ActivityEventRow } from "@/lib/activity";
+import { MarketPrice } from "@/components/prices/MarketPrice";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -118,9 +119,31 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   );
   const titleName = profile.display_name ?? profile.username;
 
+  const priceCardIds = [
+    ...new Set([
+      ...list.map((r) => r.card_id),
+      ...showcase.map((r) => r.card_id),
+    ]),
+  ];
+  const marketByCardId = new Map<string, number | null>();
+  if (priceCardIds.length) {
+    const { data: priceCards } = await supabase
+      .from("cards")
+      .select("id, market_price_cents")
+      .in("id", priceCardIds);
+    for (const c of priceCards ?? []) {
+      marketByCardId.set(c.id, c.market_price_cents);
+    }
+  }
+
+  const showcaseWithPrices = showcase.map((c) => ({
+    ...c,
+    market_price_cents: marketByCardId.get(c.card_id) ?? null,
+  }));
+
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
-      <ShowcaseGlassCase cards={showcase} />
+      <ShowcaseGlassCase cards={showcaseWithPrices} />
 
       <header
         className="space-y-4 border-b border-zinc-800/80 pb-8"
@@ -241,6 +264,14 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                       {row.is_for_trade ? (
                         <Badge tone="success">For trade</Badge>
                       ) : null}
+                    </div>
+                    <div className="pt-2">
+                      <MarketPrice
+                        cents={marketByCardId.get(row.card_id)}
+                        size="sm"
+                        label={graded ? "Underlying raw market" : "Market"}
+                        unavailable={marketByCardId.get(row.card_id) == null}
+                      />
                     </div>
                     {row.is_for_trade ? (
                       <TradeOfferButton

@@ -7,6 +7,11 @@ export function formatUsdCents(cents: number | null | undefined): string {
   }).format(cents / 100);
 }
 
+/** Convert dollars to integer cents. */
+export function dollarsToCents(dollars: number): number {
+  return Math.round(dollars * 100);
+}
+
 /** Parse a dollar string like "12.50" or "12" into cents. Empty → null. */
 export function parseDollarsToCents(raw: string): number | null {
   const trimmed = raw.trim();

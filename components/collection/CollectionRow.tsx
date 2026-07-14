@@ -14,7 +14,9 @@ import { GradedSlab } from "@/components/cards/GradedSlab";
 import { Field, Input, Select } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { centsToInputValue, parseDollarsToCents } from "@/lib/money";
+import { centsToInputValue, formatUsdCents, parseDollarsToCents } from "@/lib/money";
+import { MarketPrice } from "@/components/prices/MarketPrice";
+import { PriceLastUpdated } from "@/components/prices/PriceLastUpdated";
 
 type UC = Database["public"]["Tables"]["user_collections"]["Row"];
 type Card = Database["public"]["Tables"]["cards"]["Row"];
@@ -301,10 +303,41 @@ export function CollectionRow({ row }: Props) {
             inputMode="decimal"
             value={estimatedValue}
             onChange={(e) => setEstimatedValue(e.target.value)}
-            placeholder="e.g. 12.50"
+            placeholder={
+              card.market_price_cents != null
+                ? `Market ${formatUsdCents(card.market_price_cents)}`
+                : "e.g. 12.50"
+            }
             className="py-1.5 text-sm"
           />
+          {card.market_price_cents != null ? (
+            <p className="mt-1 text-[10px] text-zinc-500">
+              JustTCG NM {formatUsdCents(card.market_price_cents)}
+              {card.market_price_updated_at
+                ? ` · ${new Date(card.market_price_updated_at).toLocaleDateString()}`
+                : ""}
+              . Leave blank to use market
+              {isGraded ? " (shown as underlying raw for graded slabs)" : ""}.
+            </p>
+          ) : (
+            <p className="mt-1 text-[10px] text-zinc-600">
+              No cached market price yet. Run{" "}
+              <code className="text-zinc-400">npm run prices:sync</code> or enter a manual
+              estimate.
+            </p>
+          )}
         </Field>
+        {card.market_price_cents != null || isGraded ? (
+          <div className="sm:col-span-2">
+            <MarketPrice
+              cents={card.market_price_cents}
+              size="sm"
+              label={isGraded ? "Underlying raw market" : "Market"}
+              unavailable={card.market_price_cents == null}
+            />
+            <PriceLastUpdated fetchedAt={card.market_price_updated_at} />
+          </div>
+        ) : null}
         <Field label="Notes" className="text-xs sm:col-span-2 lg:col-span-2">
           <Input
             value={notes}

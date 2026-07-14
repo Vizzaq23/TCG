@@ -1,5 +1,7 @@
+import Link from "next/link";
 import type { Database } from "@/lib/types/database";
 import { CardImage } from "@/components/cards/CardImage";
+import { MarketPrice } from "@/components/prices/MarketPrice";
 
 type Card = Database["public"]["Tables"]["cards"]["Row"];
 
@@ -11,7 +13,10 @@ type Props = {
 export function CardTile({ card, footer }: Props) {
   return (
     <article className="flex flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/60 shadow-sm shadow-black/20 transition hover:border-zinc-700">
-      <div className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950">
+      <Link
+        href={`/browse/${card.id}`}
+        className="relative aspect-[5/7] w-full overflow-hidden bg-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
+      >
         {card.image_url ? (
           <CardImage
             src={card.image_url}
@@ -23,11 +28,14 @@ export function CardTile({ card, footer }: Props) {
             No image
           </div>
         )}
-      </div>
+      </Link>
       <div className="flex flex-1 flex-col gap-1 p-3">
-        <h2 className="line-clamp-2 text-sm font-semibold leading-snug text-white">
+        <Link
+          href={`/browse/${card.id}`}
+          className="line-clamp-2 text-sm font-semibold leading-snug text-white hover:text-amber-100"
+        >
           {card.name}
-        </h2>
+        </Link>
         <dl className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[11px] text-zinc-400">
           {card.set_name && (
             <>
@@ -62,6 +70,13 @@ export function CardTile({ card, footer }: Props) {
             </>
           )}
         </dl>
+        <div className="mt-2 border-t border-zinc-800 pt-2">
+          <MarketPrice
+            cents={card.market_price_cents}
+            size="sm"
+            unavailable={card.market_price_cents == null}
+          />
+        </div>
         {footer && <div className="mt-2 border-t border-zinc-800 pt-2">{footer}</div>}
       </div>
     </article>

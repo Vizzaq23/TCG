@@ -69,6 +69,11 @@ export interface Database {
           counter: string | null;
           attribute: string | null;
           image_url: string | null;
+          market_price_cents: number | null;
+          market_price_updated_at: string | null;
+          justtcg_card_id: string | null;
+          justtcg_set_id: string | null;
+          tcgplayer_product_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -84,6 +89,11 @@ export interface Database {
           counter?: string | null;
           attribute?: string | null;
           image_url?: string | null;
+          market_price_cents?: number | null;
+          market_price_updated_at?: string | null;
+          justtcg_card_id?: string | null;
+          justtcg_set_id?: string | null;
+          tcgplayer_product_id?: string | null;
           created_at?: string;
         };
         Update: {
@@ -99,7 +109,92 @@ export interface Database {
           counter?: string | null;
           attribute?: string | null;
           image_url?: string | null;
+          market_price_cents?: number | null;
+          market_price_updated_at?: string | null;
+          justtcg_card_id?: string | null;
+          justtcg_set_id?: string | null;
+          tcgplayer_product_id?: string | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      card_prices: {
+        Row: {
+          id: string;
+          card_id: string;
+          provider: string;
+          external_card_id: string | null;
+          external_variant_id: string | null;
+          printing: string;
+          condition: string;
+          market_price_cents: number;
+          currency: string;
+          price_change_24h_pct: number | null;
+          price_change_7d_pct: number | null;
+          fetched_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          card_id: string;
+          provider?: string;
+          external_card_id?: string | null;
+          external_variant_id?: string | null;
+          printing: string;
+          condition: string;
+          market_price_cents: number;
+          currency?: string;
+          price_change_24h_pct?: number | null;
+          price_change_7d_pct?: number | null;
+          fetched_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          card_id?: string;
+          provider?: string;
+          external_card_id?: string | null;
+          external_variant_id?: string | null;
+          printing?: string;
+          condition?: string;
+          market_price_cents?: number;
+          currency?: string;
+          price_change_24h_pct?: number | null;
+          price_change_7d_pct?: number | null;
+          fetched_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "card_prices_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      card_price_snapshots: {
+        Row: {
+          id: string;
+          card_price_id: string;
+          market_price_cents: number;
+          recorded_at: string;
+        };
+        Insert: {
+          id?: string;
+          card_price_id: string;
+          market_price_cents: number;
+          recorded_at?: string;
+        };
+        Update: {
+          id?: string;
+          card_price_id?: string;
+          market_price_cents?: number;
+          recorded_at?: string;
         };
         Relationships: [];
       };
@@ -353,6 +448,14 @@ export interface Database {
       compare_collectors: {
         Args: { username_a: string; username_b: string };
         Returns: CompareCollectorsRow[];
+      };
+      snapshot_collection_value: {
+        Args: { p_user_id: string };
+        Returns: void;
+      };
+      card_display_market_cents: {
+        Args: { p_card_id: string };
+        Returns: number;
       };
     };
     Enums: Record<string, never>;

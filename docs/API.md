@@ -14,7 +14,16 @@ All `/api/v1` JSON endpoints below. OpenAPI: [`docs/openapi.yaml`](./openapi.yam
 | `GET /api/v1/profiles/:username/activity` | Public |
 | `POST /api/v1/trade-offers` | **Session cookie** (signed-in user) |
 
-Public reads never expose `estimated_value_cents` (portfolio values stay owner-only via RLS).
+Public reads never expose `estimated_value_cents` (portfolio values stay owner-only via RLS). Catalog **market** prices from `cards.market_price_cents` / `card_prices` are OK to show on public shelf UIs.
+
+## Ops / admin (not public API)
+
+| Endpoint | Auth | Notes |
+|----------|------|-------|
+| `POST /api/admin/prices/refresh` | `Authorization: Bearer $PRICE_SYNC_SECRET` | Refreshes stale JustTCG prices into Supabase |
+| `POST /api/prices/sync` | — | **410 Gone** (quota protection). Use CLI or admin refresh |
+
+CLI: `npm run prices:sync -- --limit 5`
 
 ## Examples
 
@@ -76,4 +85,5 @@ Content-Type: application/json
 - Direct `user_collections` reads require ownership (RLS).
 - Public shelf data goes through `get_public_collection` / `get_public_showcase` / `get_public_activity`.
 - Trade offers are visible only to the two parties.
-- Portfolio cents and value snapshots are owner-only.
+- Manual `estimated_value_cents` and value snapshots are owner-only.
+- Public UIs may show **catalog market** prices (JustTCG cache), never owner manual estimates.

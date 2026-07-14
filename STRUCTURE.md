@@ -38,6 +38,7 @@ TCG/
 | `middleware.ts` | Protects `/collection`; redirects signed-in users away from `/login` & `/signup`; refreshes Supabase cookies |
 | `.env.local` | Local secrets (not committed) |
 | `.env.local.example` | Template for env vars |
+| `.env.example` | Same keys as `.env.local.example` (no secrets) |
 | `.gitignore` / `.gitattributes` | Git ignore / line-ending rules |
 
 ---
@@ -55,6 +56,8 @@ app/
 ├── globals.css             # Tokens, ambient themes, showcase/slab/foil CSS
 ├── favicon.ico
 ├── api/
+│   ├── admin/prices/refresh/route.ts  # Bearer PRICE_SYNC_SECRET → JustTCG sync
+│   ├── prices/sync/route.ts           # Legacy sync (410 Gone)
 │   ├── avatar/route.ts     # POST/DELETE profile photo (service-role upload)
 │   ├── card-image/route.ts # Proxy for official card art hosts
 │   └── v1/                 # Public JSON API (profile, collection, showcase, activity, trades)
@@ -62,9 +65,11 @@ app/
 │   └── callback/route.ts   # OAuth / email-confirm code exchange → redirect
 ├── browse/
 │   ├── page.tsx            # Catalog grid + filters
+│   ├── [cardId]/page.tsx  # Card detail + cached market prices
 │   └── loading.tsx
 ├── collection/
 │   ├── page.tsx            # Signed-in collection dashboard (value, alerts)
+│   ├── portfolio/page.tsx  # Holdings + CollectionValueCard
 │   ├── trades/page.tsx     # Trade offers inbox
 │   └── loading.tsx
 ├── compare/
@@ -90,7 +95,10 @@ app/
 | `api/card-image/route.ts` | Image proxy to avoid hotlink / CORS issues for catalog art |
 | `auth/callback/route.ts` | Exchanges `code` for session; sanitizes `next` redirect |
 | `browse/page.tsx` | Server-filtered catalog + pagination |
+| `browse/[cardId]/page.tsx` | Card detail with variant market prices from cache |
 | `collection/page.tsx` | Stats, showcase editor, card rows, set progress, profile settings |
+| `collection/portfolio/page.tsx` | Cache-first valuation + holdings |
+| `api/admin/prices/refresh/route.ts` | Secret-gated price refresh (no browser JustTCG) |
 | `login/page.tsx` / `signup/page.tsx` | Auth pages; redirect if already signed in |
 | `u/[username]/page.tsx` | Public profile, showcase hero, shelf grid; skips own-view analytics |
 
@@ -105,7 +113,9 @@ components/
 ├── collection/     # Dashboard + public shelf pieces
 ├── layout/         # Site chrome / nav
 ├── marketing/      # Landing-only visuals
+├── prices/         # Market price display + collection value
 ├── profile/        # Avatar + profile settings
+├── trades/         # Trade offers / alerts
 └── ui/             # Shared primitives
 ```
 
@@ -120,25 +130,36 @@ components/
 
 | File | Role |
 |------|------|
-| `CardTile.tsx` | Catalog card cell (image + meta + footer slot) |
+| `CardTile.tsx` | Catalog card cell (image + meta + market price + link to detail) |
 | `CardImage.tsx` | Card art with optional proxy + sharpen filter |
 | `CardFoil.tsx` | Foil overlay driven by pointer / rarity tier |
 | `GradedSlab.tsx` | PSA/BGS/CGC/SGC slab chrome + glare |
 | `BrowseToolbar.tsx` | GET form filters for `/browse` |
 | `AddToCollectionButton.tsx` | Upsert into `user_collections` |
 
+### `components/prices/`
+
+| File | Role |
+|------|------|
+| `MarketPrice.tsx` | Compact / detail USD display from cached cents |
+| `PriceChangeBadge.tsx` | 24h / 7d change chips |
+| `PriceLastUpdated.tsx` | Relative “prices as of” text |
+| `CollectionValueCard.tsx` | Estimated total, priced/unpriced, top holdings |
+
 ### `components/collection/`
 
 | File | Role |
 |------|------|
 | `CollectionStats.tsx` | Owner stat cards (RPC) |
-| `CollectionRow.tsx` | Edit one collection entry (qty, grade, trade, etc.) |
+| `CollectionRow.tsx` | Edit one collection entry (qty, grade, trade, market) |
 | `ShowcasePicker.tsx` | Assign three showcase slots (autosave RPC) |
 | `ShowcaseGlassCase.tsx` | Premium public showcase hero + walnut stand |
 | `SlabShowcase.tsx` | Older unused slab display (superseded by glass case) |
 | `SetProgress.tsx` | Per-set completion UI (sort / hide zero) |
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
 | `PublicShelfToolbar.tsx` | All cards / For trade toggle |
+| `PortfolioHistory.tsx` | Snapshot chart |
+| `PortfolioHoldings.tsx` | Valued / unpriced lists |
 
 ### `components/layout/`
 
@@ -184,6 +205,10 @@ components/
 lib/
 ├── auth/safe-next.ts       # Allow only internal redirect paths
 ├── collection/set-progress.ts
+├── justtcg/                # Secure JustTCG HTTP client + OPTCG matching
+├── prices/                 # card_prices repository, display selection, valuation
+├── money.ts                # cents ↔ USD display
+├── portfolio.ts            # Holdings helpers
 ├── supabase/
 │   ├── client.ts           # Browser Supabase client
 │   ├── server.ts           # Server Components / Route Handlers
@@ -202,6 +227,11 @@ lib/
 |------|------|
 | `auth/safe-next.ts` | Blocks open redirects (`//`, absolute URLs) |
 | `collection/set-progress.ts` | Computes owned/total per set name |
+| `justtcg/*` | API client (`x-api-key`), types, card match scoring |
+| `prices/repository.ts` | Upsert `card_prices` + denorm NM onto `cards` |
+| `prices/select-display-price.ts` | Pick display variant (NM / preferred / graded label) |
+| `prices/collection-value.ts` | Estimated total, top 5, by-set |
+| `prices/freshness.ts` | 24h stale helpers for sync |
 | `supabase/*` | Three Supabase client factories (browser / server / middleware) |
 | `types/database.ts` | Tables, RPCs, public collection row shapes |
 | `types/grading.ts` | Graded slab data model + formatters |
@@ -219,6 +249,7 @@ lib/
 |------|------|
 | `setup-dev.ps1` | Start local Supabase, write `.env.local` |
 | `import-catalog.ts` | Fetch/import card catalog (needs service role) |
+| `sync-justtcg-prices.ts` | CLI price sync (`npm run prices:sync`) |
 
 ---
 
@@ -242,6 +273,9 @@ supabase/
 | `20250713180000_profile_customization.sql` | `bio`, `accent` on profiles |
 | `20250713190000_skip_own_profile_views.sql` | Don’t count owner self-views |
 | `20250713200000_avatar_storage.sql` | `avatars` Storage bucket + policies |
+| `20250713210000_portfolio_trades_activity.sql` | Portfolio snapshots, trades, activity |
+| `20250713220000_justtcg_market_prices.sql` | Denorm market columns on `cards` |
+| `20250714000000_card_prices.sql` | `card_prices` + snapshots + valuation SQL |
 
 Apply with `npx supabase db push` or by running files in the Supabase SQL editor (in order).
 

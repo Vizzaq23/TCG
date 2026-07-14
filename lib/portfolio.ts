@@ -11,6 +11,7 @@ export type PortfolioHolding = {
   lineCents: number;
   isForTrade: boolean;
   isGraded: boolean;
+  priceSource: "manual" | "market" | null;
 };
 
 export type PortfolioSnapshot = {
@@ -36,6 +37,7 @@ export function buildHoldings(
       set_name: string | null;
       card_number: string | null;
       image_url: string | null;
+      market_price_cents?: number | null;
     } | null;
   }>,
 ): { valued: PortfolioHolding[]; unpriced: PortfolioHolding[] } {
@@ -45,7 +47,10 @@ export function buildHoldings(
   for (const row of rows) {
     const card = row.cards;
     if (!card) continue;
-    const unit = row.estimated_value_cents;
+    const unit =
+      row.estimated_value_cents != null
+        ? row.estimated_value_cents
+        : (card.market_price_cents ?? null);
     const holding: PortfolioHolding = {
       id: row.id,
       cardName: card.name,
@@ -57,6 +62,12 @@ export function buildHoldings(
       lineCents: lineValueCents(row.quantity, unit),
       isForTrade: row.is_for_trade,
       isGraded: row.is_graded,
+      priceSource:
+        row.estimated_value_cents != null
+          ? "manual"
+          : card.market_price_cents != null
+            ? "market"
+            : null,
     };
     if (unit != null) valued.push(holding);
     else unpriced.push(holding);

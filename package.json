@@ -13,6 +13,7 @@
     "import:catalog:dry": "tsx scripts/import-catalog.ts --dry-run",
     "import:catalog:sql": "tsx scripts/import-catalog.ts --sql",
     "import:catalog:json": "tsx scripts/import-catalog.ts --json",
+    "prices:sync": "tsx scripts/sync-justtcg-prices.ts",
     "supabase": "supabase",
     "setup": "powershell -ExecutionPolicy Bypass -File scripts/setup-dev.ps1"
   },
@@ -20,6 +21,7 @@
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.105.1",
     "framer-motion": "^12.42.2",
+    "justtcg-js": "^0.2.1",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"

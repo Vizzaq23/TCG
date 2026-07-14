@@ -54,6 +54,8 @@ export function PortfolioHoldings({ valued, unpriced }: Props) {
                   <div className="mt-1 flex flex-wrap gap-1.5">
                     {h.isGraded ? <Badge tone="accent">Graded</Badge> : null}
                     {h.isForTrade ? <Badge tone="success">For trade</Badge> : null}
+                    {h.priceSource === "market" ? <Badge>JustTCG</Badge> : null}
+                    {h.priceSource === "manual" ? <Badge tone="accent">Manual</Badge> : null}
                   </div>
                 </div>
                 <div className="flex-shrink-0 text-right">

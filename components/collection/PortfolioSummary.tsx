@@ -41,8 +41,8 @@ export function PortfolioSummary({
           {delta.label}
         </p>
         <p className="mt-3 max-w-xl text-xs leading-relaxed text-zinc-500">
-          Values are owner-entered estimates (USD). Totals use quantity × unit price. Not market
-          comps — update estimates on your collection cards.
+          Totals use quantity × unit price. Unit price is your manual estimate when set; otherwise
+          the JustTCG Near Mint market price. Not financial advice.
         </p>
       </div>
 

@@ -14,6 +14,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { FollowButton } from "@/components/social/FollowButton";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import type { ActivityEventRow } from "@/lib/activity";
 import { MarketPrice } from "@/components/prices/MarketPrice";
@@ -119,6 +120,17 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   );
   const titleName = profile.display_name ?? profile.username;
 
+  let isFollowing = false;
+  if (viewer && !isOwner) {
+    const { data: followRow } = await supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("follower_id", viewer.id)
+      .eq("following_id", profile.id)
+      .maybeSingle();
+    isFollowing = Boolean(followRow);
+  }
+
   const priceCardIds = [
     ...new Set([
       ...list.map((r) => r.card_id),
@@ -158,17 +170,28 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             size="lg"
             accentColor={accent.swatch}
           />
-          <div className="min-w-0 space-y-2">
+          <div className="min-w-0 flex-1 space-y-2">
             <p
               className="text-[11px] font-semibold uppercase tracking-[0.22em]"
               style={{ color: accent.swatch }}
             >
               Public shelf
             </p>
-            <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              {titleName}
-            </h1>
-            <p className="text-sm text-zinc-400">@{profile.username}</p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0 space-y-2">
+                <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {titleName}
+                </h1>
+                <p className="text-sm text-zinc-400">@{profile.username}</p>
+              </div>
+              {isSignedIn && !isOwner ? (
+                <FollowButton
+                  username={profile.username}
+                  initiallyFollowing={isFollowing}
+                  size="md"
+                />
+              ) : null}
+            </div>
             {profile.bio ? (
               <p className="max-w-2xl text-sm leading-relaxed text-zinc-300">
                 {profile.bio}

@@ -9,11 +9,14 @@ import { safeNextPath } from "@/lib/auth/safe-next";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  const requiresAuth =
+    pathname.startsWith("/collection") || pathname.startsWith("/social");
+
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    if (pathname.startsWith("/collection")) {
+    if (requiresAuth) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
     return NextResponse.next();
@@ -31,7 +34,7 @@ export async function proxy(request: NextRequest) {
   } catch {
     // TLS / network blips (e.g. UNABLE_TO_VERIFY_LEAF_SIGNATURE) should not
     // take down every page — treat as signed-out for this request.
-    if (pathname.startsWith("/collection")) {
+    if (requiresAuth) {
       const login = new URL("/login", request.url);
       login.searchParams.set("next", pathname);
       return NextResponse.redirect(login);
@@ -39,7 +42,7 @@ export async function proxy(request: NextRequest) {
     return supabaseResponse;
   }
 
-  if (pathname.startsWith("/collection") && !user) {
+  if (requiresAuth && !user) {
     const login = new URL("/login", request.url);
     login.searchParams.set("next", pathname);
     return NextResponse.redirect(login);

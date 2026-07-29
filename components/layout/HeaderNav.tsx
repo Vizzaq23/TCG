@@ -9,6 +9,7 @@ const links = [
   { href: "/collection", label: "My collection" },
   { href: "/collection/portfolio", label: "Portfolio" },
   { href: "/collection/trades", label: "Trades" },
+  { href: "/social", label: "Social" },
   { href: "/compare", label: "Compare" },
 ];
 

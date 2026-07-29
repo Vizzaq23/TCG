@@ -406,6 +406,39 @@ export interface Database {
           },
         ];
       };
+      follows: {
+        Row: {
+          follower_id: string;
+          following_id: string;
+          created_at: string;
+        };
+        Insert: {
+          follower_id: string;
+          following_id: string;
+          created_at?: string;
+        };
+        Update: {
+          follower_id?: string;
+          following_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey";
+            columns: ["follower_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey";
+            columns: ["following_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -456,6 +489,22 @@ export interface Database {
       card_display_market_cents: {
         Args: { p_card_id: string };
         Returns: number;
+      };
+      follow_user: {
+        Args: { target_username: string };
+        Returns: void;
+      };
+      unfollow_user: {
+        Args: { target_username: string };
+        Returns: void;
+      };
+      search_profiles: {
+        Args: { q: string; p_limit?: number };
+        Returns: ProfileSearchRow[];
+      };
+      get_following_activity: {
+        Args: { p_limit?: number };
+        Returns: FollowingActivityRow[];
       };
     };
     Enums: Record<string, never>;
@@ -542,4 +591,24 @@ export type PublicShowcaseRow = {
   cert_number: string | null;
   slab_image_url: string | null;
   is_black_label: boolean;
+};
+
+export type ProfileSearchRow = {
+  id: string;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  is_following: boolean;
+};
+
+export type FollowingActivityRow = {
+  id: string;
+  event_type: string;
+  payload: Json;
+  created_at: string;
+  actor_id: string;
+  actor_username: string;
+  actor_display_name: string | null;
+  actor_avatar_url: string | null;
 };

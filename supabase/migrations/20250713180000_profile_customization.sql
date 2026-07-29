@@ -1,7 +1,24 @@
--- Profile customization: bio + public accent theme
+-- Profile customization: bio + public accent theme (idempotent; does not recreate profiles)
 alter table public.profiles
-  add column if not exists bio text,
-  add column if not exists accent text not null default 'amber';
+  add column if not exists bio text;
+
+alter table public.profiles
+  add column if not exists accent text;
+
+-- Backfill + enforce default without rewriting existing non-null accents
+update public.profiles
+set accent = 'amber'
+where accent is null;
+
+alter table public.profiles
+  alter column accent set default 'amber';
+
+do $$
+begin
+  alter table public.profiles alter column accent set not null;
+exception
+  when others then null;
+end $$;
 
 alter table public.profiles
   drop constraint if exists profiles_bio_length;

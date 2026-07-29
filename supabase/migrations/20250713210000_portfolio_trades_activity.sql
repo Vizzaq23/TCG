@@ -425,6 +425,9 @@ create index if not exists trade_alerts_card_id_idx on public.trade_alerts (card
 alter table public.trade_alerts enable row level security;
 
 drop policy if exists "Owners manage trade alerts" on public.trade_alerts;
+drop policy if exists "Owners select trade alerts" on public.trade_alerts;
+drop policy if exists "Owners insert trade alerts" on public.trade_alerts;
+drop policy if exists "Owners delete trade alerts" on public.trade_alerts;
 create policy "Owners select trade alerts"
   on public.trade_alerts for select
   using (auth.uid() = user_id);

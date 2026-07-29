@@ -265,6 +265,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                         <Badge tone="success">For trade</Badge>
                       ) : null}
                     </div>
+                    {row.notes?.trim() ? (
+                      <p className="line-clamp-2 pt-1 text-xs italic leading-snug text-zinc-400">
+                        {row.notes.trim()}
+                      </p>
+                    ) : null}
                     <div className="pt-2">
                       <MarketPrice
                         cents={marketByCardId.get(row.card_id)}

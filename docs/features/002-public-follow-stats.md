@@ -1,6 +1,6 @@
 # Feature 2/365 — Public follow stats & social proof
 
-**Status:** Plan (not implemented)  
+**Status:** Implemented  
 **Date:** 2026-07-30  
 **Builds on:** Day 1/365 — Social follows + public collection notes (2026-07-29)
 

@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
-import type { PublicCollectionRow, PublicShowcaseRow } from "@/lib/types/database";
+import type {
+  ProfileFollowRelationshipRow,
+  ProfileFollowStatsRow,
+  PublicCollectionRow,
+  PublicShowcaseRow,
+} from "@/lib/types/database";
 import { formatGradedBadge, isGradedEntry } from "@/lib/types/grading";
 import { CardImage } from "@/components/cards/CardImage";
 import { GradedSlab } from "@/components/cards/GradedSlab";
@@ -15,13 +20,14 @@ import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { FollowButton } from "@/components/social/FollowButton";
+import { ProfileFollowStats } from "@/components/social/ProfileFollowStats";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import type { ActivityEventRow } from "@/lib/activity";
 import { MarketPrice } from "@/components/prices/MarketPrice";
 
 type Props = {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ trade?: string }>;
+  searchParams: Promise<{ trade?: string; social?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -49,9 +55,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   }
 
   const { username } = await params;
-  const { trade } = await searchParams;
+  const { trade, social } = await searchParams;
   const slug = decodeURIComponent(username).toLowerCase();
   const tradeOnly = trade === "1";
+  const initialSocialList =
+    social === "followers" || social === "following" ? social : null;
 
   const supabase = await createClient();
 
@@ -86,18 +94,22 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     });
   }
 
-  const { data: rows, error } = await supabase.rpc("get_public_collection", {
-    target_username: profile.username,
-  });
-
-  const { data: showcaseRows } = await supabase.rpc("get_public_showcase", {
-    target_username: profile.username,
-  });
-
-  const { data: activityRows } = await supabase.rpc("get_public_activity", {
-    target_username: profile.username,
-    p_limit: 15,
-  });
+  const [{ data: rows, error }, { data: showcaseRows }, { data: activityRows }, statsResult] =
+    await Promise.all([
+      supabase.rpc("get_public_collection", {
+        target_username: profile.username,
+      }),
+      supabase.rpc("get_public_showcase", {
+        target_username: profile.username,
+      }),
+      supabase.rpc("get_public_activity", {
+        target_username: profile.username,
+        p_limit: 15,
+      }),
+      supabase.rpc("get_profile_follow_stats", {
+        target_username: profile.username,
+      }),
+    ]);
 
   if (error) {
     return (
@@ -120,15 +132,25 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   );
   const titleName = profile.display_name ?? profile.username;
 
+  const followStats = (
+    (statsResult.data ?? []) as ProfileFollowStatsRow[]
+  )[0] ?? {
+    follower_count: 0,
+    following_count: 0,
+  };
+
   let isFollowing = false;
+  let followsYou = false;
   if (viewer && !isOwner) {
-    const { data: followRow } = await supabase
-      .from("follows")
-      .select("follower_id")
-      .eq("follower_id", viewer.id)
-      .eq("following_id", profile.id)
-      .maybeSingle();
-    isFollowing = Boolean(followRow);
+    const { data: relationshipRows } = await supabase.rpc(
+      "get_profile_follow_relationship",
+      { target_username: profile.username },
+    );
+    const relationship = (
+      (relationshipRows ?? []) as ProfileFollowRelationshipRow[]
+    )[0];
+    isFollowing = Boolean(relationship?.is_following);
+    followsYou = Boolean(relationship?.follows_you);
   }
 
   const priceCardIds = [
@@ -183,13 +205,29 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                   {titleName}
                 </h1>
                 <p className="text-sm text-zinc-400">@{profile.username}</p>
+                {!statsResult.error ? (
+                  <ProfileFollowStats
+                    username={profile.username}
+                    followerCount={Number(followStats.follower_count) || 0}
+                    followingCount={Number(followStats.following_count) || 0}
+                    isSignedIn={isSignedIn}
+                    initialList={initialSocialList}
+                  />
+                ) : null}
               </div>
               {isSignedIn && !isOwner ? (
-                <FollowButton
-                  username={profile.username}
-                  initiallyFollowing={isFollowing}
-                  size="md"
-                />
+                <div className="flex flex-col items-end gap-1.5">
+                  <FollowButton
+                    username={profile.username}
+                    initiallyFollowing={isFollowing}
+                    size="md"
+                  />
+                  {followsYou ? (
+                    <span className="text-[11px] font-medium text-zinc-500">
+                      Follows you
+                    </span>
+                  ) : null}
+                </div>
               ) : null}
             </div>
             {profile.bio ? (

@@ -34,7 +34,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "supabase": "^2.106.0",
+    "supabase": "^2.110.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.3",
     "typescript": "^5",

@@ -8,6 +8,9 @@ create unique index if not exists user_collections_showcase_slot_unique_idx
   on public.user_collections (user_id, showcase_slot)
   where showcase_slot is not null;
 
+-- DROP first: later migrations widen RETURNS TABLE (42P13 on CREATE OR REPLACE).
+drop function if exists public.get_public_showcase(text);
+
 create or replace function public.get_public_showcase(target_username text)
 returns table (
   collection_id uuid,

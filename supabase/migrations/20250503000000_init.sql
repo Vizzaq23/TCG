@@ -114,14 +114,10 @@ exception
   when duplicate_object then null;
 end $$;
 
-do $$
-begin
-  alter table public.user_collections
-    add constraint user_collections_user_id_card_id_key
-    unique (user_id, card_id);
-exception
-  when duplicate_object then null;
-end $$;
+-- Unique (user_id, card_id): use IF NOT EXISTS so an existing index/constraint
+-- of this name (SQLSTATE 42P07) does not fail the migration.
+create unique index if not exists user_collections_user_id_card_id_key
+  on public.user_collections (user_id, card_id);
 
 create index if not exists user_collections_user_id_idx on public.user_collections (user_id);
 
@@ -232,6 +228,9 @@ create trigger on_auth_user_created
   execute function public.handle_new_user();
 
 -- Public collection read (bypasses direct RLS on user_collections for anon)
+-- DROP first: CREATE OR REPLACE cannot change OUT/RETURNS TABLE row types (42P13).
+drop function if exists public.get_public_collection(text);
+
 create or replace function public.get_public_collection(target_username text)
 returns table (
   collection_id uuid,
@@ -316,6 +315,9 @@ $$;
 grant execute on function public.record_collection_view(text) to anon, authenticated;
 
 -- Stats for the signed-in user (owner dashboard)
+-- DROP first: later migrations widen the return type (42P13 if replaced in place).
+drop function if exists public.get_collection_stats();
+
 create or replace function public.get_collection_stats()
 returns table (
   total_cards_owned bigint,

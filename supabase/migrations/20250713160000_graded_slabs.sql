@@ -36,7 +36,7 @@ alter table public.user_collections
 drop function if exists public.get_public_collection(text);
 drop function if exists public.get_public_showcase(text);
 
-create function public.get_public_collection(target_username text)
+create or replace function public.get_public_collection(target_username text)
 returns table (
   collection_id uuid,
   user_id uuid,
@@ -104,7 +104,7 @@ $$;
 
 grant execute on function public.get_public_collection(text) to anon, authenticated;
 
-create function public.get_public_showcase(target_username text)
+create or replace function public.get_public_showcase(target_username text)
 returns table (
   collection_id uuid,
   showcase_slot smallint,

@@ -30,9 +30,10 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Compare collectors** — overlap and unique cards between two usernames
 - **Collector’s Showcase** — pin up to three prized cards or slabs on your public shelf
 - **Public profiles** — shareable `/u/you` shelf with trade filter and view analytics
+- **Social follows** — follow collectors, following activity feed, public follower/following counts
 - **Public API** — JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
 - **PWA** — installable web app
-- **Profile customization** — display name, bio, accent theme, avatar upload
+- **Account settings** — header account menu → customize profile (display name, bio, accent, avatar)
 - **Auth** — email/password via Supabase
 
 ## Stack

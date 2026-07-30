@@ -506,6 +506,30 @@ export interface Database {
         Args: { p_limit?: number };
         Returns: FollowingActivityRow[];
       };
+      get_profile_follow_stats: {
+        Args: { target_username: string };
+        Returns: ProfileFollowStatsRow[];
+      };
+      get_profile_follow_relationship: {
+        Args: { target_username: string };
+        Returns: ProfileFollowRelationshipRow[];
+      };
+      get_profile_followers: {
+        Args: {
+          target_username: string;
+          p_limit?: number;
+          p_offset?: number;
+        };
+        Returns: ProfileSearchRow[];
+      };
+      get_profile_following: {
+        Args: {
+          target_username: string;
+          p_limit?: number;
+          p_offset?: number;
+        };
+        Returns: ProfileSearchRow[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -600,6 +624,16 @@ export type ProfileSearchRow = {
   avatar_url: string | null;
   bio: string | null;
   is_following: boolean;
+};
+
+export type ProfileFollowStatsRow = {
+  follower_count: number;
+  following_count: number;
+};
+
+export type ProfileFollowRelationshipRow = {
+  is_following: boolean;
+  follows_you: boolean;
 };
 
 export type FollowingActivityRow = {

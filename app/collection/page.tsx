@@ -6,11 +6,9 @@ import { CollectionRow } from "@/components/collection/CollectionRow";
 import { CopyShareLink } from "@/components/collection/CopyShareLink";
 import { SetProgress } from "@/components/collection/SetProgress";
 import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
-import { ProfileSettingsForm } from "@/components/profile/ProfileSettingsForm";
 import { TradeAlertsPanel } from "@/components/trades/TradeAlertsPanel";
 import { CollectionValueCard } from "@/components/prices/CollectionValueCard";
 import { computeSetProgress } from "@/lib/collection/set-progress";
-import { isProfileAccent } from "@/lib/profile";
 import {
   buildCollectionValueItems,
   summarizeCollectionValue,
@@ -43,7 +41,7 @@ export default async function CollectionPage() {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("username, display_name, avatar_url, bio, accent")
+    .select("username, display_name")
     .eq("id", user.id)
     .single();
 
@@ -215,16 +213,6 @@ export default async function CollectionPage() {
           hits={(alertHits ?? []) as TradeAlertHitRow[]}
         />
       </section>
-
-      <ProfileSettingsForm
-        profile={{
-          username: profile.username,
-          displayName: profile.display_name,
-          avatarUrl: profile.avatar_url,
-          bio: profile.bio,
-          accent: isProfileAccent(profile.accent) ? profile.accent : "amber",
-        }}
-      />
     </PageContainer>
   );
 }

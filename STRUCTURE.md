@@ -35,7 +35,7 @@ TCG/
 | `next-env.d.ts` | Next-generated TypeScript refs |
 | `postcss.config.mjs` | PostCSS / Tailwind pipeline |
 | `eslint.config.mjs` | ESLint flat config |
-| `proxy.ts` | Protects `/collection`; redirects signed-in users away from `/login` & `/signup`; refreshes Supabase cookies (Node.js runtime) |
+| `proxy.ts` | Protects `/collection`, `/social`, `/settings`; redirects signed-in users away from `/login` & `/signup`; refreshes Supabase cookies (Node.js runtime) |
 | `.env.local` | Local secrets (not committed) |
 | `.env.local.example` | Template for env vars |
 | `.env.example` | Same keys as `.env.local.example` (no secrets) |
@@ -77,8 +77,14 @@ app/
 ├── login/
 │   ├── page.tsx            # Sign in (+ ?next=)
 │   └── loading.tsx
+├── settings/
+│   ├── page.tsx            # Account / profile customization
+│   └── loading.tsx
 ├── signup/
 │   ├── page.tsx            # Create account
+│   └── loading.tsx
+├── social/
+│   ├── page.tsx            # Follow graph, search, following activity
 │   └── loading.tsx
 └── u/[username]/
     ├── page.tsx            # Public collector shelf + activity + trade CTAs
@@ -96,11 +102,13 @@ app/
 | `auth/callback/route.ts` | Exchanges `code` for session; sanitizes `next` redirect |
 | `browse/page.tsx` | Server-filtered catalog + pagination |
 | `browse/[cardId]/page.tsx` | Card detail with variant market prices from cache |
-| `collection/page.tsx` | Stats, showcase editor, card rows, set progress, profile settings |
+| `collection/page.tsx` | Stats, showcase editor, card rows, set progress, trade alerts |
 | `collection/portfolio/page.tsx` | Cache-first valuation + holdings |
+| `settings/page.tsx` | Profile customization (photo, username, bio, accent) |
+| `social/page.tsx` | Search collectors, follow lists, following activity |
 | `api/admin/prices/refresh/route.ts` | Secret-gated price refresh (no browser JustTCG) |
 | `login/page.tsx` / `signup/page.tsx` | Auth pages; redirect if already signed in |
-| `u/[username]/page.tsx` | Public profile, showcase hero, shelf grid; skips own-view analytics |
+| `u/[username]/page.tsx` | Public profile, follow stats, showcase hero, shelf grid |
 
 ---
 
@@ -115,6 +123,7 @@ components/
 ├── marketing/      # Landing-only visuals
 ├── prices/         # Market price display + collection value
 ├── profile/        # Avatar + profile settings
+├── social/         # Follows, collector search rows, follow stats
 ├── trades/         # Trade offers / alerts
 └── ui/             # Shared primitives
 ```
@@ -165,10 +174,10 @@ components/
 
 | File | Role |
 |------|------|
-| `SiteHeader.tsx` | Brand, nav, avatar chip or sign-in |
+| `SiteHeader.tsx` | Brand, nav, account menu or sign-in |
 | `HeaderNav.tsx` | Browse / My collection with active state |
 | `HeaderSignInLink.tsx` | Sign-in with `?next=` = current path |
-| `SignOutButton.tsx` | Sign out + full page reload home |
+| `AccountMenu.tsx` | Avatar dropdown: public shelf, customize profile, sign out |
 
 ### `components/marketing/`
 
@@ -180,7 +189,7 @@ components/
 
 | File | Role |
 |------|------|
-| `ProfileSettingsForm.tsx` | Username, display name, bio, accent; avatar uploads via API |
+| `ProfileSettingsForm.tsx` | Username, display name, bio, accent; avatar uploads via API (`/settings`) |
 | `AvatarDropzone.tsx` | Drag/drop + file picker for photos |
 | `ProfileAvatar.tsx` | Circular avatar or accent initials |
 
@@ -276,6 +285,8 @@ supabase/
 | `20250713210000_portfolio_trades_activity.sql` | Portfolio snapshots, trades, activity |
 | `20250713220000_justtcg_market_prices.sql` | Denorm market columns on `cards` |
 | `20250714000000_card_prices.sql` | `card_prices` + snapshots + valuation SQL |
+| `20250729000000_social_follows.sql` | Follow graph, search, following activity |
+| `20250730000000_public_follow_stats.sql` | Public follower/following counts + list RPCs |
 
 Apply with `npx supabase db push` or by running files in the Supabase SQL editor (in order).
 

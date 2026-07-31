@@ -105,7 +105,7 @@ app/
 | `collection/page.tsx` | Stats, showcase editor, card rows, set progress, trade alerts |
 | `collection/portfolio/page.tsx` | Cache-first valuation + holdings |
 | `settings/page.tsx` | Profile customization (photo, username, bio, accent) |
-| `social/page.tsx` | Search collectors, follow lists, following activity |
+| `social/page.tsx` | Search collectors, suggestions, follow lists, following activity |
 | `api/admin/prices/refresh/route.ts` | Secret-gated price refresh (no browser JustTCG) |
 | `login/page.tsx` / `signup/page.tsx` | Auth pages; redirect if already signed in |
 | `u/[username]/page.tsx` | Public profile, follow stats, showcase hero, shelf grid |
@@ -192,6 +192,18 @@ components/
 | `ProfileSettingsForm.tsx` | Username, display name, bio, accent; avatar uploads via API (`/settings`) |
 | `AvatarDropzone.tsx` | Drag/drop + file picker for photos |
 | `ProfileAvatar.tsx` | Circular avatar or accent initials |
+
+### `components/social/`
+
+| File | Role |
+|------|------|
+| `FollowButton.tsx` | Follow / unfollow via RPC |
+| `CollectorRow.tsx` | Search / list row with avatar + follow |
+| `CollectorSearchForm.tsx` | Username search form for `/social` |
+| `FollowingLists.tsx` | Following + followers columns |
+| `SocialActivityFeed.tsx` | Activity from people you follow |
+| `ProfileFollowStats.tsx` | Public follower/following counts + list dialog |
+| `SuggestedCollectors.tsx` | Overlap-based suggestions on `/social` |
 
 ### `components/ui/`
 
@@ -287,6 +299,7 @@ supabase/
 | `20250714000000_card_prices.sql` | `card_prices` + snapshots + valuation SQL |
 | `20250729000000_social_follows.sql` | Follow graph, search, following activity |
 | `20250730000000_public_follow_stats.sql` | Public follower/following counts + list RPCs |
+| `20250731000000_suggested_collectors.sql` | Suggested collectors by shared cards |
 
 Apply with `npx supabase db push` or by running files in the Supabase SQL editor (in order).
 

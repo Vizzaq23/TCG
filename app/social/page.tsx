@@ -4,6 +4,7 @@ import { isSupabaseConfigured } from "@/lib/env";
 import type {
   FollowingActivityRow,
   ProfileSearchRow,
+  SuggestedCollectorRow,
 } from "@/lib/types/database";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -14,6 +15,7 @@ import {
 } from "@/components/social/CollectorRow";
 import { FollowingLists } from "@/components/social/FollowingLists";
 import { SocialActivityFeed } from "@/components/social/SocialActivityFeed";
+import { SuggestedCollectors } from "@/components/social/SuggestedCollectors";
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -50,23 +52,29 @@ export default async function SocialPage({ searchParams }: Props) {
     redirect("/login?next=/social");
   }
 
-  const [{ data: followingRows }, { data: followerRows }, activityResult, searchResult] =
-    await Promise.all([
-      supabase
-        .from("follows")
-        .select("following_id, created_at")
-        .eq("follower_id", user.id)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("follows")
-        .select("follower_id, created_at")
-        .eq("following_id", user.id)
-        .order("created_at", { ascending: false }),
-      supabase.rpc("get_following_activity", { p_limit: 40 }),
-      q
-        ? supabase.rpc("search_profiles", { q, p_limit: 20 })
-        : Promise.resolve({ data: null, error: null }),
-    ]);
+  const [
+    { data: followingRows },
+    { data: followerRows },
+    activityResult,
+    searchResult,
+    suggestedResult,
+  ] = await Promise.all([
+    supabase
+      .from("follows")
+      .select("following_id, created_at")
+      .eq("follower_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("follows")
+      .select("follower_id, created_at")
+      .eq("following_id", user.id)
+      .order("created_at", { ascending: false }),
+    supabase.rpc("get_following_activity", { p_limit: 40 }),
+    q
+      ? supabase.rpc("search_profiles", { q, p_limit: 20 })
+      : Promise.resolve({ data: null, error: null }),
+    supabase.rpc("get_suggested_collectors", { p_limit: 8 }),
+  ]);
 
   const followingIds = (followingRows ?? []).map((r) => r.following_id);
   const followerIds = (followerRows ?? []).map((r) => r.follower_id);
@@ -103,6 +111,7 @@ export default async function SocialPage({ searchParams }: Props) {
 
   const activity = (activityResult.data ?? []) as FollowingActivityRow[];
   const searchHits = (searchResult.data ?? []) as ProfileSearchRow[];
+  const suggestions = (suggestedResult.data ?? []) as SuggestedCollectorRow[];
 
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
@@ -132,6 +141,11 @@ export default async function SocialPage({ searchParams }: Props) {
           )
         ) : null}
       </section>
+
+      <SuggestedCollectors
+        suggestions={suggestions}
+        errorMessage={suggestedResult.error?.message ?? null}
+      />
 
       <section className="space-y-3">
         <SectionHeader

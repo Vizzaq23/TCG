@@ -530,6 +530,10 @@ export interface Database {
         };
         Returns: ProfileSearchRow[];
       };
+      get_suggested_collectors: {
+        Args: { p_limit?: number };
+        Returns: SuggestedCollectorRow[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -633,6 +637,17 @@ export type ProfileFollowStatsRow = {
 
 export type ProfileFollowRelationshipRow = {
   is_following: boolean;
+  follows_you: boolean;
+};
+
+export type SuggestedCollectorRow = {
+  id: string;
+  username: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  is_following: boolean;
+  shared_cards: number;
   follows_you: boolean;
 };
 

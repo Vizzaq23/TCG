@@ -166,7 +166,7 @@ components/
 | `SlabShowcase.tsx` | Older unused slab display (superseded by glass case) |
 | `SetProgress.tsx` | Per-set completion UI (sort / hide zero) |
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
-| `PublicShelfToolbar.tsx` | All cards / For trade toggle |
+| `PublicShelfToolbar.tsx` | All cards / For trade / With notes tabs |
 | `PortfolioHistory.tsx` | Snapshot chart |
 | `PortfolioHoldings.tsx` | Valued / unpriced lists |
 

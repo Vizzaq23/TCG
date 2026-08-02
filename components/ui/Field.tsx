@@ -1,4 +1,9 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 import { cn } from "@/lib/cn";
 
 const controlClass =
@@ -36,5 +41,16 @@ export function Select({ className, children, ...props }: SelectProps) {
     <select className={cn(controlClass, className)} {...props}>
       {children}
     </select>
+  );
+}
+
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+export function Textarea({ className, ...props }: TextareaProps) {
+  return (
+    <textarea
+      className={cn(controlClass, "min-h-[4.5rem] resize-y", className)}
+      {...props}
+    />
   );
 }

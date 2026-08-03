@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
+import type { TradeOfferContextRow } from "@/lib/types/database";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
@@ -29,60 +30,41 @@ export default async function TradesPage() {
     redirect("/login?next=/collection/trades");
   }
 
-  const { data: offers, error } = await supabase
-    .from("trade_offers")
-    .select("*")
-    .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
-    .order("created_at", { ascending: false });
+  const { data: rows, error } = await supabase.rpc("get_my_trade_offers", {
+    p_limit: 50,
+  });
 
-  const list: TradeOfferListItem[] = [];
-
-  if (offers?.length) {
-    const userIds = [...new Set(offers.flatMap((o) => [o.from_user_id, o.to_user_id]))];
-    const collectionIds = [...new Set(offers.map((o) => o.target_collection_id))];
-
-    const [{ data: profiles }, { data: collections }] = await Promise.all([
-      supabase.from("profiles").select("id, username, display_name").in("id", userIds),
-      supabase
-        .from("user_collections")
-        .select("id, cards ( name, set_name, card_number )")
-        .in("id", collectionIds),
-    ]);
-
-    const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
-    const collectionMap = new Map((collections ?? []).map((c) => [c.id, c]));
-
-    for (const offer of offers) {
-      const incoming = offer.to_user_id === user.id;
-      const counterpartId = incoming ? offer.from_user_id : offer.to_user_id;
-      const counterpart = profileMap.get(counterpartId);
-      const col = collectionMap.get(offer.target_collection_id);
-      const card = col?.cards as
-        | { name: string; set_name: string | null; card_number: string | null }
-        | null
-        | undefined;
-
-      list.push({
-        id: offer.id,
-        status: offer.status,
-        message: offer.message,
-        created_at: offer.created_at,
-        direction: incoming ? "incoming" : "outgoing",
-        counterpartUsername: counterpart?.username ?? "unknown",
-        counterpartDisplayName: counterpart?.display_name ?? null,
-        cardName: card?.name ?? "Card",
-        cardSet: card?.set_name ?? null,
-        cardNumber: card?.card_number ?? null,
-      });
-    }
-  }
+  const list: TradeOfferListItem[] = ((rows ?? []) as TradeOfferContextRow[]).map(
+    (row) => ({
+      id: row.id,
+      status: row.status,
+      message: row.message,
+      created_at: row.created_at,
+      direction: row.direction === "incoming" ? "incoming" : "outgoing",
+      counterpartUsername: row.counterpart_username,
+      counterpartDisplayName: row.counterpart_display_name,
+      ownerUsername: row.owner_username,
+      cardId: row.card_id,
+      cardName: row.card_name,
+      cardSet: row.set_name,
+      cardNumber: row.card_number,
+      imageUrl: row.image_url,
+      quantity: row.quantity,
+      condition: row.condition,
+      notes: row.notes,
+      isGraded: row.is_graded,
+      gradingCompany: row.grading_company,
+      grade: row.grade == null ? null : Number(row.grade),
+      isBlackLabel: row.is_black_label,
+    }),
+  );
 
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
       <SectionHeader
         as="h1"
         title="Trade offers"
-        description="Request, accept, or decline offers on cards marked for trade."
+        description="Request, accept, or decline offers on cards marked for trade — with full card context."
         actions={
           <>
             <Button href="/collection" size="sm" variant="secondary">
@@ -96,7 +78,7 @@ export default async function TradesPage() {
       />
       {error ? (
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-          {error.message}. Apply the portfolio/trades migration if you have not yet.
+          {error.message}. Apply the trade offer context migration if you have not yet.
         </p>
       ) : (
         <TradeOffersInbox offers={list} />

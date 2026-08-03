@@ -300,6 +300,7 @@ supabase/
 | `20250729000000_social_follows.sql` | Follow graph, search, following activity |
 | `20250730000000_public_follow_stats.sql` | Public follower/following counts + list RPCs |
 | `20250731000000_suggested_collectors.sql` | Suggested collectors by shared cards |
+| `20250802000000_trade_offer_context.sql` | Trade inbox RPC with card context |
 
 Apply with `npx supabase db push` or by running files in the Supabase SQL editor (in order).
 

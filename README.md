@@ -24,7 +24,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Collection dashboard** — quantities, conditions, graded slabs, trade flags, estimated values
 - **Portfolio stats** — value from cached market prices × quantity (manual overrides win)
 - **Live market prices** — server-side JustTCG sync into `card_prices` (no browser API calls)
-- **Trade offers** — request / accept / decline on for-trade cards
+- **Trade offers** — request / accept / decline on for-trade cards (inbox shows image, grade/condition, notes)
 - **Activity feed** — public profile events (adds, trades, showcase updates)
 - **Trade alerts** — watchlist when others list a card you want
 - **Compare collectors** — overlap and unique cards between two usernames

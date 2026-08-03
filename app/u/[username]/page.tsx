@@ -24,6 +24,7 @@ import { ProfileFollowStats } from "@/components/social/ProfileFollowStats";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import type { ActivityEventRow } from "@/lib/activity";
 import { MarketPrice } from "@/components/prices/MarketPrice";
+import { shelfCardHash } from "@/lib/shelf-links";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -251,7 +252,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
           title="Recent activity"
           description="Adds, trade flags, and showcase updates."
         />
-        <ActivityFeed events={activity} />
+        <ActivityFeed events={activity} username={profile.username} />
       </section>
 
       {!filtered.length ? (
@@ -265,7 +266,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
           {filtered.map((row) => {
             const graded = isGradedEntry(row);
             return (
-              <li key={row.collection_id}>
+              <li
+                key={row.collection_id}
+                id={shelfCardHash(row.card_id)}
+                className="shelf-card-anchor"
+              >
                 <article className="flex flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/60 transition hover:border-zinc-700">
                   <div
                     className={[

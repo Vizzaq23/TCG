@@ -32,6 +32,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Public profiles** — shareable `/u/you` shelf with trade filter and view analytics
 - **Social follows** — follow collectors, following activity feed, public follower/following counts
 - **Suggested collectors** — people with shelf overlap you don’t follow yet (`/social`)
+- **Shelf deep links** — jump from alerts / activity / compare to `#card-…` on a public shelf
 - **Public API** — JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
 - **PWA** — installable web app
 - **Account settings** — header account menu → customize profile (display name, bio, accent, avatar)

@@ -261,6 +261,7 @@ lib/
 | `foil.ts` | Maps rarity → foil visual tier |
 | `env.ts` | Whether public Supabase env vars are present |
 | `cn.ts` | Tiny `cn(...)` for conditional classes |
+| `shelf-links.ts` | Public shelf `#card-…` deep-link helpers |
 
 ---
 

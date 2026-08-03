@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
 import type { TradeAlertHitRow } from "@/lib/types/database";
+import { shelfCardPath } from "@/lib/shelf-links";
 
 type AlertRow = {
   id: string;
@@ -101,7 +102,9 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
             {hits.map((hit) => (
               <li key={`${hit.alert_id}-${hit.collection_id}`}>
                 <Link
-                  href={`/u/${encodeURIComponent(hit.owner_username)}?trade=1`}
+                  href={shelfCardPath(hit.owner_username, hit.card_id, {
+                    trade: true,
+                  })}
                   className="underline-offset-2 hover:underline"
                 >
                   {hit.card_name}

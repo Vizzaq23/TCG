@@ -28,7 +28,7 @@ import { shelfCardHash } from "@/lib/shelf-links";
 
 type Props = {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ trade?: string; social?: string }>;
+  searchParams: Promise<{ trade?: string; notes?: string; social?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -56,9 +56,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   }
 
   const { username } = await params;
-  const { trade, social } = await searchParams;
+  const { trade, notes, social } = await searchParams;
   const slug = decodeURIComponent(username).toLowerCase();
   const tradeOnly = trade === "1";
+  const notesOnly = !tradeOnly && notes === "1";
+  const shelfFilter = tradeOnly ? "trade" : notesOnly ? "notes" : "all";
   const initialSocialList =
     social === "followers" || social === "following" ? social : null;
 
@@ -125,7 +127,13 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   const list = (rows ?? []) as PublicCollectionRow[];
   const showcase = (showcaseRows ?? []) as PublicShowcaseRow[];
   const activity = (activityRows ?? []) as ActivityEventRow[];
-  const filtered = tradeOnly ? list.filter((row) => row.is_for_trade) : list;
+  const tradeCount = list.filter((row) => row.is_for_trade).length;
+  const notesCount = list.filter((row) => Boolean(row.notes?.trim())).length;
+  const filtered = tradeOnly
+    ? list.filter((row) => row.is_for_trade)
+    : notesOnly
+      ? list.filter((row) => Boolean(row.notes?.trim()))
+      : list;
   const isOwner = Boolean(viewer && viewer.id === profile.id);
   const isSignedIn = Boolean(viewer);
   const accent = getProfileAccent(
@@ -242,9 +250,11 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
 
       <PublicShelfToolbar
         username={profile.username}
-        tradeOnly={tradeOnly}
+        filter={shelfFilter}
         totalCount={list.length}
         filteredCount={filtered.length}
+        notesCount={notesCount}
+        tradeCount={tradeCount}
       />
 
       <section className="space-y-3">
@@ -259,7 +269,9 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
         <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
           {tradeOnly
             ? "No cards are marked for trade right now."
-            : "This collector has not added any cards yet."}
+            : notesOnly
+              ? "No cards have public notes yet."
+              : "This collector has not added any cards yet."}
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

@@ -24,7 +24,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Collection dashboard** — quantities, conditions, graded slabs, trade flags, estimated values
 - **Portfolio stats** — value from cached market prices × quantity (manual overrides win)
 - **Live market prices** — server-side JustTCG sync into `card_prices` (no browser API calls)
-- **Trade offers** — request / accept / decline on for-trade cards
+- **Trade offers** — request / accept / decline on for-trade cards (inbox shows image, grade/condition, notes)
 - **Activity feed** — public profile events (adds, trades, showcase updates)
 - **Trade alerts** — watchlist when others list a card you want
 - **Compare collectors** — overlap and unique cards between two usernames
@@ -32,7 +32,11 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Public profiles** — shareable `/u/you` shelf with trade filter and view analytics
 - **Social follows** — follow collectors, following activity feed, public follower/following counts
 - **Suggested collectors** — people with shelf overlap you don’t follow yet (`/social`)
+<<<<<<< HEAD
 - **Shelf deep links** — jump from alerts / activity / compare to `#card-…` on a public shelf
+=======
+- **Public notes mode** — filter a shelf to cards with notes; multiline public note editor
+>>>>>>> origin/main
 - **Public API** — JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
 - **PWA** — installable web app
 - **Account settings** — header account menu → customize profile (display name, bio, accent, avatar)

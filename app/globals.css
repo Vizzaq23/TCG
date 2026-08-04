@@ -31,6 +31,16 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Deep-linked public shelf cards (#card-<uuid>) */
+.shelf-card-anchor {
+  scroll-margin-top: 6rem;
+}
+
+.shelf-card-anchor:target > article {
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 0 24px rgba(245, 158, 11, 0.12);
+}
+
 @keyframes skeleton-shimmer {
   0% {
     background-position: 100% 0;

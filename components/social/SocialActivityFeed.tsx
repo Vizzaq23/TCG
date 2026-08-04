@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import {
+  activityShelfHref,
   formatActivityEvent,
   formatRelativeTime,
   type ActivityEventRow,
@@ -28,6 +29,7 @@ export function SocialActivityFeed({ events }: Props) {
           payload: event.payload,
           created_at: event.created_at,
         };
+        const cardHref = activityShelfHref(event.actor_username, activity);
         return (
           <li key={event.id} className="flex items-start gap-3 px-4 py-3">
             <Link
@@ -50,7 +52,17 @@ export function SocialActivityFeed({ events }: Props) {
                 </Link>
                 <span className="text-zinc-400">
                   {" "}
-                  · {formatActivityEvent(activity)}
+                  ·{" "}
+                  {cardHref ? (
+                    <Link
+                      href={cardHref}
+                      className="underline-offset-2 transition hover:text-amber-200 hover:underline"
+                    >
+                      {formatActivityEvent(activity)}
+                    </Link>
+                  ) : (
+                    formatActivityEvent(activity)
+                  )}
                 </span>
               </p>
             </div>

@@ -6,6 +6,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { CardImage } from "@/components/cards/CardImage";
+import { formatGradedBadge } from "@/lib/types/grading";
+import { shelfCardPath } from "@/lib/shelf-links";
 
 export type TradeOfferListItem = {
   id: string;
@@ -15,9 +18,19 @@ export type TradeOfferListItem = {
   direction: "incoming" | "outgoing";
   counterpartUsername: string;
   counterpartDisplayName: string | null;
+  ownerUsername: string;
+  cardId: string;
   cardName: string;
   cardSet: string | null;
   cardNumber: string | null;
+  imageUrl: string | null;
+  quantity: number;
+  condition: string | null;
+  notes: string | null;
+  isGraded: boolean;
+  gradingCompany: string | null;
+  grade: number | null;
+  isBlackLabel: boolean;
 };
 
 type Props = { offers: TradeOfferListItem[] };
@@ -27,6 +40,19 @@ function statusTone(status: string): "neutral" | "success" | "accent" | "danger"
   if (status === "pending") return "accent";
   if (status === "declined" || status === "cancelled") return "danger";
   return "neutral";
+}
+
+function contextBadges(offer: TradeOfferListItem) {
+  const badges: string[] = [];
+  if (offer.quantity > 1) badges.push(`×${offer.quantity}`);
+  if (offer.isGraded && offer.gradingCompany && offer.grade != null) {
+    badges.push(
+      formatGradedBadge(offer.gradingCompany, offer.grade, offer.isBlackLabel),
+    );
+  } else if (offer.condition) {
+    badges.push(offer.condition);
+  }
+  return badges;
 }
 
 export function TradeOffersInbox({ offers }: Props) {
@@ -70,42 +96,86 @@ export function TradeOffersInbox({ offers }: Props) {
         {offers.map((offer) => {
           const busy = pendingId === offer.id;
           const name = offer.counterpartDisplayName ?? offer.counterpartUsername;
+          const badges = contextBadges(offer);
           return (
             <li
               key={offer.id}
-              className="flex flex-col gap-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row sm:items-start sm:justify-between"
             >
-              <div className="min-w-0 space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge tone={statusTone(offer.status)}>{offer.status}</Badge>
-                  <Badge>{offer.direction === "incoming" ? "Inbox" : "Sent"}</Badge>
+              <div className="flex min-w-0 flex-1 gap-3">
+                <div className="relative h-24 w-[68px] flex-shrink-0 overflow-hidden rounded-[10px] border border-zinc-800 bg-zinc-950">
+                  {offer.imageUrl ? (
+                    <CardImage
+                      src={offer.imageUrl}
+                      alt={offer.cardName}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-[10px] text-zinc-600">
+                      No art
+                    </div>
+                  )}
                 </div>
-                <p className="font-medium text-white">
-                  {offer.cardName}
-                  <span className="text-zinc-500">
-                    {" "}
-                    · {[offer.cardSet, offer.cardNumber].filter(Boolean).join(" · ")}
-                  </span>
-                </p>
-                <p className="text-sm text-zinc-400">
-                  {offer.direction === "incoming" ? "From" : "To"}{" "}
-                  <Link
-                    href={`/u/${encodeURIComponent(offer.counterpartUsername)}`}
-                    className="text-amber-400/90 underline-offset-2 hover:underline"
-                  >
-                    @{offer.counterpartUsername}
-                  </Link>
-                  {name !== offer.counterpartUsername ? ` (${name})` : null}
-                </p>
-                {offer.message ? (
-                  <p className="text-sm text-zinc-300">&ldquo;{offer.message}&rdquo;</p>
-                ) : null}
-                <p className="text-[11px] text-zinc-600">
-                  {new Date(offer.created_at).toLocaleString()}
-                </p>
+
+                <div className="min-w-0 space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge tone={statusTone(offer.status)}>{offer.status}</Badge>
+                    <Badge>{offer.direction === "incoming" ? "Inbox" : "Sent"}</Badge>
+                    {badges.map((b) => (
+                      <Badge key={b} tone="neutral">
+                        {b}
+                      </Badge>
+                    ))}
+                  </div>
+                  <p className="font-medium text-white">
+                    {offer.cardName}
+                    <span className="text-zinc-500">
+                      {" "}
+                      · {[offer.cardSet, offer.cardNumber].filter(Boolean).join(" · ")}
+                    </span>
+                  </p>
+                  <p className="text-sm text-zinc-400">
+                    {offer.direction === "incoming" ? "From" : "To"}{" "}
+                    <Link
+                      href={`/u/${encodeURIComponent(offer.counterpartUsername)}`}
+                      className="text-amber-400/90 underline-offset-2 hover:underline"
+                    >
+                      @{offer.counterpartUsername}
+                    </Link>
+                    {name !== offer.counterpartUsername ? ` (${name})` : null}
+                  </p>
+                  {offer.notes?.trim() ? (
+                    <p className="line-clamp-2 text-sm italic text-zinc-400">
+                      “{offer.notes.trim()}”
+                    </p>
+                  ) : null}
+                  {offer.message ? (
+                    <p className="text-sm text-zinc-300">&ldquo;{offer.message}&rdquo;</p>
+                  ) : null}
+                  <div className="flex flex-wrap gap-3 pt-0.5 text-xs">
+                    <Link
+                      href={`/browse/${encodeURIComponent(offer.cardId)}`}
+                      className="text-zinc-400 underline-offset-2 hover:text-amber-200 hover:underline"
+                    >
+                      View card
+                    </Link>
+                    <Link
+                      href={shelfCardPath(offer.ownerUsername, offer.cardId, {
+                        trade: true,
+                      })}
+                      className="text-zinc-400 underline-offset-2 hover:text-amber-200 hover:underline"
+                    >
+                      View shelf
+                    </Link>
+                  </div>
+                  <p className="text-[11px] text-zinc-600">
+                    {new Date(offer.created_at).toLocaleString()}
+                  </p>
+                </div>
               </div>
+
               {offer.status === "pending" ? (
-                <div className="flex flex-shrink-0 flex-wrap gap-2">
+                <div className="flex flex-shrink-0 flex-wrap gap-2 sm:pt-1">
                   {offer.direction === "incoming" ? (
                     <>
                       <Button

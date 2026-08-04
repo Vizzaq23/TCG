@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import type { CompareCollectorsRow } from "@/lib/types/database";
+import { shelfCardPath } from "@/lib/shelf-links";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { CompareForm } from "@/components/collection/CompareForm";
@@ -61,13 +63,32 @@ export default async function ComparePage({ searchParams }: Props) {
         <div className="space-y-6">
           <div className="flex flex-wrap gap-2 text-sm text-zinc-400">
             <Badge tone="accent">Shared {both.length}</Badge>
-            <Badge>Only @{usernameA}: {onlyA.length}</Badge>
-            <Badge>Only @{usernameB}: {onlyB.length}</Badge>
+            <Badge>
+              Only @{usernameA}: {onlyA.length}
+            </Badge>
+            <Badge>
+              Only @{usernameB}: {onlyB.length}
+            </Badge>
           </div>
 
-          <CompareSection title={`Only @${usernameA}`} rows={onlyA} />
-          <CompareSection title={`Only @${usernameB}`} rows={onlyB} />
-          <CompareSection title="Both own" rows={both} />
+          <CompareSection
+            title={`Only @${usernameA}`}
+            rows={onlyA}
+            links={[{ username: usernameA, label: `@${usernameA}` }]}
+          />
+          <CompareSection
+            title={`Only @${usernameB}`}
+            rows={onlyB}
+            links={[{ username: usernameB, label: `@${usernameB}` }]}
+          />
+          <CompareSection
+            title="Both own"
+            rows={both}
+            links={[
+              { username: usernameA, label: `@${usernameA}` },
+              { username: usernameB, label: `@${usernameB}` },
+            ]}
+          />
         </div>
       ) : null}
     </PageContainer>
@@ -77,9 +98,11 @@ export default async function ComparePage({ searchParams }: Props) {
 function CompareSection({
   title,
   rows,
+  links,
 }: {
   title: string;
   rows: CompareCollectorsRow[];
+  links: { username: string; label: string }[];
 }) {
   return (
     <section className="space-y-3">
@@ -87,14 +110,30 @@ function CompareSection({
       {!rows.length ? (
         <p className="text-sm text-zinc-500">None</p>
       ) : (
-        <ul className="max-h-72 overflow-auto rounded-[14px] border border-zinc-800 divide-y divide-zinc-800/80">
+        <ul className="max-h-72 divide-y divide-zinc-800/80 overflow-auto rounded-[14px] border border-zinc-800">
           {rows.slice(0, 100).map((row) => (
-            <li key={row.card_id} className="px-4 py-2 text-sm text-zinc-300">
-              <span className="text-white">{row.card_name}</span>
-              <span className="text-zinc-500">
-                {" "}
-                · {[row.set_name, row.card_number].filter(Boolean).join(" · ")}
-              </span>
+            <li
+              key={row.card_id}
+              className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-2 text-sm text-zinc-300"
+            >
+              <div className="min-w-0">
+                <span className="text-white">{row.card_name}</span>
+                <span className="text-zinc-500">
+                  {" "}
+                  · {[row.set_name, row.card_number].filter(Boolean).join(" · ")}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {links.map((link) => (
+                  <Link
+                    key={link.username}
+                    href={shelfCardPath(link.username, row.card_id)}
+                    className="text-amber-400/90 underline-offset-2 hover:underline"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </li>
           ))}
           {rows.length > 100 ? (

@@ -1,4 +1,5 @@
 import type { Json } from "@/lib/types/database";
+import { activityPayloadCardId, shelfCardPath } from "@/lib/shelf-links";
 
 export type ActivityEventType =
   | "added_card"
@@ -20,6 +21,18 @@ function cardName(payload: Json): string {
     if (typeof name === "string" && name.trim()) return name;
   }
   return "a card";
+}
+
+/** Deep-link to the card on a public shelf when the payload has a card_id. */
+export function activityShelfHref(
+  username: string,
+  event: ActivityEventRow,
+): string | null {
+  const cardId = activityPayloadCardId(event.payload);
+  if (!cardId) return null;
+  const trade =
+    event.event_type === "marked_trade" || event.event_type === "unmarked_trade";
+  return shelfCardPath(username, cardId, { trade });
 }
 
 export function formatActivityEvent(event: ActivityEventRow): string {

@@ -11,7 +11,7 @@ import {
 } from "@/lib/types/grading";
 import { CardImage } from "@/components/cards/CardImage";
 import { GradedSlab } from "@/components/cards/GradedSlab";
-import { Field, Input, Select } from "@/components/ui/Field";
+import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { centsToInputValue, formatUsdCents, parseDollarsToCents } from "@/lib/money";
@@ -336,11 +336,17 @@ export function CollectionRow({ row }: Props) {
             <PriceLastUpdated fetchedAt={card.market_price_updated_at} />
           </div>
         ) : null}
-        <Field label="Notes" className="text-xs sm:col-span-2 lg:col-span-2">
-          <Input
+        <Field
+          label="Public note"
+          hint={`${notes.length}/280 — shown on your public shelf`}
+          className="text-xs sm:col-span-2 lg:col-span-2"
+        >
+          <Textarea
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Language, memories…"
+            onChange={(e) => setNotes(e.target.value.slice(0, 280))}
+            maxLength={280}
+            rows={2}
+            placeholder="Language, condition details, trade wishes, memories…"
             className="py-1.5 text-sm"
           />
         </Field>

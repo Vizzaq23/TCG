@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatGradedBadge } from "@/lib/types/grading";
+import { shelfCardPath } from "@/lib/shelf-links";
 
 export type TradeOfferListItem = {
   id: string;
@@ -159,7 +160,9 @@ export function TradeOffersInbox({ offers }: Props) {
                       View card
                     </Link>
                     <Link
-                      href={`/u/${encodeURIComponent(offer.ownerUsername)}?trade=1`}
+                      href={shelfCardPath(offer.ownerUsername, offer.cardId, {
+                        trade: true,
+                      })}
                       className="text-zinc-400 underline-offset-2 hover:text-amber-200 hover:underline"
                     >
                       View shelf

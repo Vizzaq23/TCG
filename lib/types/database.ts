@@ -534,6 +534,10 @@ export interface Database {
         Args: { p_limit?: number };
         Returns: SuggestedCollectorRow[];
       };
+      get_my_trade_offers: {
+        Args: { p_limit?: number };
+        Returns: TradeOfferContextRow[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -593,6 +597,32 @@ export type TradeAlertHitRow = {
   card_name: string;
   owner_username: string;
   collection_id: string;
+};
+
+export type TradeOfferContextRow = {
+  id: string;
+  status: string;
+  message: string | null;
+  created_at: string;
+  direction: "incoming" | "outgoing" | string;
+  counterpart_username: string;
+  counterpart_display_name: string | null;
+  counterpart_avatar_url: string | null;
+  owner_username: string;
+  target_collection_id: string;
+  card_id: string;
+  card_name: string;
+  set_name: string | null;
+  card_number: string | null;
+  image_url: string | null;
+  quantity: number;
+  condition: string | null;
+  notes: string | null;
+  is_for_trade: boolean;
+  is_graded: boolean;
+  grading_company: string | null;
+  grade: number | null;
+  is_black_label: boolean;
 };
 
 export type CompareCollectorsRow = {

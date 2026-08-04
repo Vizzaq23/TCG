@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import type {
+  CompareCollectorsRow,
   ProfileFollowRelationshipRow,
   ProfileFollowStatsRow,
   PublicCollectionRow,
@@ -14,6 +15,11 @@ import { GradedSlab } from "@/components/cards/GradedSlab";
 import { PublicShelfToolbar } from "@/components/collection/PublicShelfToolbar";
 import { ShowcaseGlassCase } from "@/components/collection/ShowcaseGlassCase";
 import { ActivityFeed } from "@/components/collection/ActivityFeed";
+import {
+  ShelfMatchCard,
+  ShelfMatchSignInPrompt,
+  type ShelfMatchCounts,
+} from "@/components/collection/ShelfMatchCard";
 import { TradeOfferButton } from "@/components/trades/TradeOfferButton";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
@@ -141,16 +147,46 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
 
   let isFollowing = false;
   let followsYou = false;
+  let viewerUsername: string | null = null;
+  let shelfMatch: ShelfMatchCounts | null = null;
+
   if (viewer && !isOwner) {
-    const { data: relationshipRows } = await supabase.rpc(
-      "get_profile_follow_relationship",
-      { target_username: profile.username },
-    );
+    const [{ data: relationshipRows }, { data: viewerProfile }] =
+      await Promise.all([
+        supabase.rpc("get_profile_follow_relationship", {
+          target_username: profile.username,
+        }),
+        supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", viewer.id)
+          .maybeSingle(),
+      ]);
+
     const relationship = (
       (relationshipRows ?? []) as ProfileFollowRelationshipRow[]
     )[0];
     isFollowing = Boolean(relationship?.is_following);
     followsYou = Boolean(relationship?.follows_you);
+    viewerUsername = viewerProfile?.username ?? null;
+
+    if (viewerUsername) {
+      const { data: compareRows, error: compareError } = await supabase.rpc(
+        "compare_collectors",
+        {
+          username_a: viewerUsername,
+          username_b: profile.username,
+        },
+      );
+      if (!compareError && compareRows) {
+        const rows = compareRows as CompareCollectorsRow[];
+        shelfMatch = {
+          shared: rows.filter((r) => r.owned_by_a && r.owned_by_b).length,
+          onlyYou: rows.filter((r) => r.owned_by_a && !r.owned_by_b).length,
+          onlyThem: rows.filter((r) => r.owned_by_b && !r.owned_by_a).length,
+        };
+      }
+    }
   }
 
   const priceCardIds = [
@@ -238,6 +274,16 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
           </div>
         </div>
       </header>
+
+      {viewerUsername && shelfMatch ? (
+        <ShelfMatchCard
+          viewerUsername={viewerUsername}
+          targetUsername={profile.username}
+          counts={shelfMatch}
+        />
+      ) : !isSignedIn ? (
+        <ShelfMatchSignInPrompt targetUsername={profile.username} />
+      ) : null}
 
       <PublicShelfToolbar
         username={profile.username}

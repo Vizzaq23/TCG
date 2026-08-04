@@ -167,6 +167,7 @@ components/
 | `SetProgress.tsx` | Per-set completion UI (sort / hide zero) |
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
 | `PublicShelfToolbar.tsx` | All cards / For trade toggle |
+| `ShelfMatchCard.tsx` | Visitor vs owner collection overlap snapshot |
 | `PortfolioHistory.tsx` | Snapshot chart |
 | `PortfolioHoldings.tsx` | Valued / unpriced lists |
 

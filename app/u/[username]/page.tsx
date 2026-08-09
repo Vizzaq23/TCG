@@ -20,6 +20,7 @@ import {
   ShelfMatchSignInPrompt,
   type ShelfMatchCounts,
 } from "@/components/collection/ShelfMatchCard";
+import { DailyTreasurePull } from "@/components/collection/DailyTreasurePull";
 import { TradeOfferButton } from "@/components/trades/TradeOfferButton";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
@@ -31,6 +32,10 @@ import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import type { ActivityEventRow } from "@/lib/activity";
 import { MarketPrice } from "@/components/prices/MarketPrice";
 import { shelfCardHash } from "@/lib/shelf-links";
+import {
+  selectDailyTreasure,
+  utcDateKey,
+} from "@/lib/collection/daily-treasure";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -220,9 +225,25 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     market_price_cents: marketByCardId.get(c.card_id) ?? null,
   }));
 
+  const treasure = selectDailyTreasure(profile.username, list);
+  const treasureDayLabel = new Date(`${utcDateKey()}T12:00:00.000Z`).toLocaleDateString(
+    "en-US",
+    { month: "short", day: "numeric", timeZone: "UTC" },
+  );
+
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
       <ShowcaseGlassCase cards={showcaseWithPrices} />
+
+      {treasure ? (
+        <DailyTreasurePull
+          username={profile.username}
+          treasure={treasure}
+          marketPriceCents={marketByCardId.get(treasure.card_id) ?? null}
+          accentColor={accent.swatch}
+          dayLabel={treasureDayLabel}
+        />
+      ) : null}
 
       <header
         className="space-y-4 border-b border-zinc-800/80 pb-8"

@@ -130,6 +130,30 @@ export function AccountMenu({
             </Link>
             <Link
               role="menuitem"
+              href="/shop/sell"
+              className={itemClass}
+              onClick={() => setOpen(false)}
+            >
+              Sell desk
+            </Link>
+            <Link
+              role="menuitem"
+              href="/shop/orders"
+              className={itemClass}
+              onClick={() => setOpen(false)}
+            >
+              Orders
+            </Link>
+            <Link
+              role="menuitem"
+              href="/cart"
+              className={itemClass}
+              onClick={() => setOpen(false)}
+            >
+              Cart
+            </Link>
+            <Link
+              role="menuitem"
               href="/social"
               className={itemClass}
               onClick={() => setOpen(false)}

@@ -18,6 +18,7 @@ import type { CollectionStatsRow, TradeAlertHitRow } from "@/lib/types/database"
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
+import { isShopOwner } from "@/lib/shop/config";
 
 export default async function CollectionPage() {
   if (!isSupabaseConfigured()) {
@@ -190,7 +191,11 @@ export default async function CollectionPage() {
         ) : (
           <ul className="flex flex-col gap-4">
             {rows.map((row) => (
-              <CollectionRow key={row.id} row={row} />
+              <CollectionRow
+                key={row.id}
+                row={row}
+                canListForSale={isShopOwner(user.id)}
+              />
             ))}
           </ul>
         )}

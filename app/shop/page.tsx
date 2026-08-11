@@ -1,0 +1,190 @@
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/env";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { CardImage } from "@/components/cards/CardImage";
+import { formatUsdCents } from "@/lib/money";
+import { kindLabel } from "@/lib/shop/kinds";
+import { getPublicShopSettings } from "@/lib/shop/owner";
+import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
+import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
+import { sellableQuantity } from "@/lib/shop/inventory";
+
+export const metadata = {
+  title: "Shop",
+  description: "Buy One Piece TCG singles, playsets, and bulk lots.",
+};
+
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string }>;
+}) {
+  const { kind: kindFilter } = await searchParams;
+
+  if (!isSupabaseConfigured()) {
+    return (
+      <PageContainer as="main" className="py-10">
+        <p className="text-sm text-amber-100">Configure Supabase to use the shop.</p>
+      </PageContainer>
+    );
+  }
+
+  const supabase = await createClient();
+  const settings = await getPublicShopSettings();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const owner = isShopOwner(user?.id);
+
+  let query = supabase
+    .from("shop_listings")
+    .select(
+      "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity )",
+    )
+    .eq("status", "active")
+    .gt("quantity_available", 0)
+    .order("created_at", { ascending: false });
+
+  const ownerId = getShopOwnerUserId();
+  if (ownerId) query = query.eq("owner_user_id", ownerId);
+  if (
+    kindFilter &&
+    ["single", "playset", "bulk_lot", "rarity_set"].includes(kindFilter)
+  ) {
+    query = query.eq("kind", kindFilter);
+  }
+
+  const { data: listings, error } = await query;
+
+  const withStock = [];
+  for (const listing of listings ?? []) {
+    const { data: held } = await supabase.rpc("shop_held_quantity", {
+      p_listing_id: listing.id,
+    });
+    const available = sellableQuantity(
+      listing.quantity_available,
+      typeof held === "number" ? held : 0,
+    );
+    if (available > 0) {
+      withStock.push({ ...listing, sellable: available });
+    }
+  }
+
+  return (
+    <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <SectionHeader
+          title={settings?.store_name ?? "TCG Shop"}
+          description="Singles, playsets, bulk lots, and complete common/uncommon sets. Secure checkout via Stripe."
+        />
+        <div className="flex flex-wrap gap-2">
+          <Button href="/cart" size="sm" variant="secondary">
+            Cart
+          </Button>
+          {owner ? (
+            <>
+              <Button href="/shop/sell" size="sm" variant="secondary">
+                Sell
+              </Button>
+              <Button href="/shop/orders" size="sm" variant="ghost">
+                Orders
+              </Button>
+            </>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 text-sm">
+        {[
+          { href: "/shop", label: "All" },
+          { href: "/shop?kind=single", label: "Singles" },
+          { href: "/shop?kind=playset", label: "Playsets" },
+          { href: "/shop?kind=bulk_lot", label: "Bulk" },
+          { href: "/shop?kind=rarity_set", label: "C/UC sets" },
+        ].map((f) => (
+          <Link
+            key={f.href}
+            href={f.href}
+            className="rounded-md border border-zinc-800 px-3 py-1.5 text-zinc-300 hover:border-amber-500/40 hover:text-white"
+          >
+            {f.label}
+          </Link>
+        ))}
+      </div>
+
+      {error ? (
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+          {error.message}
+        </p>
+      ) : !withStock.length ? (
+        <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
+          <p className="text-sm text-zinc-400">
+            No listings yet.{" "}
+            {owner
+              ? "Create one from your collection or the Sell page."
+              : "Check back soon."}
+          </p>
+          {owner ? (
+            <div className="mt-5 flex justify-center gap-2">
+              <Button href="/collection">My collection</Button>
+              <Button href="/shop/sell" variant="secondary">
+                Sell desk
+              </Button>
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {withStock.map((listing) => {
+            const card = listing.cards as {
+              image_url: string | null;
+              set_name: string | null;
+              rarity: string | null;
+            } | null;
+            const image = listing.image_url || card?.image_url;
+            return (
+              <li key={listing.id}>
+                <Link
+                  href={`/shop/${listing.id}`}
+                  className="flex h-full flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40 transition hover:border-amber-500/40"
+                >
+                  <div className="relative aspect-[3/4] bg-zinc-950">
+                    {image ? (
+                      <CardImage
+                        src={image}
+                        className="absolute inset-0 h-full w-full object-contain p-3"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-xs text-zinc-600">
+                        No art
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2 p-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      <Badge>{kindLabel(listing.kind)}</Badge>
+                      {listing.condition ? <Badge tone="accent">{listing.condition}</Badge> : null}
+                    </div>
+                    <p className="font-semibold text-white">{listing.title}</p>
+                    <p className="mt-auto text-sm text-amber-300">
+                      {formatUsdCents(listing.price_cents)}
+                      <span className="ml-2 text-xs text-zinc-500">
+                        · {listing.sellable} left
+                      </span>
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <ShopFooterLinks />
+    </PageContainer>
+  );
+}

@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/Badge";
 import { centsToInputValue, formatUsdCents, parseDollarsToCents } from "@/lib/money";
 import { MarketPrice } from "@/components/prices/MarketPrice";
 import { PriceLastUpdated } from "@/components/prices/PriceLastUpdated";
+import { ListForSaleButton } from "@/components/shop/ListForSaleButton";
 
 type UC = Database["public"]["Tables"]["user_collections"]["Row"];
 type Card = Database["public"]["Tables"]["cards"]["Row"];
@@ -32,9 +33,9 @@ const CONDITIONS = [
   "Damaged",
 ];
 
-type Props = { row: CollectionRowData };
+type Props = { row: CollectionRowData; canListForSale?: boolean };
 
-export function CollectionRow({ row }: Props) {
+export function CollectionRow({ row, canListForSale = false }: Props) {
   const router = useRouter();
   const card = row.cards;
   const [quantity, setQuantity] = useState(String(row.quantity));
@@ -381,6 +382,16 @@ export function CollectionRow({ row }: Props) {
         >
           {pending === "remove" ? "Removing…" : "Remove"}
         </Button>
+        {canListForSale && !isGraded ? (
+          <ListForSaleButton
+            collectionId={row.id}
+            cardName={card.name}
+            defaultCondition={row.condition}
+            suggestedPriceCents={
+              row.estimated_value_cents ?? card.market_price_cents
+            }
+          />
+        ) : null}
         {message && <p className="text-[11px] text-red-300">{message}</p>}
       </div>
     </li>

@@ -37,6 +37,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Public notes mode** — filter a shelf to cards with notes; multiline public note editor
 - **Shelf deep links** — jump from alerts / activity / compare to `#card-…` on a public shelf
 - **Public API** — JSON endpoints under `/api/v1` ([docs/API.md](./docs/API.md))
+- **Shop storefront** — list singles/playsets/bulk from your collection, cookie cart, Stripe Checkout; inventory commits on webhook ([docs/features/009-shop-storefront.md](./docs/features/009-shop-storefront.md))
 - **PWA** — installable web app
 - **Account settings** — header account menu → customize profile (display name, bio, accent, avatar)
 - **Auth** — email/password via Supabase
@@ -45,6 +46,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 
 - [Next.js](https://nextjs.org/) 16 (App Router) + React 19
 - [Supabase](https://supabase.com/) (Postgres, Auth, Storage)
+- [Stripe](https://stripe.com/) Checkout (shop payments)
 - [Tailwind CSS](https://tailwindcss.com/) 4 + Framer Motion
 
 ## Quick start
@@ -66,6 +68,9 @@ Copy `.env.local.example` → `.env.local` and set:
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only (avatar upload, catalog import, price sync) |
 | `JUSTTCG_API_KEY` | Server-only JustTCG key for market prices ([docs](https://justtcg.com/docs)) |
 | `PRICE_SYNC_SECRET` | Optional Bearer secret for `POST /api/admin/prices/refresh` (cron) |
+| `SHOP_OWNER_USER_ID` | Auth user UUID allowed to sell in the shop |
+| `NEXT_PUBLIC_APP_URL` | Public site URL for Stripe redirects |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` / `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe Checkout + webhook |
 
 **Local Supabase:** run `npm run setup` (PowerShell) to start Docker Supabase and write env values.
 

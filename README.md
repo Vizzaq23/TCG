@@ -30,6 +30,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Compare collectors** — overlap and unique cards between two usernames
 - **Shelf match** — quick overlap snapshot when visiting someone else’s public shelf
 - **Daily treasure** — one rotating shelf card spotlighted on each public profile per day
+- **Wanted poster** — playful shelf bounty + rank on public profiles
 - **Collector’s Showcase** — pin up to three prized cards or slabs on your public shelf
 - **Public profiles** — shareable `/u/you` shelf with trade filter and view analytics
 - **Social follows** — follow collectors, following activity feed, public follower/following counts

@@ -168,6 +168,7 @@ components/
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
 | `PublicShelfToolbar.tsx` | All cards / For trade / With notes tabs |
 | `ShelfMatchCard.tsx` | Visitor vs owner collection overlap snapshot |
+| `DailyTreasurePull.tsx` | Per-day spotlight card on public profiles |
 | `PortfolioHistory.tsx` | Snapshot chart |
 | `PortfolioHoldings.tsx` | Valued / unpriced lists |
 
@@ -249,6 +250,7 @@ lib/
 |------|------|
 | `auth/safe-next.ts` | Blocks open redirects (`//`, absolute URLs) |
 | `collection/set-progress.ts` | Computes owned/total per set name |
+| `collection/daily-treasure.ts` | Deterministic daily spotlight picker |
 | `justtcg/*` | API client (`x-api-key`), types, card match scoring |
 | `prices/repository.ts` | Upsert `card_prices` + denorm NM onto `cards` |
 | `prices/select-display-price.ts` | Pick display variant (NM / preferred / graded label) |

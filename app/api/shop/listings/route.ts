@@ -61,7 +61,7 @@ export async function POST(request: Request) {
   await ensureShopSettings(user.id);
 
   let cardId = body.card_id ?? null;
-  let collectionId = body.collection_id ?? null;
+  const collectionId = body.collection_id ?? null;
   let imageUrl = body.image_url ?? null;
   let condition = body.condition ?? null;
 

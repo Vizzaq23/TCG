@@ -20,6 +20,10 @@ export type CheckoutLine = {
   imageUrl: string | null;
 };
 
+export function isCheckoutPaymentConfirmed(paymentStatus: string | null): boolean {
+  return paymentStatus === "paid" || paymentStatus === "no_payment_required";
+}
+
 export async function buildCheckoutLines(
   admin: Admin,
   cart: CartState,

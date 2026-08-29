@@ -12,7 +12,10 @@ export async function proxy(request: NextRequest) {
   const requiresAuth =
     pathname.startsWith("/collection") ||
     pathname.startsWith("/social") ||
-    pathname.startsWith("/settings");
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/shop/sell") ||
+    pathname.startsWith("/shop/orders") ||
+    pathname.startsWith("/shop/reports");
 
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||

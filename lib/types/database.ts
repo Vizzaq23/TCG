@@ -258,6 +258,408 @@ export interface Database {
         };
         Relationships: [CardFk, ProfileFk];
       };
+      shop_settings: {
+        Row: {
+          id: string;
+          owner_user_id: string;
+          store_name: string;
+          support_email: string | null;
+          shipping_cents: number;
+          currency: string;
+          is_live: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_user_id: string;
+          store_name?: string;
+          support_email?: string | null;
+          shipping_cents?: number;
+          currency?: string;
+          is_live?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_user_id?: string;
+          store_name?: string;
+          support_email?: string | null;
+          shipping_cents?: number;
+          currency?: string;
+          is_live?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      shop_listings: {
+        Row: {
+          id: string;
+          owner_user_id: string;
+          kind: string;
+          title: string;
+          description: string | null;
+          condition: string | null;
+          quantity_available: number;
+          price_cents: number;
+          unit_cost_cents: number | null;
+          card_id: string | null;
+          collection_id: string | null;
+          status: string;
+          image_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_user_id: string;
+          kind: string;
+          title: string;
+          description?: string | null;
+          condition?: string | null;
+          quantity_available?: number;
+          price_cents: number;
+          unit_cost_cents?: number | null;
+          card_id?: string | null;
+          collection_id?: string | null;
+          status?: string;
+          image_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_user_id?: string;
+          kind?: string;
+          title?: string;
+          description?: string | null;
+          condition?: string | null;
+          quantity_available?: number;
+          price_cents?: number;
+          unit_cost_cents?: number | null;
+          card_id?: string | null;
+          collection_id?: string | null;
+          status?: string;
+          image_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "shop_listings_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "shop_listings_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "user_collections";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "shop_listings_owner_user_id_fkey";
+            columns: ["owner_user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      shop_listing_items: {
+        Row: {
+          id: string;
+          listing_id: string;
+          card_id: string;
+          quantity: number;
+          condition: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          listing_id: string;
+          card_id: string;
+          quantity?: number;
+          condition?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          listing_id?: string;
+          card_id?: string;
+          quantity?: number;
+          condition?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "shop_listing_items_listing_id_fkey";
+            columns: ["listing_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_listings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "shop_listing_items_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      inventory_reservations: {
+        Row: {
+          id: string;
+          order_id: string | null;
+          listing_id: string;
+          quantity: number;
+          status: string;
+          expires_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id?: string | null;
+          listing_id: string;
+          quantity: number;
+          status?: string;
+          expires_at: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string | null;
+          listing_id?: string;
+          quantity?: number;
+          status?: string;
+          expires_at?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      shop_orders: {
+        Row: {
+          id: string;
+          order_number: string;
+          owner_user_id: string;
+          buyer_email: string;
+          buyer_user_id: string | null;
+          status: string;
+          currency: string;
+          subtotal_cents: number;
+          shipping_cents: number;
+          total_cents: number;
+          stripe_checkout_session_id: string | null;
+          stripe_payment_intent_id: string | null;
+          shipping_name: string | null;
+          shipping_address: Json | null;
+          tracking_number: string | null;
+          notes: string | null;
+          paid_at: string | null;
+          shipped_at: string | null;
+          refunded_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_number: string;
+          owner_user_id: string;
+          buyer_email: string;
+          buyer_user_id?: string | null;
+          status?: string;
+          currency?: string;
+          subtotal_cents: number;
+          shipping_cents: number;
+          total_cents: number;
+          stripe_checkout_session_id?: string | null;
+          stripe_payment_intent_id?: string | null;
+          shipping_name?: string | null;
+          shipping_address?: Json | null;
+          tracking_number?: string | null;
+          notes?: string | null;
+          paid_at?: string | null;
+          shipped_at?: string | null;
+          refunded_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_number?: string;
+          owner_user_id?: string;
+          buyer_email?: string;
+          buyer_user_id?: string | null;
+          status?: string;
+          currency?: string;
+          subtotal_cents?: number;
+          shipping_cents?: number;
+          total_cents?: number;
+          stripe_checkout_session_id?: string | null;
+          stripe_payment_intent_id?: string | null;
+          shipping_name?: string | null;
+          shipping_address?: Json | null;
+          tracking_number?: string | null;
+          notes?: string | null;
+          paid_at?: string | null;
+          shipped_at?: string | null;
+          refunded_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "shop_orders_owner_user_id_fkey";
+            columns: ["owner_user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      shop_order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          listing_id: string | null;
+          title: string;
+          kind: string;
+          condition: string | null;
+          quantity: number;
+          unit_price_cents: number;
+          unit_cost_cents: number | null;
+          card_id: string | null;
+          collection_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          listing_id?: string | null;
+          title: string;
+          kind: string;
+          condition?: string | null;
+          quantity: number;
+          unit_price_cents: number;
+          unit_cost_cents?: number | null;
+          card_id?: string | null;
+          collection_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          listing_id?: string | null;
+          title?: string;
+          kind?: string;
+          condition?: string | null;
+          quantity?: number;
+          unit_price_cents?: number;
+          unit_cost_cents?: number | null;
+          card_id?: string | null;
+          collection_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "shop_order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "shop_order_items_listing_id_fkey";
+            columns: ["listing_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_listings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sales_ledger: {
+        Row: {
+          id: string;
+          order_id: string;
+          order_item_id: string;
+          sold_at: string;
+          listing_id: string | null;
+          card_id: string | null;
+          title: string;
+          quantity: number;
+          revenue_cents: number;
+          cogs_cents: number;
+          shipping_destination_state: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          order_item_id: string;
+          sold_at?: string;
+          listing_id?: string | null;
+          card_id?: string | null;
+          title: string;
+          quantity: number;
+          revenue_cents: number;
+          cogs_cents?: number;
+          shipping_destination_state?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          order_item_id?: string;
+          sold_at?: string;
+          listing_id?: string | null;
+          card_id?: string | null;
+          title?: string;
+          quantity?: number;
+          revenue_cents?: number;
+          cogs_cents?: number;
+          shipping_destination_state?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sales_ledger_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "sales_ledger_order_item_id_fkey";
+            columns: ["order_item_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_order_items";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      stripe_webhook_events: {
+        Row: {
+          id: string;
+          type: string;
+          processed_at: string;
+        };
+        Insert: {
+          id: string;
+          type: string;
+          processed_at?: string;
+        };
+        Update: {
+          id?: string;
+          type?: string;
+          processed_at?: string;
+        };
+        Relationships: [];
+      };
       collection_views: {
         Row: {
           id: string;
@@ -537,6 +939,37 @@ export interface Database {
       get_my_trade_offers: {
         Args: { p_limit?: number };
         Returns: TradeOfferContextRow[];
+      };
+      shop_held_quantity: {
+        Args: { p_listing_id: string };
+        Returns: number;
+      };
+      shop_collection_allocated_units: {
+        Args: { p_collection_id: string };
+        Returns: number;
+      };
+      shop_release_expired_reservations: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+      shop_finalize_paid_order: {
+        Args: {
+          p_order_id: string;
+          p_stripe_checkout_session_id: string;
+          p_stripe_payment_intent_id: string;
+          p_buyer_email: string;
+          p_shipping_name: string;
+          p_shipping_address: Json;
+        };
+        Returns: undefined;
+      };
+      shop_cancel_pending_order: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      shop_mark_order_refunded: {
+        Args: { p_order_id: string };
+        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

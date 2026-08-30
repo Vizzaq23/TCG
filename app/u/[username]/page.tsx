@@ -26,6 +26,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { WantedPosterFlair } from "@/components/profile/WantedPosterFlair";
 import { FollowButton } from "@/components/social/FollowButton";
 import { ProfileFollowStats } from "@/components/social/ProfileFollowStats";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
@@ -36,6 +37,7 @@ import {
   selectDailyTreasure,
   utcDateKey,
 } from "@/lib/collection/daily-treasure";
+import { computeWantedPoster } from "@/lib/wanted-poster";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -230,6 +232,10 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     "en-US",
     { month: "short", day: "numeric", timeZone: "UTC" },
   );
+  const wantedPoster = computeWantedPoster(
+    list,
+    Number(followStats.follower_count) || 0,
+  );
 
   return (
     <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
@@ -301,6 +307,14 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                 {profile.bio}
               </p>
             ) : null}
+            <div className="pt-2">
+              <WantedPosterFlair
+                displayName={titleName}
+                username={profile.username}
+                stats={wantedPoster}
+                accentColor={accent.swatch}
+              />
+            </div>
           </div>
         </div>
       </header>

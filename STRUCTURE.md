@@ -194,6 +194,7 @@ components/
 | `ProfileSettingsForm.tsx` | Username, display name, bio, accent; avatar uploads via API (`/settings`) |
 | `AvatarDropzone.tsx` | Drag/drop + file picker for photos |
 | `ProfileAvatar.tsx` | Circular avatar or accent initials |
+| `WantedPosterFlair.tsx` | Wanted-style bounty / rank on public profiles |
 
 ### `components/social/`
 
@@ -251,6 +252,7 @@ lib/
 | `auth/safe-next.ts` | Blocks open redirects (`//`, absolute URLs) |
 | `collection/set-progress.ts` | Computes owned/total per set name |
 | `collection/daily-treasure.ts` | Deterministic daily spotlight picker |
+| `wanted-poster.ts` | Shelf bounty + rank scoring for Wanted poster |
 | `justtcg/*` | API client (`x-api-key`), types, card match scoring |
 | `prices/repository.ts` | Upsert `card_prices` + denorm NM onto `cards` |
 | `prices/select-display-price.ts` | Pick display variant (NM / preferred / graded label) |

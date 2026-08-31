@@ -256,7 +256,12 @@ async function loadOrderNotificationDetails(
     currency: order.currency,
     storeName: settings.store_name,
     supportEmail: settings.support_email,
-    items,
+    items: items.map((item) => ({
+      title: item.title,
+      condition: item.condition,
+      quantity: item.quantity,
+      unitPriceCents: item.unit_price_cents,
+    })),
   };
 }
 
@@ -325,4 +330,3 @@ export async function sendPaidOrderNotifications(admin: Admin, orderId: string) 
     await sendClaimedNotification({ admin, resend, config, details, kind });
   }
 }
-

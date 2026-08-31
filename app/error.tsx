@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/Button";
 
 export default function ErrorPage({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error("Unhandled application error", error);
@@ -29,7 +29,7 @@ export default function ErrorPage({
         {error.digest ? (
           <p className="font-mono text-xs text-zinc-600">Reference: {error.digest}</p>
         ) : null}
-        <Button type="button" onClick={() => unstable_retry()}>
+        <Button type="button" onClick={() => retry()}>
           Try again
         </Button>
       </div>

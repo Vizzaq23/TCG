@@ -46,6 +46,7 @@ describe("Stripe configuration", () => {
 
 describe("order notification configuration", () => {
   const emailConfig: NodeJS.ProcessEnv = {
+    NODE_ENV: "test",
     RESEND_API_KEY: "re_test_example",
     ORDER_EMAIL_FROM: "TCG Shop <orders@example.com>",
     ORDER_NOTIFICATION_EMAIL: "ops@example.com",

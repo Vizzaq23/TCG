@@ -5,10 +5,10 @@ import * as Sentry from "@sentry/nextjs";
 
 export default function GlobalError({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  retry: () => void;
 }) {
   useEffect(() => {
     console.error("Unhandled root application error", error);
@@ -38,7 +38,7 @@ export default function GlobalError({
           </p>
           <button
             type="button"
-            onClick={() => unstable_retry()}
+            onClick={() => retry()}
             style={{
               background: "#f6c75b",
               border: 0,

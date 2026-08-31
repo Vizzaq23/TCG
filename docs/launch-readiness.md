@@ -115,8 +115,9 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
   trace sampling. Create the Sentry project, configure the DSN/source-map secrets,
   create alerts for checkout/webhook errors, and verify with a test event.
 - Enable and inspect Vercel Observability for deployment/runtime failures.
-- Upgrade the Supabase project to a plan with managed daily backups (recommended
-  minimum: Pro) and confirm its retention before taking payments.
+- The Supabase project has been upgraded to Pro. The backup API reports WAL-G
+  enabled, but no completed physical backup is listed yet. Confirm the first daily
+  restore point appears and verify its retention before taking payments.
 - Schedule a separate logical database export and a restore drill after a backup
   destination and retention policy are selected. Supabase database backups do not
   substitute for a separate copy of uploaded storage objects.
@@ -146,11 +147,12 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Configure all required Vercel environment variables listed below. The local launch
   environment currently has Supabase and market-data access only; Stripe, owner,
   rate-limit, Resend, Sentry, app-origin, and tax-control values are absent.
-- Deploy the completed commit and verify the deployment uses Next.js 16.3.4 rather
-  than the older production tree.
-- Repeat Chrome desktop/mobile checks and verify metadata, favicon, social preview,
-  `/robots.txt`, `/sitemap.xml`, security headers, auth redirects, Checkout redirects,
-  and webhook delivery on that deployed origin.
+- The hardened tree is now served by `tcg-lyart.vercel.app` and passes desktop/mobile
+  Chrome layout checks. Configure the final origin before launch: canonical, Open
+  Graph, robots host, and sitemap URLs currently use a generated Vercel deployment
+  hostname because `NEXT_PUBLIC_APP_URL` is absent.
+- Recheck auth and Checkout redirects plus webhook delivery after the final origin and
+  Vercel environment are configured.
 
 ## 2. Important after launch
 
@@ -207,10 +209,18 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Next.js 16.3.4 production build: passed; 37 static/dynamic routes generated.
 - Supabase migrations: local and remote histories match through `20250831000000`.
 - Supabase remote schema lint: no warning-level findings.
+- Supabase backup service: WAL-G enabled after the Pro upgrade; first completed backup
+  is not listed yet.
 - Production dependency audit: zero known vulnerabilities.
+- Vercel deployment: `/shop`, `/robots.txt`, `/sitemap.xml`, manifest, favicon, and
+  social image return 200 with CSP, HSTS, frame denial, MIME protection, permissions,
+  and referrer-policy headers.
+- Chrome 1440 × 900 and 390 × 844: one semantic shop heading, working skip target and
+  mobile menu, visible fail-closed messaging, and no horizontal page overflow.
 
-The final deployed Chrome and Stripe test-mode checks remain pending because the
-required Vercel/Stripe/Resend/Sentry/domain/business values are not configured.
+The deployed visual/static checks are complete. Stripe test-mode checkout, email,
+monitoring alerts, auth redirects, backup restore proof, and final-origin checks remain
+blocked by the unconfigured Vercel/Stripe/Resend/Sentry/domain/business values.
 
 ## Required Vercel environment variables
 

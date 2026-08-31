@@ -25,7 +25,7 @@ export function PortfolioSummary({
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-400/90">
           Estimated portfolio
         </p>
-        <p className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+        <p className="font-display mt-2 text-4xl font-semibold tracking-[-0.04em] text-white sm:text-5xl">
           {formatUsdCents(portfolio)}
         </p>
         <p

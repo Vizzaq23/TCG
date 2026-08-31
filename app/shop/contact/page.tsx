@@ -27,8 +27,8 @@ export default async function ContactPage() {
           </p>
         ) : (
           <p className="text-zinc-500">
-            Support email will appear here once the shop owner sets it in shop settings
-            (SHOP_OWNER profile / store configuration).
+            A customer-support contact has not yet been published. Checkout will remain
+            unavailable until it is configured.
           </p>
         )}
         <p>Include your order number whenever possible.</p>

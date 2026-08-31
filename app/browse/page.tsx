@@ -60,8 +60,8 @@ export default async function BrowsePage({
 }) {
   if (!isSupabaseConfigured()) {
     return (
-      <PageContainer as="main" className="py-10">
-        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-100">
+      <PageContainer as="main" className="py-12">
+        <p className="surface-card rounded-[18px] border-amber-500/30 p-5 text-sm text-amber-100">
           Configure Supabase in <code className="rounded bg-zinc-900 px-1">.env.local</code>{" "}
           to load the card catalog.
         </p>
@@ -78,7 +78,7 @@ export default async function BrowsePage({
 
   if (metaError) {
     return (
-      <PageContainer as="main" className="py-10">
+      <PageContainer as="main" className="py-12">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {metaError.message}
         </p>
@@ -103,7 +103,7 @@ export default async function BrowsePage({
 
   if (countError) {
     return (
-      <PageContainer as="main" className="py-10">
+      <PageContainer as="main" className="py-12">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {countError.message}
         </p>
@@ -127,7 +127,7 @@ export default async function BrowsePage({
 
   if (error) {
     return (
-      <PageContainer as="main" className="py-10">
+      <PageContainer as="main" className="py-12">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {error.message}
         </p>
@@ -136,14 +136,18 @@ export default async function BrowsePage({
   }
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
-      <SectionHeader
-        as="h1"
-        title="Browse cards"
-        description="Search and filter the catalog. Sign in to add cards to your shelf."
-      />
+    <main className="page-ambient flex flex-1 flex-col">
+      <PageContainer className="flex flex-col gap-8 py-10 sm:py-14">
+        <div className="space-y-3">
+          <p className="eyebrow">One Piece card catalog</p>
+          <SectionHeader
+            as="h1"
+            title="Find your next card"
+            description="Search by character and narrow the catalog by set, rarity, color, or card type."
+          />
+        </div>
 
-      <BrowseToolbar
+        <BrowseToolbar
         q={q}
         setName={params.set_name}
         rarity={params.rarity}
@@ -153,19 +157,22 @@ export default async function BrowsePage({
         rarityOptions={rarityOptions}
         colorOptions={colorOptions}
         typeOptions={typeOptions}
-      />
+        />
 
-      {!cards?.length ? (
-        <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/50 px-4 py-8 text-center text-sm text-zinc-400">
+        {!cards?.length ? (
+        <p className="empty-state px-5 py-16 text-center text-sm">
           No cards match these filters. Try resetting or broadening your search.
         </p>
       ) : (
         <>
-          <p className="text-sm text-zinc-500">
+          <div className="flex items-center justify-between gap-4 border-b border-zinc-800/70 pb-4">
+          <p className="text-xs font-medium uppercase tracking-[0.1em] text-zinc-500">
             Showing {(currentPage - 1) * PAGE_SIZE + 1}–
             {Math.min(currentPage * PAGE_SIZE, total)} of {total} cards
           </p>
-          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <span className="hidden text-xs text-zinc-600 sm:inline">Sorted A–Z</span>
+          </div>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
             {cards.map((card) => (
               <li key={card.id}>
                 <CardTile
@@ -189,6 +196,7 @@ export default async function BrowsePage({
           />
         </>
       )}
-    </PageContainer>
+      </PageContainer>
+    </main>
   );
 }

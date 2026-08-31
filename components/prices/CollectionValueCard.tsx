@@ -7,14 +7,15 @@ type Props = { summary: CollectionValueSummary };
 export function CollectionValueCard({ summary }: Props) {
   return (
     <section className="space-y-4">
-      <div className="rounded-[18px] border border-amber-500/25 bg-gradient-to-br from-amber-500/10 via-zinc-900/80 to-zinc-950 px-5 py-6 sm:px-7">
+      <div className="surface-card relative overflow-hidden rounded-[22px] border-amber-500/20 px-5 py-7 sm:px-7 sm:py-8">
+        <div aria-hidden className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-amber-500/10 blur-3xl" />
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-400/90">
           Estimated collection value
         </p>
-        <p className="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+        <p className="font-display relative mt-3 text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl">
           {formatUsdCents(summary.estimatedValueCents)}
         </p>
-        <p className="mt-2 max-w-xl text-xs leading-relaxed text-zinc-500">
+        <p className="relative mt-3 max-w-xl text-xs leading-relaxed text-zinc-500">
           Market price × quantity, unless you set a manual value. Graded slabs show underlying raw
           market only. Not financial advice.
         </p>
@@ -52,7 +53,7 @@ export function CollectionValueCard({ summary }: Props) {
       </div>
 
       {summary.topFive.length > 0 ? (
-        <div className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4">
+        <div className="surface-card rounded-[18px] p-5">
           <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
             Top five by value
           </p>

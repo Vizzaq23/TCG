@@ -115,6 +115,7 @@ describe("justtcg helpers", () => {
         {
           name: "Monkey D. Luffy",
           number: "OP01-001",
+          set: "op01",
           variants: [],
         },
         { cardNumber: "OP01-001", name: "Monkey D. Luffy" },

@@ -7,6 +7,7 @@
     "build": "node scripts/node-system-ca.mjs ./node_modules/next/dist/bin/next build",
     "start": "node scripts/node-system-ca.mjs ./node_modules/next/dist/bin/next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "import:catalog": "node scripts/node-system-ca.mjs --import tsx scripts/import-catalog.ts",

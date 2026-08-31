@@ -13,9 +13,9 @@ export function PortfolioHoldings({ valued, unpriced }: Props) {
   return (
     <div className="space-y-8">
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold text-white">Top holdings</h2>
+        <h2 className="font-display text-xl font-semibold text-white">Top holdings</h2>
         {!valued.length ? (
-          <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+          <p className="empty-state px-4 py-8 text-center text-sm">
             No priced cards yet. Open{" "}
             <Link href="/collection" className="text-amber-400 underline-offset-2 hover:underline">
               My collection
@@ -27,7 +27,7 @@ export function PortfolioHoldings({ valued, unpriced }: Props) {
             {valued.map((h, index) => (
               <li
                 key={h.id}
-                className="flex items-center gap-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-3 py-2.5 sm:gap-4 sm:px-4"
+                className="surface-card flex items-center gap-3 rounded-[16px] px-3 py-3 transition hover:border-zinc-700 sm:gap-4 sm:px-4"
               >
                 <span className="w-6 flex-shrink-0 text-center text-xs tabular-nums text-zinc-500">
                   {index + 1}
@@ -75,7 +75,7 @@ export function PortfolioHoldings({ valued, unpriced }: Props) {
 
       {unpriced.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="font-display text-xl font-semibold text-white">
             Unpriced ({unpriced.length})
           </h2>
           <p className="text-sm text-zinc-500">

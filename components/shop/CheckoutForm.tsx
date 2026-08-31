@@ -55,7 +55,11 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
       >
         Continue to Stripe Checkout
       </Button>
-      {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-red-300">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

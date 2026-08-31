@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
@@ -10,7 +9,9 @@ import { getPublicShopSettings } from "@/lib/shop/owner";
 import { CartLineControls } from "@/components/shop/CartLineControls";
 import { CheckoutForm } from "@/components/shop/CheckoutForm";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
-import { isStripeConfigured } from "@/lib/shop/config";
+import { getCheckoutConfigurationError } from "@/lib/shop/config";
+import { tryCreateAdminClient } from "@/lib/supabase/admin";
+import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 
 export const metadata = { title: "Cart" };
 
@@ -21,15 +22,14 @@ export default async function CartPage({
 }) {
   const { cancelled } = await searchParams;
   const cart = await readCartCookie();
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const admin = tryCreateAdminClient();
+  const user = await getVerifiedServerUser();
   const settings = await getPublicShopSettings();
 
   const lines = [];
   for (const item of cart.items) {
-    const { data: listing } = await supabase
+    if (!admin) break;
+    const { data: listing } = await admin
       .from("shop_listings")
       .select(
         "id, title, price_cents, quantity_available, status, image_url, cards ( image_url )",
@@ -37,7 +37,7 @@ export default async function CartPage({
       .eq("id", item.listingId)
       .maybeSingle();
     if (!listing || listing.status !== "active") continue;
-    const { data: held } = await supabase.rpc("shop_held_quantity", {
+    const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });
     const sellable = sellableQuantity(
@@ -55,12 +55,22 @@ export default async function CartPage({
   }
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
-  const shipping = settings?.shipping_cents ?? 500;
-  const total = subtotal + (lines.length ? shipping : 0);
+  const shipping = settings?.shipping_cents ?? null;
+  const total = subtotal + (lines.length ? shipping ?? 0 : 0);
+  const checkoutConfigurationError = getCheckoutConfigurationError();
+  const checkoutReady =
+    Boolean(
+      settings?.is_live &&
+        settings.launch_ready_at &&
+        settings.support_email &&
+        shipping != null,
+    ) &&
+    !checkoutConfigurationError;
 
   return (
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
       <SectionHeader
+        as="h1"
         title="Cart"
         description="Guest checkout is supported. Shipping address is collected on Stripe."
       />
@@ -123,17 +133,19 @@ export default async function CartPage({
               </div>
               <div className="mt-2 flex justify-between text-zinc-400">
                 <span>Shipping (US flat)</span>
-                <span>{formatUsdCents(shipping)}</span>
+                <span>
+                  {shipping == null ? "Not configured" : formatUsdCents(shipping)}
+                </span>
               </div>
               <div className="mt-3 flex justify-between border-t border-zinc-800 pt-3 font-semibold text-white">
                 <span>Total</span>
                 <span>{formatUsdCents(total)}</span>
               </div>
             </div>
-            {!isStripeConfigured() ? (
+            {!checkoutReady ? (
               <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
-                Stripe keys are not configured yet. Add STRIPE_SECRET_KEY and
-                NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY to enable checkout.
+                Checkout is not open yet. Store payment, shipping, and tax settings
+                must be completed before orders can be accepted.
               </p>
             ) : (
               <CheckoutForm defaultEmail={user?.email ?? ""} />

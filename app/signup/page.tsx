@@ -32,9 +32,11 @@ export default async function SignupPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="page-ambient mx-auto flex w-full max-w-md flex-1 flex-col gap-8 px-4 py-16 sm:px-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-white">Create account</h1>
+    <main className="page-ambient flex flex-1 items-center justify-center px-4 py-12 sm:px-6 sm:py-20">
+      <section className="surface-card w-full max-w-md rounded-[24px] p-6 sm:p-8">
+      <div className="mb-8 space-y-3">
+        <p className="eyebrow">Start collecting</p>
+        <h1 className="font-display text-3xl font-semibold tracking-[-0.04em] text-white">Create your shelf</h1>
         <p className="mt-2 text-sm text-zinc-400">
           Already have an account?{" "}
           <Link
@@ -46,6 +48,7 @@ export default async function SignupPage({ searchParams }: Props) {
         </p>
       </div>
       <SignupForm nextPath={nextPath} />
+      </section>
     </main>
   );
 }

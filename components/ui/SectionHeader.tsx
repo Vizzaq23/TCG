@@ -19,21 +19,21 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
+        "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
         className,
       )}
     >
-      <div className="min-w-0 space-y-1">
+      <div className="min-w-0 space-y-2">
         <TitleTag
           className={cn(
-            "font-semibold tracking-tight text-white",
-            TitleTag === "h1" ? "text-2xl sm:text-3xl" : "text-sm",
+            "font-display font-semibold tracking-[-0.035em] text-white",
+            TitleTag === "h1" ? "text-3xl sm:text-4xl" : "text-xl sm:text-2xl",
           )}
         >
           {title}
         </TitleTag>
         {description ? (
-          <p className="max-w-2xl text-sm text-zinc-400">{description}</p>
+          <p className="max-w-2xl text-sm leading-relaxed text-zinc-400 sm:text-[15px]">{description}</p>
         ) : null}
       </div>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}

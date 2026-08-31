@@ -28,20 +28,20 @@ export function BrowseToolbar({
 }: Props) {
   return (
     <form
-      className="flex flex-col gap-3 rounded-[14px] border border-zinc-800/80 bg-zinc-900/30 p-4 sm:flex-row sm:flex-wrap sm:items-end"
+      className="surface-card grid gap-4 rounded-[20px] p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-[minmax(15rem,1.7fr)_repeat(4,minmax(7rem,1fr))_auto] lg:items-end"
       method="get"
       action="/browse"
     >
-      <label className="flex min-w-[12rem] flex-1 flex-col gap-1.5 text-xs text-zinc-400">
-        Search name
+      <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
+        Search cards
         <Input
           name="q"
           defaultValue={q}
-          placeholder="Luffy, Shanks…"
+          placeholder="Name or character…"
           className="placeholder:text-zinc-600"
         />
       </label>
-      <label className="flex min-w-[9rem] flex-col gap-1.5 text-xs text-zinc-400">
+      <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
         Set
         <Select name="set_name" defaultValue={setName}>
           <option value="">All sets</option>
@@ -52,7 +52,7 @@ export function BrowseToolbar({
           ))}
         </Select>
       </label>
-      <label className="flex min-w-[8rem] flex-col gap-1.5 text-xs text-zinc-400">
+      <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
         Rarity
         <Select name="rarity" defaultValue={rarity}>
           <option value="">All</option>
@@ -63,7 +63,7 @@ export function BrowseToolbar({
           ))}
         </Select>
       </label>
-      <label className="flex min-w-[8rem] flex-col gap-1.5 text-xs text-zinc-400">
+      <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
         Color
         <Select name="color" defaultValue={color}>
           <option value="">All</option>
@@ -74,7 +74,7 @@ export function BrowseToolbar({
           ))}
         </Select>
       </label>
-      <label className="flex min-w-[8rem] flex-col gap-1.5 text-xs text-zinc-400">
+      <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
         Type
         <Select name="type" defaultValue={type}>
           <option value="">All</option>
@@ -85,11 +85,11 @@ export function BrowseToolbar({
           ))}
         </Select>
       </label>
-      <div className="flex gap-2">
-        <Button type="submit" size="md">
-          Apply
+      <div className="flex gap-2 sm:col-span-2 lg:col-span-1">
+        <Button type="submit" size="md" className="flex-1 lg:flex-none">
+          Apply filters
         </Button>
-        <Button href="/browse" variant="secondary" size="md">
+        <Button href="/browse" variant="ghost" size="md">
           Reset
         </Button>
       </div>

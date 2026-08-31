@@ -9,17 +9,11 @@ export default function ShippingPage() {
       <h1 className="text-2xl font-semibold text-white">Shipping</h1>
       <div className="max-w-2xl space-y-3 text-sm leading-relaxed text-zinc-300">
         <p>
-          We currently ship within the United States. A flat shipping rate is added at
-          checkout (shown in your cart before you pay).
+          The store&apos;s shipping regions, charges, carrier, handling time, and
+          packaging commitments have not yet been finalized.
         </p>
-        <p>
-          Orders are packed after payment clears. You will receive tracking when the
-          order is marked shipped. Typical handling is 1–3 business days unless otherwise
-          noted on a listing.
-        </p>
-        <p>
-          Cards are sleeved and packed to prevent bending. Bulk lots ship in sealed bags
-          or boxes depending on size.
+        <p className="text-amber-200">
+          Checkout will remain unavailable until the merchant publishes this policy.
         </p>
       </div>
       <ShopFooterLinks />

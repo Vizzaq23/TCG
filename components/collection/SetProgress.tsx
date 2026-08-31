@@ -63,10 +63,10 @@ export function SetProgress({ items }: Props) {
             <li
               key={item.setName}
               className={cn(
-                "rounded-[14px] border px-4 py-3",
+                "rounded-[16px] border px-4 py-3.5 transition hover:border-zinc-700",
                 complete
                   ? "border-amber-500/30 bg-amber-500/5"
-                  : "border-zinc-800 bg-zinc-900/40",
+                  : "border-zinc-800 bg-zinc-900/55",
               )}
             >
               <div className="flex items-start justify-between gap-2">
@@ -80,7 +80,7 @@ export function SetProgress({ items }: Props) {
                   )}
                 </p>
               </div>
-              <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-zinc-800/90">
+              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-zinc-800/90">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all",

@@ -26,13 +26,13 @@ export function MarketPrice({
       <p
         className={cn(
           "font-semibold tabular-nums tracking-tight",
-          size === "sm" ? "text-sm" : "text-base",
+          size === "sm" ? "font-display text-base" : "font-display text-2xl",
           missing ? "text-zinc-500" : "text-amber-200",
         )}
       >
         {missing ? "—" : formatUsdCents(cents)}
       </p>
-      <p className="truncate text-[10px] uppercase tracking-wide text-zinc-500">
+      <p className="mt-1 truncate text-[9px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
         {missing ? "Price unavailable" : label}
         {!missing && condition ? ` · ${condition}` : ""}
         {!missing && printing && printing.toLowerCase() !== "normal" ? ` · ${printing}` : ""}

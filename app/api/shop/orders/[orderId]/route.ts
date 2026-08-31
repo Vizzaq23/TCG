@@ -7,7 +7,7 @@ import { getStripe } from "@/lib/shop/stripe";
 export const runtime = "nodejs";
 
 type Body = {
-  status?: "packed" | "shipped" | "paid";
+  status?: "packed" | "shipped";
   tracking_number?: string | null;
   notes?: string | null;
   refund?: boolean;
@@ -46,6 +46,18 @@ export async function PATCH(
   }
 
   if (body.refund) {
+    const admin = createAdminClient();
+    if (order.payment_status === "refunded") {
+      if (body.restock) {
+        const { error } = await admin.rpc("shop_restock_refunded_order", {
+          p_order_id: order.id,
+        });
+        if (error) {
+          return NextResponse.json({ error: "Restock failed." }, { status: 500 });
+        }
+      }
+      return NextResponse.json({ ok: true, status: "refunded" });
+    }
     if (!isStripeConfigured() || !order.stripe_payment_intent_id) {
       return NextResponse.json(
         { error: "Cannot refund: missing Stripe payment." },
@@ -60,36 +72,48 @@ export async function PATCH(
     }
 
     const stripe = getStripe();
-    await stripe.refunds.create({
-      payment_intent: order.stripe_payment_intent_id,
-      metadata: { order_id: order.id, order_number: order.order_number },
-    });
+    try {
+      await stripe.refunds.create(
+        {
+          payment_intent: order.stripe_payment_intent_id,
+          metadata: { order_id: order.id, order_number: order.order_number },
+        },
+        { idempotencyKey: `full-refund-${order.id}` },
+      );
+    } catch (error) {
+      console.error("Stripe refund failed:", order.id, error);
+      return NextResponse.json(
+        { error: "Stripe could not confirm the refund. No order state changed." },
+        { status: 502 },
+      );
+    }
 
     // Webhook will mark refunded; also mark immediately for UX.
-    const admin = createAdminClient();
-    await admin.rpc("shop_mark_order_refunded", { p_order_id: order.id });
+    const { error: refundStateError } = await admin.rpc(
+      "shop_mark_order_refunded",
+      { p_order_id: order.id },
+    );
+    if (refundStateError) {
+      console.error("Refund succeeded but local state update failed:", order.id);
+      return NextResponse.json(
+        {
+          error:
+            "Refund succeeded in Stripe, but the local status update failed. Retry this action to reconcile the order.",
+        },
+        { status: 500 },
+      );
+    }
 
     if (body.restock) {
-      const { data: items } = await admin
-        .from("shop_order_items")
-        .select("listing_id, quantity, collection_id, kind")
-        .eq("order_id", order.id);
-
-      for (const item of items ?? []) {
-        if (!item.listing_id) continue;
-        const { data: listing } = await admin
-          .from("shop_listings")
-          .select("id, quantity_available, status")
-          .eq("id", item.listing_id)
-          .maybeSingle();
-        if (!listing) continue;
-        await admin
-          .from("shop_listings")
-          .update({
-            quantity_available: listing.quantity_available + item.quantity,
-            status: listing.status === "archived" ? "active" : listing.status,
-          })
-          .eq("id", listing.id);
+      const { error: restockError } = await admin.rpc(
+        "shop_restock_refunded_order",
+        { p_order_id: order.id },
+      );
+      if (restockError) {
+        return NextResponse.json(
+          { error: "Refund succeeded, but inventory was not restocked." },
+          { status: 500 },
+        );
       }
     }
 
@@ -98,6 +122,7 @@ export async function PATCH(
 
   const patch: {
     status?: string;
+    fulfillment_status?: string;
     tracking_number?: string | null;
     notes?: string | null;
     shipped_at?: string | null;
@@ -110,10 +135,14 @@ export async function PATCH(
     patch.notes = body.notes?.trim() || null;
   }
   if (body.status) {
-    if (!["packed", "shipped", "paid"].includes(body.status)) {
+    const validTransition =
+      (order.status === "paid" && ["packed", "shipped"].includes(body.status)) ||
+      (order.status === "packed" && body.status === "shipped");
+    if (!validTransition) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
     patch.status = body.status;
+    patch.fulfillment_status = body.status;
     if (body.status === "shipped") {
       patch.shipped_at = new Date().toISOString();
     }

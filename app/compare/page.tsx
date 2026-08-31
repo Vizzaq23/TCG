@@ -45,12 +45,15 @@ export default async function ComparePage({ searchParams }: Props) {
   const both = rows.filter((r) => r.owned_by_a && r.owned_by_b);
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-8 py-10 sm:py-14">
+      <div className="space-y-3">
+      <p className="eyebrow">Shelf comparison</p>
       <SectionHeader
         as="h1"
         title="Compare collectors"
         description="See set overlap, unique cards, and gaps between two public shelves."
       />
+      </div>
       <CompareForm defaultA={usernameA} defaultB={usernameB} />
 
       {errorMessage ? (
@@ -106,11 +109,11 @@ function CompareSection({
 }) {
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold text-white">{title}</h2>
+      <h2 className="font-display text-xl font-semibold text-white">{title}</h2>
       {!rows.length ? (
-        <p className="text-sm text-zinc-500">None</p>
+        <p className="empty-state px-4 py-6 text-sm">None</p>
       ) : (
-        <ul className="max-h-72 divide-y divide-zinc-800/80 overflow-auto rounded-[14px] border border-zinc-800">
+        <ul className="surface-card max-h-72 divide-y divide-zinc-800/80 overflow-auto rounded-[18px]">
           {rows.slice(0, 100).map((row) => (
             <li
               key={row.card_id}

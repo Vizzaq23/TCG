@@ -138,7 +138,7 @@ export function CollectionRow({ row, canListForSale = false }: Props) {
   const previewGraded = isGraded && gradingCompany && grade;
 
   return (
-    <li className="flex flex-col gap-4 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row">
+    <li className="surface-card flex flex-col gap-5 rounded-[20px] p-4 transition duration-200 hover:border-zinc-700 sm:flex-row sm:p-5">
       <div className="flex gap-3 sm:w-72 sm:flex-shrink-0">
         {previewGraded ? (
           <GradedSlab
@@ -171,7 +171,7 @@ export function CollectionRow({ row, canListForSale = false }: Props) {
           </div>
         )}
         <div className="min-w-0 flex-1 space-y-1.5">
-          <p className="font-semibold text-white">{card.name}</p>
+          <p className="font-display font-semibold tracking-[-0.02em] text-white">{card.name}</p>
           <p className="text-xs text-zinc-500">
             {[card.set_name, card.card_number].filter(Boolean).join(" · ")}
           </p>

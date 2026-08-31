@@ -76,7 +76,9 @@ export default async function PortfolioPage() {
     .at(-1) as string | undefined;
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-10 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-10 py-10 sm:py-14">
+      <div className="space-y-3">
+      <p className="eyebrow">Collection intelligence</p>
       <SectionHeader
         as="h1"
         title="Portfolio"
@@ -92,8 +94,9 @@ export default async function PortfolioPage() {
           </>
         }
       />
+      </div>
 
-      <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-3">
+      <div className="surface-muted flex flex-wrap items-baseline justify-between gap-2 rounded-[16px] px-4 py-3.5">
         <p className="text-sm text-zinc-400">
           Market prices refresh on a schedule — this page never calls the pricing API live.
         </p>
@@ -109,7 +112,7 @@ export default async function PortfolioPage() {
       ) : (
         <>
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-white">Value chart</h2>
+            <h2 className="font-display text-xl font-semibold text-white">Value chart</h2>
             <PortfolioHistory snapshots={(snapshots ?? []) as PortfolioSnapshot[]} />
           </section>
           <PortfolioHoldings valued={valued} unpriced={unpriced} />

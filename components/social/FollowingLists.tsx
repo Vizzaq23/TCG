@@ -15,14 +15,14 @@ function CollectorList({
 }) {
   if (!items.length) {
     return (
-      <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+      <p className="empty-state px-4 py-7 text-center text-sm">
         {empty}
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-zinc-800/80 overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40">
+    <ul className="surface-card divide-y divide-zinc-800/80 overflow-hidden rounded-[18px]">
       {items.map((c) => (
         <CollectorRow key={c.id} collector={c} />
       ))}

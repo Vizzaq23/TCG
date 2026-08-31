@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isShopOwner } from "@/lib/shop/config";
 import { maxListableUnits } from "@/lib/shop/inventory";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -30,7 +31,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const { data: allocated } = await supabase.rpc("shop_collection_allocated_units", {
+  const admin = createAdminClient();
+  const { data: allocated } = await admin.rpc("shop_collection_allocated_units", {
     p_collection_id: collectionId,
   });
   const already = typeof allocated === "number" ? allocated : 0;

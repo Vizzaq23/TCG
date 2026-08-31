@@ -78,7 +78,7 @@ export function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-[14px] border border-zinc-800/80 bg-zinc-900/40",
+        "overflow-hidden rounded-[20px] border border-zinc-800/80 bg-zinc-900/40",
         className,
       )}
     >
@@ -97,7 +97,7 @@ export function SkeletonStat({ className }: SkeletonStatProps) {
   return (
     <div
       className={cn(
-        "rounded-[14px] border border-zinc-800/90 bg-zinc-900/40 px-4 py-3.5",
+        "rounded-[18px] border border-zinc-800/90 bg-zinc-900/40 px-4 py-3.5",
         className,
       )}
     >
@@ -154,7 +154,7 @@ export function PageSkeleton({
     return (
       <div
         className={cn(
-          "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-4 py-10 sm:px-6 sm:py-14",
+          "mx-auto flex w-full max-w-7xl flex-1 flex-col gap-12 px-4 py-10 sm:px-6 sm:py-14 lg:px-8",
           className,
         )}
         role="status"
@@ -191,7 +191,7 @@ export function PageSkeleton({
     return (
       <div
         className={cn(
-          "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10",
+          "mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10 lg:px-8",
           className,
         )}
         role="status"
@@ -217,7 +217,7 @@ export function PageSkeleton({
     return (
       <div
         className={cn(
-          "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-4 py-8 sm:px-6 sm:py-10",
+          "mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-8 sm:px-6 sm:py-10 lg:px-8",
           className,
         )}
         role="status"
@@ -254,7 +254,7 @@ export function PageSkeleton({
     return (
       <div
         className={cn(
-          "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8",
+          "mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:px-8",
           className,
         )}
         role="status"
@@ -280,7 +280,7 @@ export function PageSkeleton({
   return (
     <div
       className={cn(
-        "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6",
+        "mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8",
         className,
       )}
       role="status"

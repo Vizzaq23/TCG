@@ -13,14 +13,14 @@ type Props = { events: FollowingActivityRow[] };
 export function SocialActivityFeed({ events }: Props) {
   if (!events.length) {
     return (
-      <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+      <p className="empty-state px-4 py-7 text-center text-sm">
         No activity from people you follow yet.
       </p>
     );
   }
 
   return (
-    <ol className="space-y-0 divide-y divide-zinc-800/80 overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40">
+    <ol className="surface-card space-y-0 divide-y divide-zinc-800/80 overflow-hidden rounded-[18px]">
       {events.map((event) => {
         const actorName = event.actor_display_name ?? event.actor_username;
         const activity: ActivityEventRow = {

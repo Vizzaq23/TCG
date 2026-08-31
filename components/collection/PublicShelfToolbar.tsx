@@ -33,7 +33,7 @@ export function PublicShelfToolbar({
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="flex flex-wrap gap-1 rounded-[12px] border border-zinc-800 bg-zinc-900/60 p-1">
+      <div className="surface-card flex flex-wrap gap-1 rounded-[14px] p-1.5">
         <Link
           href={base}
           className={cn(

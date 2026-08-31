@@ -8,9 +8,10 @@ import { AccountMenu } from "@/components/layout/AccountMenu";
 import { Button } from "@/components/ui/Button";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import { cn } from "@/lib/cn";
+import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 
 export async function SiteHeader() {
-  let user: { email?: string } | null = null;
+  let user: { id: string; email?: string } | null = null;
   let profile: {
     username: string;
     display_name: string | null;
@@ -19,14 +20,13 @@ export async function SiteHeader() {
   } | null = null;
 
   if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-    if (data.user) {
+    user = await getVerifiedServerUser();
+    if (user) {
+      const supabase = await createClient();
       const { data: prof } = await supabase
         .from("profiles")
         .select("username, display_name, avatar_url, accent")
-        .eq("id", data.user.id)
+        .eq("id", user.id)
         .maybeSingle();
       profile = prof;
     }
@@ -37,29 +37,31 @@ export async function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:h-[4.25rem] sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-zinc-800/70 bg-zinc-950/82 shadow-[0_10px_40px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+      <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-[4.5rem] lg:px-8">
         <Link
           href="/"
+          prefetch={false}
           className={cn(
-            "group flex items-center gap-2 rounded-md text-sm font-semibold tracking-tight text-white sm:text-[15px]",
+            "group font-display flex shrink-0 items-center gap-2.5 rounded-lg text-sm font-semibold tracking-[-0.02em] text-white sm:text-[15px]",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
           )}
         >
           <span
             aria-hidden
-            className="h-5 w-0.5 rounded-full bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.45)]"
-          />
+            className="grid size-8 place-items-center rounded-[10px] border border-amber-500/30 bg-amber-500/10 text-[10px] font-bold tracking-wide text-amber-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_24px_rgba(246,199,91,0.08)]"
+          >
+            OP
+          </span>
           <span>
-            One Piece{" "}
-            <span className="text-zinc-400 group-hover:text-zinc-300">TCG Shelf</span>
+            One Piece <span className="hidden text-zinc-400 transition group-hover:text-zinc-300 sm:inline">TCG Shelf</span>
           </span>
         </Link>
 
         <div className="flex items-center gap-1 sm:gap-2">
           <HeaderNav />
           {user ? (
-            <div className="flex items-center border-l border-zinc-800 pl-2 sm:pl-3">
+            <div className="flex items-center border-l border-zinc-800/80 pl-2 sm:pl-3">
               {profile ? (
                 <AccountMenu
                   username={profile.username}

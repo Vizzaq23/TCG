@@ -9,17 +9,11 @@ export default function ReturnsPage() {
       <h1 className="text-2xl font-semibold text-white">Returns</h1>
       <div className="max-w-2xl space-y-3 text-sm leading-relaxed text-zinc-300">
         <p>
-          If your order arrives damaged or incorrect, contact us within 7 days of
-          delivery with photos and your order number. We will refund or replace eligible
-          items.
+          The store&apos;s return window, eligibility rules, cancellation process, and
+          refund timing have not yet been finalized.
         </p>
-        <p>
-          Opened sealed product and buyer&apos;s-remorse returns on singletons are not
-          accepted unless required by law. Condition notes on listings are part of the
-          sale.
-        </p>
-        <p>
-          Approved refunds are issued to the original payment method via Stripe.
+        <p className="text-amber-200">
+          Checkout will remain unavailable until the merchant publishes this policy.
         </p>
       </div>
       <ShopFooterLinks />

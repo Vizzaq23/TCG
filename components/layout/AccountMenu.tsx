@@ -65,7 +65,7 @@ export function AccountMenu({
         aria-controls={menuId}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex max-w-[11rem] items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition",
+          "flex max-w-[11rem] items-center gap-2 rounded-[12px] border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition",
           "hover:border-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
           open && "border-amber-500/40",
         )}
@@ -96,7 +96,7 @@ export function AccountMenu({
           id={menuId}
           role="menu"
           aria-label="Account"
-          className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-950 py-1.5 shadow-2xl shadow-black/50"
+          className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-[16px] border border-zinc-800 bg-zinc-950/98 py-1.5 shadow-[0_24px_64px_rgba(0,0,0,0.55)] backdrop-blur-xl"
         >
           <div className="border-b border-zinc-800 px-3 py-2.5">
             <p className="truncate text-sm font-medium text-white">{label}</p>

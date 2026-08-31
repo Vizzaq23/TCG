@@ -27,13 +27,13 @@ function buildHref(
 }
 
 const linkClass = cn(
-  "inline-flex min-w-9 items-center justify-center rounded-[12px] border border-zinc-700 px-3 py-1.5 text-sm font-medium text-zinc-200 transition",
-  "hover:border-zinc-500 hover:bg-zinc-900",
+  "inline-flex min-h-10 min-w-10 items-center justify-center rounded-[12px] border border-zinc-700 bg-zinc-950/60 px-3 py-1.5 text-sm font-medium text-zinc-200 transition",
+  "hover:-translate-y-0.5 hover:border-zinc-500 hover:bg-zinc-900",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
 );
 
 const activeClass = cn(
-  "inline-flex min-w-9 items-center justify-center rounded-[12px] border border-amber-500/60 bg-amber-500/10 px-3 py-1.5 text-sm font-semibold text-amber-200",
+  "inline-flex min-h-10 min-w-10 items-center justify-center rounded-[12px] border border-amber-500/50 bg-amber-500/12 px-3 py-1.5 text-sm font-semibold text-amber-200",
 );
 
 export function Pagination({
@@ -56,7 +56,7 @@ export function Pagination({
 
   return (
     <nav
-      className="flex flex-wrap items-center justify-center gap-2"
+      className="flex flex-wrap items-center justify-center gap-2 border-t border-zinc-800/70 pt-8"
       aria-label="Pagination"
     >
       {prevPage ? (

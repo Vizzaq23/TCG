@@ -46,16 +46,16 @@ export function SuggestedCollectors({ suggestions, errorMessage }: Props) {
           not yet.
         </p>
       ) : !suggestions.length ? (
-        <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+        <p className="empty-state px-4 py-7 text-center text-sm">
           No suggestions yet. Add cards to your collection or search for
           collectors above.
         </p>
       ) : (
-        <ul className="divide-y divide-zinc-800/80 overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40">
+        <ul className="surface-card divide-y divide-zinc-800/80 overflow-hidden rounded-[18px]">
           {suggestions.map((row) => {
             const title = row.display_name ?? row.username;
             return (
-              <li key={row.id} className="flex items-center gap-3 px-4 py-3">
+              <li key={row.id} className="flex items-center gap-3 px-4 py-3.5 transition hover:bg-white/[0.02]">
                 <Link
                   href={`/u/${encodeURIComponent(row.username)}`}
                   className="flex min-w-0 flex-1 items-center gap-3 rounded-md outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-amber-500/40"
@@ -66,7 +66,7 @@ export function SuggestedCollectors({ suggestions, errorMessage }: Props) {
                     size="md"
                   />
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-white">
+                    <p className="font-display truncate text-sm font-medium text-white">
                       {title}
                     </p>
                     <p className="truncate text-xs text-zinc-400">

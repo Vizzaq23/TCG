@@ -60,7 +60,9 @@ export default async function TradesPage() {
   );
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-8 py-10 sm:py-14">
+      <div className="space-y-3">
+      <p className="eyebrow">Trade desk</p>
       <SectionHeader
         as="h1"
         title="Trade offers"
@@ -76,6 +78,7 @@ export default async function TradesPage() {
           </>
         }
       />
+      </div>
       {error ? (
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {error.message}. Apply the trade offer context migration if you have not yet.

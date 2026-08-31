@@ -11,7 +11,7 @@ export function PageContainer({ children, className, as: Tag = "div" }: Props) {
   return (
     <Tag
       className={cn(
-        "mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6",
+        "mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8",
         className,
       )}
     >

@@ -7,7 +7,7 @@ type Props = { snapshots: PortfolioSnapshot[] };
 export function PortfolioHistory({ snapshots }: Props) {
   if (snapshots.length === 0) {
     return (
-      <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+      <p className="empty-state px-4 py-8 text-center text-sm">
         Value history appears after you save estimated prices. Snapshots are recorded daily when
         your portfolio changes.
       </p>
@@ -22,7 +22,7 @@ export function PortfolioHistory({ snapshots }: Props) {
     <div className="space-y-4">
       <PortfolioValueChart snapshots={snapshots} />
 
-      <div className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:p-5">
+      <div className="surface-card rounded-[18px] p-4 sm:p-5">
         <p className="mb-3 text-[11px] font-medium uppercase tracking-wide text-zinc-500">
           Recent snapshots
         </p>

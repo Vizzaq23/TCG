@@ -178,9 +178,9 @@ function ProfileSettingsFormInner({ profile }: Props) {
   }
 
   return (
-    <div className="space-y-6 rounded-[16px] border border-zinc-800/80 bg-zinc-950/40 p-4 sm:p-6">
+    <div className="surface-card space-y-8 rounded-[22px] p-5 sm:p-7">
       <div className="space-y-2">
-        <p className="text-sm font-medium text-zinc-200">Profile photo</p>
+        <p className="font-display text-lg font-semibold text-zinc-100">Profile photo</p>
         <AvatarDropzone
           previewSrc={previewSrc}
           name={previewName}
@@ -237,7 +237,7 @@ function ProfileSettingsFormInner({ profile }: Props) {
             maxLength={280}
             rows={3}
             placeholder="What you collect, trade for, or hunt…"
-            className="rounded-[12px] border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white outline-none transition focus-visible:border-amber-500/60 focus-visible:ring-2 focus-visible:ring-amber-500/25"
+            className="min-h-28 rounded-[12px] border border-zinc-700 bg-zinc-950/80 px-3.5 py-3 text-sm text-white outline-none transition focus-visible:border-amber-500/60 focus-visible:ring-2 focus-visible:ring-amber-500/25"
           />
         </Field>
 

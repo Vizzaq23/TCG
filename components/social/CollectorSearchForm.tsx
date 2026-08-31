@@ -6,11 +6,11 @@ type Props = { q?: string };
 export function CollectorSearchForm({ q = "" }: Props) {
   return (
     <form
-      className="flex flex-col gap-3 rounded-[14px] border border-zinc-800/80 bg-zinc-900/30 p-4 sm:flex-row sm:items-end"
+      className="surface-card flex flex-col gap-4 rounded-[18px] p-5 sm:flex-row sm:items-end"
       method="get"
       action="/social"
     >
-      <label className="flex min-w-[12rem] flex-1 flex-col gap-1.5 text-xs text-zinc-400">
+      <label className="flex min-w-[12rem] flex-1 flex-col gap-2 text-xs font-medium text-zinc-300">
         Search collectors
         <Input
           name="q"

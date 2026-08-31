@@ -232,7 +232,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   );
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-6 sm:py-8">
+    <PageContainer as="main" className="flex flex-col gap-10 py-8 sm:py-12">
       <ShowcaseGlassCase cards={showcaseWithPrices} />
 
       {treasure ? (
@@ -267,7 +267,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
             </p>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0 space-y-2">
-                <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                <h1 className="font-display text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
                   {titleName}
                 </h1>
                 <p className="text-sm text-zinc-400">@{profile.username}</p>
@@ -333,7 +333,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
       </section>
 
       {!filtered.length ? (
-        <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
+        <p className="empty-state px-4 py-10 text-center text-sm">
           {tradeOnly
             ? "No cards are marked for trade right now."
             : notesOnly
@@ -341,7 +341,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
               : "This collector has not added any cards yet."}
         </p>
       ) : (
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-5">
           {filtered.map((row) => {
             const graded = isGradedEntry(row);
             return (
@@ -350,10 +350,10 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                 id={shelfCardHash(row.card_id)}
                 className="shelf-card-anchor"
               >
-                <article className="flex flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/60 transition hover:border-zinc-700">
+                <article className="surface-card group flex h-full flex-col overflow-hidden rounded-[20px] transition duration-200 hover:-translate-y-1 hover:border-zinc-700">
                   <div
                     className={[
-                      "relative w-full overflow-hidden bg-zinc-950",
+                      "relative m-2 mb-0 w-[calc(100%-1rem)] overflow-hidden rounded-[14px] border border-white/[0.04] bg-zinc-950",
                       graded ? "flex justify-center px-3 py-4" : "aspect-[5/7]",
                     ].join(" ")}
                   >
@@ -376,7 +376,8 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                     ) : row.image_url ? (
                       <CardImage
                         src={row.image_url}
-                        className="absolute inset-0 h-full w-full object-contain"
+                        alt={row.card_name}
+                        className="absolute inset-0 h-full w-full object-contain transition duration-300 group-hover:scale-[1.025]"
                         loading="lazy"
                       />
                     ) : (
@@ -385,8 +386,8 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                       </div>
                     )}
                   </div>
-                  <div className="space-y-1 p-3">
-                    <h2 className="line-clamp-2 text-sm font-semibold text-white">
+                  <div className="flex flex-1 flex-col p-4">
+                    <h2 className="font-display line-clamp-2 text-[15px] font-semibold tracking-[-0.02em] text-white">
                       {row.card_name}
                     </h2>
                     <p className="text-[11px] text-zinc-500">
@@ -415,7 +416,7 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
                         {row.notes.trim()}
                       </p>
                     ) : null}
-                    <div className="pt-2">
+                    <div className="mt-auto border-t border-zinc-800/70 pt-3">
                       <MarketPrice
                         cents={marketByCardId.get(row.card_id)}
                         size="sm"

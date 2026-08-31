@@ -44,7 +44,7 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
         {maxQuantity < 1 ? "Sold out" : "Add to cart"}
       </Button>
       {message ? (
-        <p className="text-center text-[11px] text-zinc-400">
+        <p aria-live="polite" className="text-center text-[11px] text-zinc-400">
           {message}{" "}
           {message === "Added to cart." ? (
             <a href="/cart" className="text-amber-400 underline underline-offset-2">

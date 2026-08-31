@@ -114,12 +114,15 @@ export default async function SocialPage({ searchParams }: Props) {
   const suggestions = (suggestedResult.data ?? []) as SuggestedCollectorRow[];
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-10 py-10 sm:py-14">
+      <div className="space-y-3">
+      <p className="eyebrow">Collector network</p>
       <SectionHeader
         as="h1"
         title="Social"
         description="Find collectors, follow shelves, and see what friends are adding."
       />
+      </div>
 
       <section className="space-y-3">
         <SectionHeader
@@ -129,13 +132,13 @@ export default async function SocialPage({ searchParams }: Props) {
         <CollectorSearchForm q={q} />
         {q ? (
           searchHits.length ? (
-            <ul className="divide-y divide-zinc-800/80 overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40">
+            <ul className="surface-card divide-y divide-zinc-800/80 overflow-hidden rounded-[18px]">
               {searchHits.map((hit) => (
                 <CollectorRow key={hit.id} collector={hit} />
               ))}
             </ul>
           ) : (
-            <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-6 text-center text-sm text-zinc-500">
+            <p className="empty-state px-4 py-8 text-center text-sm">
               No collectors match “{q}”.
             </p>
           )

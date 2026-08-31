@@ -10,7 +10,7 @@ import { centsToInputValue, parseDollarsToCents } from "@/lib/money";
 type Props = {
   storeName: string;
   supportEmail: string | null;
-  shippingCents: number;
+  shippingCents: number | null;
 };
 
 export function ShopSettingsForm({
@@ -21,7 +21,9 @@ export function ShopSettingsForm({
   const router = useRouter();
   const [name, setName] = useState(storeName);
   const [email, setEmail] = useState(supportEmail ?? "");
-  const [shipping, setShipping] = useState(centsToInputValue(shippingCents));
+  const [shipping, setShipping] = useState(
+    shippingCents == null ? "" : centsToInputValue(shippingCents),
+  );
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -83,6 +85,8 @@ export function ShopSettingsForm({
       </Field>
       <Field label="Flat US shipping (USD)" className="text-xs">
         <Input
+          inputMode="decimal"
+          required
           value={shipping}
           onChange={(e) => setShipping(e.target.value)}
           className="py-1.5 text-sm"

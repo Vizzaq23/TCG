@@ -71,6 +71,9 @@ Copy `.env.local.example` → `.env.local` and set:
 | `SHOP_OWNER_USER_ID` | Auth user UUID allowed to sell in the shop |
 | `NEXT_PUBLIC_APP_URL` | Public site URL for Stripe redirects |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` / `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe Checkout + webhook |
+| `STRIPE_TAX_MODE` | Explicit tax behavior: `none` or `automatic` |
+| `STRIPE_LIVE_PAYMENTS_ENABLED` | Live-payment safety lock; keep `false` through test verification |
+| `SHOP_RATE_LIMIT_SECRET` | Server-only 32+ character secret for checkout throttling |
 
 **Local Supabase:** run `npm run setup` (PowerShell) to start Docker Supabase and write env values.
 
@@ -110,6 +113,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript validation without emitting files |
 | `npm test` | Vitest unit tests |
 | `npm run setup` | Local Supabase + `.env.local` (Windows) |
 | `npm run import:catalog` | Upsert card catalog into Supabase |
@@ -123,6 +127,13 @@ Open [http://localhost:3000](http://localhost:3000).
 3. Set `JUSTTCG_API_KEY` and optionally `PRICE_SYNC_SECRET` for scheduled refresh.
 4. In Supabase Auth → URL configuration, add your Vercel URL and `/auth/callback`.
 5. Ensure migrations are applied on the hosted project.
+
+Before enabling checkout, complete the production checklist in
+[`docs/launch-readiness.md`](./docs/launch-readiness.md). The shop intentionally
+stays offline until `shop_settings.launch_ready_at` is set after the merchant has
+approved shipping, tax, returns, legal, inventory, pricing, identity, and support
+details. Never set `STRIPE_LIVE_PAYMENTS_ENABLED=true` until test-mode checkout and
+webhook verification pass.
 
 ## Project structure
 

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase/middleware";
 import { safeNextPath } from "@/lib/auth/safe-next";
+import { getVerifiedUser } from "@/lib/supabase/verified-user";
 
 /**
  * Next.js 16 Proxy (Node.js runtime). Prefer this over deprecated Edge middleware
@@ -29,23 +30,18 @@ export async function proxy(request: NextRequest) {
 
   const { supabase, supabaseResponse } = await createMiddlewareClient(request);
 
-  let user: Awaited<
-    ReturnType<typeof supabase.auth.getUser>
-  >["data"]["user"] = null;
-
-  try {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  } catch {
-    // TLS / network blips (e.g. UNABLE_TO_VERIFY_LEAF_SIGNATURE) should not
-    // take down every page — treat as signed-out for this request.
-    if (requiresAuth) {
-      const login = new URL("/login", request.url);
-      login.searchParams.set("next", pathname);
-      return NextResponse.redirect(login);
-    }
+  // Public pages resolve their optional user state inside the server render.
+  // Avoid a second Auth API request in Proxy for every browse, metadata, and
+  // storefront request; only protected and auth-entry routes need it here.
+  if (
+    !requiresAuth &&
+    pathname !== "/login" &&
+    pathname !== "/signup"
+  ) {
     return supabaseResponse;
   }
+
+  const user = await getVerifiedUser(supabase);
 
   if (requiresAuth && !user) {
     const login = new URL("/login", request.url);

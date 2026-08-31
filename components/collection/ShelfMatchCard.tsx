@@ -21,7 +21,7 @@ export function ShelfMatchCard({
   const compareHref = `/compare?a=${encodeURIComponent(viewerUsername)}&b=${encodeURIComponent(targetUsername)}`;
 
   return (
-    <aside className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-4 py-4 sm:px-5">
+    <aside className="surface-card rounded-[18px] px-4 py-4 sm:px-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 space-y-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-500/80">

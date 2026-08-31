@@ -51,9 +51,17 @@ export async function POST(request: Request) {
   const title = body.title?.trim();
   const quantity = Math.floor(Number(body.quantity ?? 0));
   const priceCents = Math.floor(Number(body.price_cents ?? -1));
-  if (!title || quantity < 1 || priceCents < 0) {
+  if (
+    !title ||
+    !Number.isSafeInteger(quantity) ||
+    quantity < 1 ||
+    quantity > 2_147_483_647 ||
+    !Number.isSafeInteger(priceCents) ||
+    priceCents < 1 ||
+    priceCents > 2_147_483_647
+  ) {
     return NextResponse.json(
-      { error: "title, quantity (>=1), and price_cents (>=0) are required." },
+      { error: "title, quantity (>=1), and price_cents (>=1) are required." },
       { status: 400 },
     );
   }
@@ -114,6 +122,20 @@ export async function POST(request: Request) {
   } else {
     // bulk / rarity set — stock is manual; collection link optional
     void collectionUnitsForSale;
+    if (collectionId) {
+      const { data: ownedCollection } = await supabase
+        .from("user_collections")
+        .select("id")
+        .eq("id", collectionId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!ownedCollection) {
+        return NextResponse.json(
+          { error: "Collection row not found." },
+          { status: 404 },
+        );
+      }
+    }
   }
 
   const status = body.status === "draft" ? "draft" : "active";

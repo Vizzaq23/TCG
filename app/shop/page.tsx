@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -12,6 +11,8 @@ import { getPublicShopSettings } from "@/lib/shop/owner";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity } from "@/lib/shop/inventory";
+import { tryCreateAdminClient } from "@/lib/supabase/admin";
+import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 
 export const metadata = {
   title: "Shop",
@@ -33,36 +34,39 @@ export default async function ShopPage({
     );
   }
 
-  const supabase = await createClient();
+  const admin = tryCreateAdminClient();
   const settings = await getPublicShopSettings();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getVerifiedServerUser();
   const owner = isShopOwner(user?.id);
 
-  let query = supabase
-    .from("shop_listings")
-    .select(
-      "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity )",
-    )
-    .eq("status", "active")
-    .gt("quantity_available", 0)
-    .order("created_at", { ascending: false });
-
+  let listings = null;
+  let error: { message: string } | null = null;
   const ownerId = getShopOwnerUserId();
-  if (ownerId) query = query.eq("owner_user_id", ownerId);
-  if (
-    kindFilter &&
-    ["single", "playset", "bulk_lot", "rarity_set"].includes(kindFilter)
-  ) {
-    query = query.eq("kind", kindFilter);
+  if (admin && settings && ownerId) {
+    let query = admin
+      .from("shop_listings")
+      .select(
+        "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity )",
+      )
+      .eq("owner_user_id", ownerId)
+      .eq("status", "active")
+      .gt("quantity_available", 0)
+      .order("created_at", { ascending: false });
+    if (
+      kindFilter &&
+      ["single", "playset", "bulk_lot", "rarity_set"].includes(kindFilter)
+    ) {
+      query = query.eq("kind", kindFilter);
+    }
+    const result = await query;
+    listings = result.data;
+    error = result.error;
   }
-
-  const { data: listings, error } = await query;
 
   const withStock = [];
   for (const listing of listings ?? []) {
-    const { data: held } = await supabase.rpc("shop_held_quantity", {
+    if (!admin) break;
+    const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });
     const available = sellableQuantity(
@@ -78,6 +82,7 @@ export default async function ShopPage({
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionHeader
+          as="h1"
           title={settings?.store_name ?? "TCG Shop"}
           description="Singles, playsets, bulk lots, and complete common/uncommon sets. Secure checkout via Stripe."
         />
@@ -109,14 +114,21 @@ export default async function ShopPage({
           <Link
             key={f.href}
             href={f.href}
-            className="rounded-md border border-zinc-800 px-3 py-1.5 text-zinc-300 hover:border-amber-500/40 hover:text-white"
+            prefetch={false}
+            className="inline-flex min-h-10 items-center rounded-md border border-zinc-800 px-3 py-1.5 text-zinc-300 hover:border-amber-500/40 hover:text-white"
           >
             {f.label}
           </Link>
         ))}
       </div>
 
-      {error ? (
+      {!settings ? (
+        <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
+          <p className="text-sm text-zinc-400">
+            The shop is not open for checkout yet. Please check back soon.
+          </p>
+        </div>
+      ) : error ? (
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {error.message}
         </p>
@@ -150,6 +162,7 @@ export default async function ShopPage({
               <li key={listing.id}>
                 <Link
                   href={`/shop/${listing.id}`}
+                  prefetch={false}
                   className="flex h-full flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40 transition hover:border-amber-500/40"
                 >
                   <div className="relative aspect-[3/4] bg-zinc-950">

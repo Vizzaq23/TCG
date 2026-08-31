@@ -131,8 +131,9 @@ export default async function CollectionPage() {
     .eq("status", "pending");
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-10 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-12 py-10 sm:py-14">
       <header className="space-y-5">
+        <p className="eyebrow">Collection dashboard</p>
         <SectionHeader
           as="h1"
           title="My collection"
@@ -180,7 +181,7 @@ export default async function CollectionPage() {
             {rowsError.message}
           </p>
         ) : !rows?.length ? (
-          <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center">
+          <div className="empty-state px-6 py-14 text-center">
             <p className="text-sm text-zinc-400">
               You have not added any cards yet. Head to the catalog to start your shelf.
             </p>

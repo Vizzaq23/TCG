@@ -52,7 +52,7 @@ export function ShowcasePicker({ rows }: Props) {
   if (!rows.length) return null;
 
   return (
-    <section className="overflow-hidden rounded-[16px] border border-[rgba(255,236,205,0.08)] bg-[linear-gradient(180deg,#141210_0%,#0c0b0a_100%)]">
+    <section className="surface-card overflow-hidden rounded-[22px]">
       <div className="border-b border-zinc-800/80 px-4 py-4 sm:px-5">
         <SectionHeader
           title="Collector's Showcase"

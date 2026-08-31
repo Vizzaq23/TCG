@@ -45,8 +45,13 @@ export default async function SellDeskPage() {
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionHeader
+          as="h1"
           title="Sell desk"
-          description={`${settings.store_name} · Flat shipping ${formatUsdCents(settings.shipping_cents)}. List singles from your collection, or create bulk lots here.`}
+          description={`${settings.store_name} · ${
+            settings.shipping_cents == null
+              ? "Shipping is not configured"
+              : `Flat shipping ${formatUsdCents(settings.shipping_cents)}`
+          }. List singles from your collection, or create bulk lots here.`}
         />
         <div className="flex flex-wrap gap-2">
           <Button href="/collection" size="sm" variant="secondary">

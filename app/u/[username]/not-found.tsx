@@ -7,7 +7,8 @@ export default function PublicProfileNotFound() {
       as="main"
       className="flex flex-col items-center justify-center gap-4 py-24 text-center"
     >
-      <h1 className="text-2xl font-semibold tracking-tight text-white">
+      <p className="eyebrow">Public shelf</p>
+      <h1 className="font-display text-4xl font-semibold tracking-[-0.04em] text-white">
         Collector not found
       </h1>
       <p className="max-w-md text-sm text-zinc-400">

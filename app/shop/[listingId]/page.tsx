@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +8,9 @@ import { kindLabel } from "@/lib/shop/kinds";
 import { sellableQuantity } from "@/lib/shop/inventory";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
+import { tryCreateAdminClient } from "@/lib/supabase/admin";
+import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
+import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 
 export default async function ListingDetailPage({
   params,
@@ -16,22 +18,30 @@ export default async function ListingDetailPage({
   params: Promise<{ listingId: string }>;
 }) {
   const { listingId } = await params;
-  const supabase = await createClient();
+  const user = await getVerifiedServerUser();
+  const owner = isShopOwner(user?.id);
+  const ownerId = getShopOwnerUserId();
+  const admin = tryCreateAdminClient();
+  if (!admin || !ownerId) notFound();
 
-  const { data: listing } = await supabase
+  const { data: listing } = await admin
     .from("shop_listings")
     .select(
-      "*, cards ( name, set_name, card_number, rarity, image_url ), shop_listing_items ( id, quantity, condition, cards ( name, card_number, set_name ) )",
+      "id, owner_user_id, kind, title, description, condition, quantity_available, price_cents, status, image_url, card_id, cards ( name, set_name, card_number, rarity, image_url ), shop_listing_items ( id, quantity, condition, cards ( name, card_number, set_name ) )",
     )
     .eq("id", listingId)
+    .eq("owner_user_id", ownerId)
     .maybeSingle();
 
-  if (!listing || (listing.status !== "active" && listing.status !== "draft")) {
+  if (
+    !listing ||
+    (listing.status !== "active" && !(owner && listing.status === "draft"))
+  ) {
     notFound();
   }
 
   // Draft only visible to owner via RLS; if we got a draft here, owner is viewing.
-  const { data: held } = await supabase.rpc("shop_held_quantity", {
+  const { data: held } = await admin.rpc("shop_held_quantity", {
     p_listing_id: listing.id,
   });
   const sellable = sellableQuantity(
@@ -101,9 +111,6 @@ export default async function ListingDetailPage({
           </p>
           <p className="text-sm text-zinc-400">
             {sellable} available
-            {listing.unit_cost_cents != null
-              ? " · Cost basis recorded for seller reports"
-              : ""}
           </p>
           {listing.description ? (
             <p className="whitespace-pre-wrap text-sm text-zinc-300">

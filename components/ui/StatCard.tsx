@@ -13,8 +13,8 @@ export function StatCard({ label, value, hint, className, icon }: Props) {
   return (
     <div
       className={cn(
-        "rounded-[14px] border border-zinc-800/90 bg-zinc-900/50 px-4 py-3.5 transition",
-        "hover:border-amber-500/25 hover:bg-zinc-900/80",
+        "surface-card rounded-[18px] px-5 py-4 transition duration-200",
+        "hover:-translate-y-0.5 hover:border-amber-500/20",
         className,
       )}
     >
@@ -24,7 +24,7 @@ export function StatCard({ label, value, hint, className, icon }: Props) {
         </p>
         {icon ? <span className="text-amber-500/70">{icon}</span> : null}
       </div>
-      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-tight text-white">
+      <p className="font-display mt-2 text-2xl font-semibold tabular-nums tracking-tight text-white">
         {value}
       </p>
       {hint ? <p className="mt-1 text-[11px] leading-snug text-zinc-500">{hint}</p> : null}

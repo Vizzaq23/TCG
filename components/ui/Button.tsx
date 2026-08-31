@@ -4,19 +4,19 @@ import { cn } from "@/lib/cn";
 
 const variants = {
   primary:
-    "bg-amber-500 text-zinc-950 hover:bg-amber-400 focus-visible:ring-amber-400/50",
+    "border border-amber-400/80 bg-amber-500 text-zinc-950 shadow-[0_8px_24px_rgba(246,199,91,0.12)] hover:-translate-y-0.5 hover:bg-amber-400 hover:shadow-[0_12px_30px_rgba(246,199,91,0.18)] focus-visible:ring-amber-400/50",
   secondary:
-    "border border-zinc-700 bg-transparent text-zinc-100 hover:border-amber-500/50 hover:bg-zinc-900/80 focus-visible:ring-amber-500/30",
+    "border border-zinc-700 bg-zinc-900/70 text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:-translate-y-0.5 hover:border-zinc-500 hover:bg-zinc-800/70 focus-visible:ring-amber-500/30",
   ghost:
-    "bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-white focus-visible:ring-zinc-500/40",
+    "border border-transparent bg-transparent text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white focus-visible:ring-zinc-500/40",
   destructive:
     "border border-red-500/40 bg-red-500/10 text-red-100 hover:bg-red-500/20 focus-visible:ring-red-400/40",
 } as const;
 
 const sizes = {
-  sm: "px-3 py-1.5 text-xs",
-  md: "px-4 py-2 text-sm",
-  lg: "px-5 py-2.5 text-sm",
+  sm: "min-h-9 px-3.5 py-1.5 text-xs",
+  md: "min-h-10 px-4.5 py-2 text-sm",
+  lg: "min-h-12 px-6 py-2.5 text-sm",
 } as const;
 
 type Variant = keyof typeof variants;
@@ -47,7 +47,7 @@ export function Button({
   ...props
 }: ButtonAsButton | ButtonAsLink) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-[14px] font-semibold transition",
+    "inline-flex items-center justify-center gap-2 rounded-[12px] font-semibold transition duration-150 ease-out",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
     "disabled:pointer-events-none disabled:opacity-45",
     variants[variant],
@@ -65,7 +65,7 @@ export function Button({
       );
     }
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} prefetch={false} className={classes}>
         {children}
       </Link>
     );

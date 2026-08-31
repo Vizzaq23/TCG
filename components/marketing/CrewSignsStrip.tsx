@@ -1,31 +1,37 @@
+import Link from "next/link";
+
 const SIGNS = [
   {
     id: "catalog",
+    href: "/browse",
     seal: "hat",
-    name: "Luffy",
+    name: "Browse cards",
     bounty: "Catalog",
-    flavor: "Chart every island set",
+    flavor: "Search the card library by set, rarity, color, or type.",
   },
   {
     id: "showcase",
+    href: "/collection",
     seal: "blades",
-    name: "Zoro",
-    bounty: "Showcase",
-    flavor: "Three legends on deck",
+    name: "Build your shelf",
+    bounty: "Collection",
+    flavor: "Track copies, conditions, grades, notes, and favorites.",
   },
   {
     id: "trade",
+    href: "/collection/portfolio",
     seal: "weather",
-    name: "Nami",
-    bounty: "Trade",
-    flavor: "Flag cards for voyage",
+    name: "Follow the value",
+    bounty: "Portfolio",
+    flavor: "Review market value, priced holdings, and history.",
   },
   {
     id: "share",
+    href: "/social",
     seal: "note",
-    name: "Usopp",
-    bounty: "Share",
-    flavor: "Post your wanted shelf",
+    name: "Find collectors",
+    bounty: "Community",
+    flavor: "Follow public shelves and discover trade overlap.",
   },
 ] as const;
 
@@ -93,50 +99,39 @@ function SealIcon({ kind }: { kind: (typeof SIGNS)[number]["seal"] }) {
 
 export function CrewSignsStrip() {
   return (
-    <section className="home-crew-signs space-y-5">
-      <header className="max-w-xl space-y-2">
-        <p className="home-coord text-[11px] text-amber-200/45">
-          N 24° · E 148° · East Blue chart
-        </p>
-        <h2
-          className="text-2xl tracking-wide text-[#f0e6d0] sm:text-3xl"
-          style={{ fontFamily: "var(--font-home-display), Impact, sans-serif" }}
-        >
-          Crew marks of the voyage
+    <section className="space-y-7">
+      <header className="max-w-2xl space-y-3">
+        <p className="eyebrow">One connected shelf</p>
+        <h2 className="font-display text-balance text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
+          Move from discovery to display.
         </h2>
-        <p className="text-sm leading-relaxed text-zinc-400">
-          Wanted posters for the collectors who sail with you — flavor for the shelf, not real
-          bounties.
+        <p className="text-sm leading-6 text-zinc-400 sm:text-[15px]">
+          A focused set of tools for browsing, organizing, valuing, and sharing your collection.
         </p>
       </header>
 
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {SIGNS.map((sign) => (
-          <li key={sign.id} className="home-crew-sign">
-            <article className="home-wanted-poster">
-              <div className="home-wanted-stamp" aria-hidden>
-                Dead or Alive
-              </div>
-              <p className="home-wanted-eyebrow">Wanted</p>
-              <div className="home-wanted-rule" aria-hidden />
-              <div className="home-crew-seal text-[#6b4423]/90">
+      <div className="grid gap-px overflow-hidden rounded-[20px] border border-zinc-800/80 bg-zinc-800/70 sm:grid-cols-2 lg:grid-cols-4">
+        {SIGNS.map((sign, index) => (
+          <Link
+            key={sign.id}
+            href={sign.href}
+            className="group flex min-h-56 flex-col bg-zinc-950/95 p-5 transition hover:bg-zinc-900 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-500/50 sm:p-6"
+          >
+            <div className="flex items-start justify-between">
+              <div className="grid size-11 place-items-center rounded-[14px] border border-zinc-800 bg-zinc-900 text-amber-300/80 transition group-hover:border-amber-500/20 group-hover:bg-amber-500/10">
                 <SealIcon kind={sign.seal} />
               </div>
-              <p
-                className="home-wanted-name"
-                style={{ fontFamily: "var(--font-home-display), Impact, sans-serif" }}
-              >
-                {sign.name}
-              </p>
-              <div className="home-wanted-rule" aria-hidden />
-              <p className="home-wanted-bounty">
-                <span>Bounty</span> {sign.bounty}
-              </p>
-              <p className="home-wanted-flavor">{sign.flavor}</p>
-            </article>
-          </li>
+              <span className="font-mono text-[10px] text-zinc-700">0{index + 1}</span>
+            </div>
+            <div className="mt-auto pt-8">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-600">{sign.bounty}</p>
+              <h3 className="font-display mt-2 text-lg font-semibold text-white">{sign.name}</h3>
+              <p className="mt-2 text-sm leading-5 text-zinc-500">{sign.flavor}</p>
+              <span className="mt-4 inline-flex text-sm text-amber-300 transition group-hover:translate-x-1" aria-hidden>→</span>
+            </div>
+          </Link>
         ))}
-      </ul>
+      </div>
     </section>
   );
 }

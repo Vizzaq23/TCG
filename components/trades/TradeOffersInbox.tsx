@@ -78,7 +78,7 @@ export function TradeOffersInbox({ offers }: Props) {
 
   if (!offers.length) {
     return (
-      <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-8 text-center text-sm text-zinc-400">
+      <p className="empty-state px-4 py-10 text-center text-sm">
         No trade offers yet. When someone requests a card you marked for trade, it shows up
         here.
       </p>
@@ -100,7 +100,7 @@ export function TradeOffersInbox({ offers }: Props) {
           return (
             <li
               key={offer.id}
-              className="flex flex-col gap-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row sm:items-start sm:justify-between"
+              className="surface-card flex flex-col gap-4 rounded-[18px] p-4 transition hover:border-zinc-700 sm:flex-row sm:items-start sm:justify-between sm:p-5"
             >
               <div className="flex min-w-0 flex-1 gap-3">
                 <div className="relative h-24 w-[68px] flex-shrink-0 overflow-hidden rounded-[10px] border border-zinc-800 bg-zinc-950">

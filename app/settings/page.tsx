@@ -44,7 +44,9 @@ export default async function SettingsPage() {
   }
 
   return (
-    <PageContainer as="main" className="flex flex-col gap-8 py-8 sm:py-10">
+    <PageContainer as="main" className="flex flex-col gap-10 py-10 sm:py-14">
+      <div className="space-y-3">
+      <p className="eyebrow">Your account</p>
       <SectionHeader
         as="h1"
         title="Account settings"
@@ -64,6 +66,7 @@ export default async function SettingsPage() {
           </>
         }
       />
+      </div>
 
       <ProfileSettingsForm
         profile={{

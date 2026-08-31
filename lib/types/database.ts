@@ -264,9 +264,10 @@ export interface Database {
           owner_user_id: string;
           store_name: string;
           support_email: string | null;
-          shipping_cents: number;
+          shipping_cents: number | null;
           currency: string;
           is_live: boolean;
+          launch_ready_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -275,9 +276,10 @@ export interface Database {
           owner_user_id: string;
           store_name?: string;
           support_email?: string | null;
-          shipping_cents?: number;
+          shipping_cents?: number | null;
           currency?: string;
           is_live?: boolean;
+          launch_ready_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -286,9 +288,10 @@ export interface Database {
           owner_user_id?: string;
           store_name?: string;
           support_email?: string | null;
-          shipping_cents?: number;
+          shipping_cents?: number | null;
           currency?: string;
           is_live?: boolean;
+          launch_ready_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -454,6 +457,10 @@ export interface Database {
           subtotal_cents: number;
           shipping_cents: number;
           total_cents: number;
+          tax_cents: number;
+          checkout_token: string | null;
+          payment_status: string;
+          fulfillment_status: string;
           stripe_checkout_session_id: string | null;
           stripe_payment_intent_id: string | null;
           shipping_name: string | null;
@@ -463,6 +470,7 @@ export interface Database {
           paid_at: string | null;
           shipped_at: string | null;
           refunded_at: string | null;
+          restocked_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -477,6 +485,10 @@ export interface Database {
           subtotal_cents: number;
           shipping_cents: number;
           total_cents: number;
+          tax_cents?: number;
+          checkout_token?: string | null;
+          payment_status?: string;
+          fulfillment_status?: string;
           stripe_checkout_session_id?: string | null;
           stripe_payment_intent_id?: string | null;
           shipping_name?: string | null;
@@ -486,6 +498,7 @@ export interface Database {
           paid_at?: string | null;
           shipped_at?: string | null;
           refunded_at?: string | null;
+          restocked_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -500,6 +513,10 @@ export interface Database {
           subtotal_cents?: number;
           shipping_cents?: number;
           total_cents?: number;
+          tax_cents?: number;
+          checkout_token?: string | null;
+          payment_status?: string;
+          fulfillment_status?: string;
           stripe_checkout_session_id?: string | null;
           stripe_payment_intent_id?: string | null;
           shipping_name?: string | null;
@@ -509,6 +526,7 @@ export interface Database {
           paid_at?: string | null;
           shipped_at?: string | null;
           refunded_at?: string | null;
+          restocked_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -646,17 +664,41 @@ export interface Database {
         Row: {
           id: string;
           type: string;
-          processed_at: string;
+          processed_at: string | null;
+          processing_started_at: string | null;
         };
         Insert: {
           id: string;
           type: string;
-          processed_at?: string;
+          processed_at?: string | null;
+          processing_started_at?: string | null;
         };
         Update: {
           id?: string;
           type?: string;
-          processed_at?: string;
+          processed_at?: string | null;
+          processing_started_at?: string | null;
+        };
+        Relationships: [];
+      };
+      shop_checkout_rate_limits: {
+        Row: {
+          fingerprint: string;
+          window_started_at: string;
+          attempts: number;
+          updated_at: string;
+        };
+        Insert: {
+          fingerprint: string;
+          window_started_at?: string;
+          attempts?: number;
+          updated_at?: string;
+        };
+        Update: {
+          fingerprint?: string;
+          window_started_at?: string;
+          attempts?: number;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -952,7 +994,47 @@ export interface Database {
         Args: Record<string, never>;
         Returns: number;
       };
-      shop_finalize_paid_order: {
+      shop_enforce_checkout_rate_limit: {
+        Args: {
+          p_fingerprint: string;
+          p_limit?: number;
+          p_window_seconds?: number;
+        };
+        Returns: undefined;
+      };
+      shop_claim_stripe_event: {
+        Args: { p_event_id: string; p_event_type: string };
+        Returns: boolean;
+      };
+      shop_complete_stripe_event: {
+        Args: { p_event_id: string };
+        Returns: undefined;
+      };
+      shop_release_stripe_event: {
+        Args: { p_event_id: string };
+        Returns: undefined;
+      };
+      shop_create_pending_order: {
+        Args: {
+          p_checkout_token: string;
+          p_order_number: string;
+          p_owner_user_id: string;
+          p_buyer_email: string;
+          p_buyer_user_id: string | null;
+          p_items: Json;
+        };
+        Returns: Array<{
+          order_id: string;
+          order_number: string;
+          order_status: string;
+          stripe_checkout_session_id: string | null;
+          subtotal_cents: number;
+          shipping_cents: number;
+          total_cents: number;
+          currency: string;
+        }>;
+      };
+      shop_finalize_verified_order: {
         Args: {
           p_order_id: string;
           p_stripe_checkout_session_id: string;
@@ -960,6 +1042,10 @@ export interface Database {
           p_buyer_email: string;
           p_shipping_name: string;
           p_shipping_address: Json;
+          p_currency: string;
+          p_amount_subtotal_cents: number;
+          p_amount_total_cents: number;
+          p_tax_cents: number;
         };
         Returns: undefined;
       };
@@ -968,6 +1054,10 @@ export interface Database {
         Returns: undefined;
       };
       shop_mark_order_refunded: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      shop_restock_refunded_order: {
         Args: { p_order_id: string };
         Returns: undefined;
       };

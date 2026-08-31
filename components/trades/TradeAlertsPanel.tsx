@@ -137,11 +137,11 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
       </div>
       {message ? <p className="text-sm text-amber-200">{message}</p> : null}
       {results.length > 0 ? (
-        <ul className="divide-y divide-zinc-800 overflow-hidden rounded-[14px] border border-zinc-800">
+        <ul className="surface-card divide-y divide-zinc-800 overflow-hidden rounded-[18px]">
           {results.map((card) => (
             <li
               key={card.id}
-              className="flex items-center justify-between gap-3 bg-zinc-900/40 px-4 py-3"
+              className="flex items-center justify-between gap-3 px-4 py-3.5"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm text-white">{card.name}</p>
@@ -168,11 +168,11 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
           No saved searches yet. Watch a card to see when someone lists it for trade.
         </p>
       ) : (
-        <ul className="divide-y divide-zinc-800 overflow-hidden rounded-[14px] border border-zinc-800">
+        <ul className="surface-card divide-y divide-zinc-800 overflow-hidden rounded-[18px]">
           {alerts.map((alert) => (
             <li
               key={alert.id}
-              className="flex items-center justify-between gap-3 bg-zinc-900/40 px-4 py-3"
+              className="flex items-center justify-between gap-3 px-4 py-3.5"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm text-white">

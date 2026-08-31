@@ -30,7 +30,7 @@ export function DailyTreasurePull({
 
   return (
     <aside
-      className="daily-treasure overflow-hidden rounded-[18px] border border-zinc-800/90 bg-zinc-950/70"
+      className="daily-treasure surface-card overflow-hidden rounded-[22px]"
       style={{
         backgroundImage: `radial-gradient(ellipse 80% 70% at 0% 0%, ${accentColor}22, transparent 55%), linear-gradient(180deg, rgba(24,24,27,0.9), rgba(9,9,11,0.95))`,
       }}
@@ -86,7 +86,7 @@ export function DailyTreasurePull({
             >
               Daily treasure · {dayLabel}
             </p>
-            <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            <h2 className="font-display text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl">
               {treasure.card_name}
             </h2>
             <p className="text-sm text-zinc-400">

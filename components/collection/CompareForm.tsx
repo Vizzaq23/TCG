@@ -23,7 +23,7 @@ export function CompareForm({ defaultA = "", defaultB = "" }: Props) {
   return (
     <form
       onSubmit={submit}
-      className="flex flex-col gap-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:flex-row sm:items-end"
+      className="surface-card flex flex-col gap-4 rounded-[20px] p-5 sm:flex-row sm:items-end"
     >
       <Field label="Collector A" className="flex-1 text-xs">
         <Input
@@ -41,7 +41,7 @@ export function CompareForm({ defaultA = "", defaultB = "" }: Props) {
           className="py-1.5 text-sm"
         />
       </Field>
-      <Button type="submit" size="sm">
+      <Button type="submit" size="md" className="sm:min-w-28">
         Compare
       </Button>
     </form>

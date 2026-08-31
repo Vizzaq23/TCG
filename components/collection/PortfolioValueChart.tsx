@@ -17,7 +17,7 @@ export function PortfolioValueChart({ snapshots }: Props) {
 
   if (!chart || chart.points.length === 0) {
     return (
-      <p className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 px-4 py-10 text-center text-sm text-zinc-500">
+      <p className="empty-state px-4 py-10 text-center text-sm">
         Save estimated values on your cards to start a portfolio graph. Snapshots are stored
         daily when totals change.
       </p>
@@ -29,7 +29,7 @@ export function PortfolioValueChart({ snapshots }: Props) {
     chart.points[chart.points.length - 1];
 
   return (
-    <div className="overflow-hidden rounded-[16px] border border-zinc-800 bg-zinc-900/50">
+    <div className="surface-card overflow-hidden rounded-[20px]">
       <div className="flex flex-wrap items-end justify-between gap-3 border-b border-zinc-800/80 px-4 py-3 sm:px-5">
         <div>
           <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
@@ -63,8 +63,8 @@ export function PortfolioValueChart({ snapshots }: Props) {
         >
           <defs>
             <linearGradient id={`fill-${gradId}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.35" />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.02" />
+              <stop offset="0%" stopColor="#f6c75b" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#f6c75b" stopOpacity="0.01" />
             </linearGradient>
           </defs>
 
@@ -141,7 +141,7 @@ export function PortfolioValueChart({ snapshots }: Props) {
                   cx={p.x}
                   cy={p.y}
                   r={isActive ? 5 : 3.5}
-                  fill={isActive ? "#fbbf24" : "#18181b"}
+                  fill={isActive ? "#ffe08a" : "#121722"}
                   stroke="currentColor"
                   strokeWidth="2"
                 />

@@ -117,11 +117,13 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Basic Vercel Observability is available on the current Hobby plan. Vercel confirms
   that anomaly alerts, custom queries, and 30-day retention require Pro, so Sentry
   alerts must be the launch alerting path unless the Vercel plan is upgraded.
-- The Supabase backup API reports WAL-G enabled, but the CLI does not expose the
-  billing tier and no completed physical backup is listed yet. The owner clarified
-  that the recent upgrade was ChatGPT/Codex, not Supabase. Confirm the Supabase tier
-  in its dashboard, then wait for and verify the first managed restore point before
-  taking payments.
+- The Supabase dashboard confirms the organization is on **Free** and explicitly
+  states that Free projects do not include project backups. The lower-level backup
+  API reports WAL-G enabled, but there is no customer restore point. Upgrade Supabase
+  to a tier with scheduled backups (the dashboard currently advertises up to seven
+  days on Pro), then wait for and verify the first restore point before taking
+  payments. The owner clarified that the recent upgrade was ChatGPT/Codex, not
+  Supabase.
 - Schedule a separate logical database export and a restore drill after a backup
   destination and retention policy are selected. Supabase database backups do not
   substitute for a separate copy of uploaded storage objects.
@@ -136,8 +138,9 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Create/complete that owner's `shop_settings` row with the approved identity,
   support contact, United States region, 499-cent shipping charge, and an explicit
   `launch_ready_at` only after every policy and launch value is complete.
-- Change Supabase Auth Site URL from localhost to the deployed HTTPS origin and allow
-  the production `/auth/callback` redirect.
+- Supabase Auth now uses `https://tcg-lyart.vercel.app` as its Site URL and allows
+  that origin's `/auth/callback`; the localhost callback remains allowed for
+  development. Recheck these settings if the production domain changes.
 - Re-save `SUPABASE_SERVICE_ROLE_KEY` as a Vercel Secret and never expose it to client
   code.
 
@@ -217,8 +220,10 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Next.js 16.3.4 production build: passed; 37 static/dynamic routes generated.
 - Supabase migrations: local and remote histories match through `20250831000000`.
 - Supabase remote schema lint: no warning-level findings.
-- Supabase backup service: WAL-G enabled; billing tier and the first completed backup
-  are not yet verified.
+- Supabase Auth: production Site URL and callback persisted; localhost callback is
+  retained for development.
+- Supabase backups: dashboard-confirmed Free plan with no project backups; no restore
+  point exists yet.
 - Production dependency audit: zero known vulnerabilities.
 - Vercel deployment: `/shop`, `/robots.txt`, `/sitemap.xml`, manifest, favicon, and
   social image return 200 with CSP, HSTS, frame denial, MIME protection, permissions,
@@ -231,9 +236,9 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
   mobile menu, visible fail-closed messaging, and no horizontal page overflow.
 
 The deployed visual/static and current-origin checks are complete. Stripe test-mode
-checkout, email, monitoring alerts, auth redirects, and backup restore proof remain
-blocked by the unconfigured Stripe/Resend/Sentry/Supabase/business values. If a custom
-domain replaces the current Vercel alias, repeat the origin-dependent checks.
+checkout, email, monitoring alerts, and backup restore proof remain blocked by the
+unconfigured Stripe/Resend/Sentry/Supabase/business values. If a custom domain
+replaces the current Vercel alias, repeat the origin-dependent checks.
 
 ## Required Vercel environment variables
 

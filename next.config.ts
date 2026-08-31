@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 // Windows / antivirus HTTPS inspection often installs a local root CA that
 // Node's bundled Mozilla store does not trust. Opt Turbopack into the OS store.
@@ -55,4 +56,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  telemetry: false,
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+  tunnelRoute: "/monitoring",
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+      excludeReplayIframe: true,
+      excludeReplayShadowDOM: true,
+      excludeReplayCompressionWorker: true,
+    },
+  },
+});

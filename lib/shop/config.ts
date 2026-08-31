@@ -11,6 +11,15 @@ export function isShopOwner(userId: string | null | undefined): boolean {
 
 export type StripeMode = "test" | "live";
 export type StripeTaxMode = "none" | "automatic";
+export type OrderNotificationConfig = {
+  apiKey: string;
+  from: string;
+  ownerEmail: string;
+};
+
+function isEmail(value: string): boolean {
+  return value.length <= 320 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
 
 function secretKeyMode(key: string | undefined): StripeMode | null {
   if (key?.startsWith("sk_test_")) return "test";
@@ -66,6 +75,8 @@ export function getStripeConfigurationError(
 export function getCheckoutConfigurationError(): string | null {
   const stripeError = getStripeConfigurationError();
   if (stripeError) return stripeError;
+  const notificationError = getOrderNotificationConfigurationError();
+  if (notificationError) return notificationError;
   const rateLimitSecret = process.env.SHOP_RATE_LIMIT_SECRET?.trim();
   if (!rateLimitSecret || rateLimitSecret.length < 32) {
     return "SHOP_RATE_LIMIT_SECRET must be at least 32 characters.";
@@ -76,6 +87,35 @@ export function getCheckoutConfigurationError(): string | null {
     return error instanceof Error ? error.message : "The public app URL is invalid.";
   }
   return null;
+}
+
+export function getOrderNotificationConfigurationError(
+  env: NodeJS.ProcessEnv = process.env,
+): string | null {
+  const apiKey = env.RESEND_API_KEY?.trim();
+  const from = env.ORDER_EMAIL_FROM?.trim();
+  const ownerEmail = env.ORDER_NOTIFICATION_EMAIL?.trim();
+  if (!apiKey || !apiKey.startsWith("re_")) {
+    return "RESEND_API_KEY is required for order notifications.";
+  }
+  if (!from || from.length > 320 || !from.includes("@")) {
+    return "ORDER_EMAIL_FROM is required for order notifications.";
+  }
+  if (!ownerEmail || !isEmail(ownerEmail)) {
+    return "ORDER_NOTIFICATION_EMAIL must be a valid email address.";
+  }
+  return null;
+}
+
+export function getOrderNotificationConfig(
+  env: NodeJS.ProcessEnv = process.env,
+): OrderNotificationConfig | null {
+  if (getOrderNotificationConfigurationError(env)) return null;
+  return {
+    apiKey: env.RESEND_API_KEY!.trim(),
+    from: env.ORDER_EMAIL_FROM!.trim(),
+    ownerEmail: env.ORDER_NOTIFICATION_EMAIL!.trim().toLowerCase(),
+  };
 }
 
 export function isStripeConfigured(): boolean {

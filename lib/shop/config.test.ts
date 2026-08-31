@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { getStripeConfigurationError } from "@/lib/shop/config";
+import {
+  getOrderNotificationConfigurationError,
+  getStripeConfigurationError,
+} from "@/lib/shop/config";
 
 const testConfig: NodeJS.ProcessEnv = {
   NODE_ENV: "production",
@@ -38,5 +41,32 @@ describe("Stripe configuration", () => {
     expect(
       getStripeConfigurationError({ ...testConfig, STRIPE_TAX_MODE: undefined }),
     ).toMatch(/tax_mode/i);
+  });
+});
+
+describe("order notification configuration", () => {
+  const emailConfig: NodeJS.ProcessEnv = {
+    RESEND_API_KEY: "re_test_example",
+    ORDER_EMAIL_FROM: "TCG Shop <orders@example.com>",
+    ORDER_NOTIFICATION_EMAIL: "ops@example.com",
+  };
+
+  it("accepts a complete transactional email configuration", () => {
+    expect(getOrderNotificationConfigurationError(emailConfig)).toBeNull();
+  });
+
+  it("requires a Resend key, sender, and valid owner recipient", () => {
+    expect(
+      getOrderNotificationConfigurationError({
+        ...emailConfig,
+        ORDER_NOTIFICATION_EMAIL: "not-an-email",
+      }),
+    ).toMatch(/valid email/i);
+    expect(
+      getOrderNotificationConfigurationError({
+        ...emailConfig,
+        RESEND_API_KEY: undefined,
+      }),
+    ).toMatch(/resend_api_key/i);
   });
 });

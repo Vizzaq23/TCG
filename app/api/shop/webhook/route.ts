@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import * as Sentry from "@sentry/nextjs";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   finalizePaidOrder,
   getVerifiedCheckoutAmounts,
 } from "@/lib/shop/checkout";
 import {
+  getOrderNotificationConfigurationError,
   getStripeConfigurationError,
   getStripeTaxMode,
   isStripeEventModeAllowed,
 } from "@/lib/shop/config";
+import { sendPaidOrderNotifications } from "@/lib/shop/notifications";
 import { getStripe } from "@/lib/shop/stripe";
 import type { Json } from "@/lib/types/database";
 
@@ -34,7 +37,8 @@ function orderIdFromSession(session: Stripe.Checkout.Session): string | null {
 }
 
 export async function POST(request: Request) {
-  const configurationError = getStripeConfigurationError();
+  const configurationError =
+    getStripeConfigurationError() ?? getOrderNotificationConfigurationError();
   if (configurationError) {
     console.error("Stripe webhook configuration blocked:", configurationError);
     return NextResponse.json({ error: "Webhook unavailable" }, { status: 503 });
@@ -77,6 +81,10 @@ export async function POST(request: Request) {
   );
   if (claimError) {
     console.error("Could not claim Stripe webhook event:", claimError);
+    Sentry.captureException(claimError, {
+      tags: { area: "stripe_webhook", operation: "claim_event" },
+      extra: { eventId: event.id, eventType: event.type },
+    });
     return NextResponse.json({ error: "Webhook persistence failed" }, { status: 500 });
   }
   if (!claimed) {
@@ -143,6 +151,7 @@ export async function POST(request: Request) {
           ),
           ...amounts,
         });
+        await sendPaidOrderNotifications(admin, orderId);
       }
     }
 
@@ -188,6 +197,10 @@ export async function POST(request: Request) {
   } catch (error) {
     await admin.rpc("shop_release_stripe_event", { p_event_id: event.id });
     console.error("Stripe webhook processing failed:", event.id, error);
+    Sentry.captureException(error, {
+      tags: { area: "stripe_webhook", operation: "process_event" },
+      extra: { eventId: event.id, eventType: event.type },
+    });
     return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 });
   }
 

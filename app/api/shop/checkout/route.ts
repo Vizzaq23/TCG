@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import * as Sentry from "@sentry/nextjs";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { readCartCookie, writeCartCookie } from "@/lib/shop/cart-cookie";
 import {
@@ -111,6 +112,9 @@ export async function POST(request: Request) {
       );
     }
     console.error("Checkout rate-limit check failed:", rateLimitError.message);
+    Sentry.captureException(rateLimitError, {
+      tags: { area: "checkout", operation: "rate_limit" },
+    });
     return json({ error: "Checkout is temporarily unavailable." }, 503);
   }
 
@@ -194,6 +198,10 @@ export async function POST(request: Request) {
       }
     } catch (error) {
       console.error("Could not resume Stripe Checkout session:", error);
+      Sentry.captureException(error, {
+        tags: { area: "checkout", operation: "resume_session" },
+        extra: { orderId: pending.orderId },
+      });
       return json(
         { error: "Your existing checkout could not be resumed. Please try again shortly." },
         502,
@@ -269,6 +277,10 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Stripe Checkout session creation failed:", error);
+    Sentry.captureException(error, {
+      tags: { area: "checkout", operation: "create_session" },
+      extra: { orderId: pending.orderId },
+    });
     if (sessionId) {
       try {
         await stripe.checkout.sessions.expire(sessionId);

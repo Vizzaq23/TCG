@@ -600,6 +600,56 @@ export interface Database {
           },
         ];
       };
+      shop_order_notifications: {
+        Row: {
+          id: string;
+          order_id: string;
+          kind: string;
+          status: string;
+          attempts: number;
+          provider_message_id: string | null;
+          last_error: string | null;
+          processing_started_at: string | null;
+          sent_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          kind: string;
+          status?: string;
+          attempts?: number;
+          provider_message_id?: string | null;
+          last_error?: string | null;
+          processing_started_at?: string | null;
+          sent_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          kind?: string;
+          status?: string;
+          attempts?: number;
+          provider_message_id?: string | null;
+          last_error?: string | null;
+          processing_started_at?: string | null;
+          sent_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "shop_order_notifications_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "shop_orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       sales_ledger: {
         Row: {
           id: string;
@@ -1059,6 +1109,26 @@ export interface Database {
       };
       shop_restock_refunded_order: {
         Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      shop_enqueue_paid_order_notifications: {
+        Args: { p_order_id: string };
+        Returns: undefined;
+      };
+      shop_claim_order_notification: {
+        Args: { p_order_id: string; p_kind: string };
+        Returns: boolean;
+      };
+      shop_complete_order_notification: {
+        Args: {
+          p_order_id: string;
+          p_kind: string;
+          p_provider_message_id: string;
+        };
+        Returns: undefined;
+      };
+      shop_release_order_notification: {
+        Args: { p_order_id: string; p_kind: string; p_error: string };
         Returns: undefined;
       };
     };

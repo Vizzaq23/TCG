@@ -50,7 +50,9 @@ export function AccountMenu({
     setSigningOut(true);
     const supabase = createClient();
     await supabase.auth.signOut();
-    window.location.assign("/");
+    // A full reload clears user-scoped state preserved by Next.js Activity.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.href = "/";
   }
 
   const itemClass =

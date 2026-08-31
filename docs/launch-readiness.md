@@ -1,140 +1,216 @@
 # Storefront launch readiness
 
-Audit date: 2026-08-30
+Audit updated: 2026-08-31
 
-Current verdict: **NO-GO**. The collection product remains usable, but customer
-checkout must stay offline until every launch blocker below is closed and a full
-Stripe test-mode order succeeds end to end.
+Current verdict: **NO-GO for customer payments**. The collection and profile
+features can remain online, and the storefront can be deployed in its fail-closed
+state, but checkout must remain disabled until the launch blockers below are closed
+and a complete Stripe test-mode order/refund cycle passes.
 
 ## Scope inspected
 
-- Repository and current working tree
-- GitHub PR #14 and its PR #15 follow-up
+- Repository, current `main`, and launch-readiness changes
+- GitHub PR #14 and its follow-up changes
 - Current Vercel production deployment (`tcg-lyart.vercel.app`)
-- Hosted Supabase project schema, RLS, Auth, email, and backup settings
-- Stripe Checkout, webhook, refund, inventory, and order code paths
-- Production storefront in Chrome at desktop and 390 × 844 mobile widths
+- Hosted Supabase schema, migrations, RLS, Auth settings, email, and backup posture
+- Stripe test dashboard, Checkout settings, webhook configuration, email settings,
+  account verification, Tax status, and the application payment workflow
+- Storefront behavior at desktop and 390 × 844 mobile widths in Chrome
 
 ## 1. Launch blockers
 
-### Merchant decisions required
+### Business decisions still required
 
-These must be supplied by the store owner; the code intentionally does not invent
-defaults for them.
+The application intentionally does not invent these values.
 
-- Product pricing and launch inventory quantities
-- Shipping charge, supported regions, carrier, handling time, and packaging promise
-- Tax registration and whether Stripe automatic tax is enabled
-- Returns, cancellations, refund eligibility, and refund timing
-- Legal business identity and required seller disclosures
-- Customer-support email and other public contact information
-- Final privacy policy, terms, shipping policy, and return/refund policy
+- **Tax:** the store's operating/ship-from state, registrations, and whether Stripe
+  Tax will be enabled. Available capital does not determine sales-tax obligations.
+- **Pricing:** the exact TCGplayer-derived selling-price rule by printing and
+  condition, including any markup, discount, minimum price, and rounding. The app
+  currently imports TCGplayer-linked market data through JustTCG; storefront listing
+  prices are still entered explicitly by the seller.
+- **Inventory:** launch quantities for each listing.
+- **Returns/cancellations:** eligibility, deadlines, item-condition rules, fees,
+  refund timing, and treatment of orders that have already shipped.
+- **Business identity:** legal seller/entity name, operating address/state, public
+  store name, and required disclosures.
+- **Customer support:** public support email and any phone/mailing contact to publish.
+- **Shipping operations:** carrier/service, handling time, tracking threshold, and
+  packaging/loss/damage language.
 
-### Manual platform configuration required
+The owner has decided **United States only, flat $4.99 shipping**. That decision is
+reflected in the public shipping page, but cannot be activated in `shop_settings`
+until the correct owner profile is identified and the remaining shipping policy text
+is approved.
 
-- Change Supabase Auth Site URL from localhost to the final HTTPS origin and add the
-  production `/auth/callback` redirect.
-- Configure production SMTP. Supabase's built-in email service is not suitable for a
-  customer-facing launch.
-- Enable recoverable database backups (the audited Free plan has no managed backups),
-  or document and test an external backup/restore process.
-- In Vercel, add all storefront environment variables listed below and mark every
-  server-only value as Secret. `SUPABASE_SERVICE_ROLE_KEY` was stored as Config during
-  the audit and must be re-saved as Secret.
-- Configure a production custom domain, then use that exact origin for
-  `NEXT_PUBLIC_APP_URL`, Supabase Auth, Stripe redirects, canonical metadata, and the
-  webhook endpoint.
-- Configure an external error-monitoring destination and alerts. The app now has safe
-  fallback UI and structured platform logs, but no external alerting service was chosen.
-- Choose and configure customer order email and internal order notification delivery.
-  Stripe receipt email alone must not be assumed until it is enabled and verified.
+### Store identity and sealed-product distribution
 
-### Stripe test-mode verification required
+An online brand alone cannot guarantee sealed-product allocation. Distributor
+applications generally require a legal resale business, sales-tax/resale documents,
+government identification, and business verification. Several major game
+distributors currently require a permanent brick-and-mortar retail location and may
+still restrict or allocate new trading-card products. Before applications are
+prepared, confirm whether this business will be online-only or will operate a staffed
+physical retail location with signage and organized play.
 
-- Sign in to Stripe and use a matching `pk_test_…` / `sk_test_…` key pair.
-- Create a test webhook endpoint at
-  `https://<final-domain>/api/shop/webhook` with these events:
+### Stripe account and test-mode setup
+
+The Stripe dashboard was inspected in test mode. The code is protected, but the
+account and endpoint are not launch-ready:
+
+- Verify the Stripe account email and complete business/merchant verification.
+- Add the public business name, support details, branding, and store-policy links to
+  Stripe Checkout.
+- Rotate the currently exposed test secret before putting test credentials in Vercel.
+- Create a **test** webhook endpoint at
+  `https://<deployed-origin>/api/shop/webhook` for:
   - `checkout.session.completed`
   - `checkout.session.expired`
   - `checkout.session.async_payment_succeeded`
   - `checkout.session.async_payment_failed`
   - `charge.refunded`
-- Add the endpoint's `whsec_…` signing secret to Vercel.
-- Complete successful, cancelled, failed, retried, double-clicked, refreshed, sold-out,
-  expired-session, and refunded test orders.
-- Confirm one and only one order, inventory decrement, ledger entry, and notification
-  occurs for duplicate webhook delivery and duplicate checkout submission.
-- Keep `STRIPE_LIVE_PAYMENTS_ENABLED=false`. Enabling live payments requires explicit
-  owner approval after all checks pass. Never perform a real charge for verification.
+- Save the endpoint's new `whsec_…` value as a Vercel server secret.
+- Keep `STRIPE_LIVE_PAYMENTS_ENABLED=false`. Live payments require explicit owner
+  approval after test-mode verification; no real charge is authorized for testing.
+- Stripe Tax is not configured. Do not enable automatic tax or collect tax until the
+  operating state, nexus/registration position, and tax approach are confirmed.
+- Stripe's successful-payment and refund customer email switches are currently off.
+  They may be enabled as supplemental receipts after action-time confirmation, but
+  the application email outbox remains the authoritative order notification path.
 
-### Release verification still required
+### Stripe test scenarios required
 
-- Deploy the completed tree and repeat Chrome checks at desktop and true mobile widths.
-- The currently deployed commit is not the hardened working tree. Its desktop shop has
-  no semantic `h1`; at 390 × 844 it renders 630 CSS pixels wide, clips navigation, and
-  shows a horizontal scrollbar.
-- Verify `/robots.txt`, `/sitemap.xml`, social preview, canonical URL, favicon, security
-  headers, auth redirects, checkout redirects, and webhook delivery on the final domain.
+- Successful card payment and order confirmation
+- Customer cancellation and return to an intact cart
+- Declined/failed payment, retry, and delayed-payment failure
+- Refreshing success, cancel, and Checkout pages
+- Double-clicked checkout and repeated checkout submission
+- Sold-out and simultaneous last-item purchase protection
+- Expired Checkout session and inventory release
+- Duplicate and out-of-order webhook delivery
+- Full and partial refund behavior, including the approved restock choice
+- Exactly one paid order, inventory decrement, ledger entry, customer email, and
+  internal notification for duplicated submissions/events
+
+### Email and SMTP setup
+
+Approved approach: **Resend**.
+
+- The application now has a durable, RLS-protected email outbox for customer paid-order
+  confirmations and internal paid-order notices. Claims, retries, and provider
+  idempotency keys prevent normal webhook retries from sending duplicate mail.
+- Verify a sending domain in Resend and configure SPF, DKIM, and DMARC.
+- Create a Resend API key and configure `RESEND_API_KEY`, `ORDER_EMAIL_FROM`, and
+  `ORDER_NOTIFICATION_EMAIL` in Vercel.
+- Configure Supabase Auth custom SMTP using Resend SMTP credentials; do not rely on
+  Supabase's built-in best-effort development mailer.
+- Send and inspect a test signup email, password-reset email, customer order email,
+  and internal order email before launch.
+
+### Monitoring and backups
+
+Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
+
+- Sentry error capture is integrated without default PII and with low production
+  trace sampling. Create the Sentry project, configure the DSN/source-map secrets,
+  create alerts for checkout/webhook errors, and verify with a test event.
+- Enable and inspect Vercel Observability for deployment/runtime failures.
+- Upgrade the Supabase project to a plan with managed daily backups (recommended
+  minimum: Pro) and confirm its retention before taking payments.
+- Schedule a separate logical database export and a restore drill after a backup
+  destination and retention policy are selected. Supabase database backups do not
+  substitute for a separate copy of uploaded storage objects.
+
+### Supabase and store activation
+
+- The safety and notification migrations are applied through
+  `20250831000000_shop_order_notifications.sql`; the linked `public` schema passes
+  warning-level Supabase database lint with no findings.
+- Select which existing Supabase profile is the store owner, then configure the exact
+  UUID as `SHOP_OWNER_USER_ID` in Vercel.
+- Create/complete that owner's `shop_settings` row with the approved identity,
+  support contact, United States region, 499-cent shipping charge, and an explicit
+  `launch_ready_at` only after every policy and launch value is complete.
+- Change Supabase Auth Site URL from localhost to the deployed HTTPS origin and allow
+  the production `/auth/callback` redirect.
+- Re-save `SUPABASE_SERVICE_ROLE_KEY` as a Vercel Secret and never expose it to client
+  code.
+
+### Domain, policies, and Vercel configuration
+
+- Choose and configure the production domain. Use the same exact HTTPS origin for
+  `NEXT_PUBLIC_APP_URL`, Supabase Auth, Stripe redirects/webhook, canonical metadata,
+  robots, and sitemap.
+- Publish approved privacy, terms, refund/return, shipping/cancellation, contact, and
+  seller-disclosure text. Current policy pages are not legal sign-off.
+- Configure all required Vercel environment variables listed below. The local launch
+  environment currently has Supabase and market-data access only; Stripe, owner,
+  rate-limit, Resend, Sentry, app-origin, and tax-control values are absent.
+- Deploy the completed commit and verify the deployment uses Next.js 16.3.4 rather
+  than the older production tree.
+- Repeat Chrome desktop/mobile checks and verify metadata, favicon, social preview,
+  `/robots.txt`, `/sitemap.xml`, security headers, auth redirects, Checkout redirects,
+  and webhook delivery on that deployed origin.
 
 ## 2. Important after launch
 
-- Add product and checkout funnel analytics after choosing a privacy-compatible tool and
-  updating consent/privacy disclosures as required.
-- Add automated restore drills and retention monitoring for backups.
-- Add operational alerts for webhook failures, payment/inventory mismatches, pending
-  orders older than the Checkout expiry, and notification delivery failures.
-- Consider splitting legacy combined order `status` from the new payment and fulfillment
-  fields throughout every admin view once historical data is confirmed.
-- Add automated accessibility scanning and continuous mobile visual regression coverage.
+- Add privacy-compatible product and checkout funnel analytics after consent and
+  policy requirements are determined.
+- Automate backup exports, retention checks, and scheduled restore drills.
+- Add operational alerts for webhook failures, payment/inventory mismatches, stale
+  pending orders, and failed email outbox rows.
+- Add continuous accessibility scanning and mobile visual-regression tests.
+- Consider a dedicated fulfillment workflow and customer-visible tracking events once
+  actual carrier operations are established.
 
 ## 3. Optional enhancements
 
 - Dynamic product URLs in the sitemap after inventory cadence is established.
-- Additional payment methods after their delayed-payment inventory semantics are tested.
-- Customer accounts with self-service order history, cancellation requests, and return
-  authorization workflows.
-- Richer merchandising, discount codes, wish lists, and abandoned-cart recovery.
+- Additional payment methods after delayed-payment inventory semantics are tested.
+- Self-service customer cancellation/return requests and return authorization.
+- Discount codes, wish lists, merchandising, and abandoned-cart recovery.
+- Distributor application tracker and purchase-order/allocation reporting.
 
-## Decision-free safeguards implemented in this phase
+## Decision-free safeguards implemented
 
-- The hosted launch-safety migration is applied and the linked `public` schema passes
-  Supabase's warning-level database lint with no findings.
-
-- Checkout is fail-closed for missing/mixed Stripe keys, an unset tax mode, missing
-  webhook secret, missing rate-limit secret, or live keys without the live-payment lock.
-- Store settings default offline with no shipping-price default; an explicit
-  `launch_ready_at` marker and support contact are required.
+- Checkout fails closed for missing/mixed Stripe keys, an unset tax mode, missing
+  webhook secret, missing notification configuration, missing rate-limit secret, or
+  live keys without the live-payment lock.
+- Store settings default offline; no shipping, pricing, inventory, identity, tax, or
+  policy value is silently invented.
 - Cart input is bounded and duplicate submissions share a stable checkout token.
 - Order creation, server-side price snapshots, and inventory holds are atomic in
-  Postgres; browser prices are never trusted.
+  Postgres; browser-supplied prices are never trusted.
 - Stripe Checkout creation uses an idempotency key and resumes an existing open session.
-- Cancellation and Stripe failure preserve the customer's cart. A paid success return
-  clears only the matching cart after server-side verification.
-- Signed webhook events are mode checked, idempotent, amount/currency/tax validated, and
-  only paid sessions can decrement inventory. In-progress event claims become retryable
-  after a worker crash instead of permanently discarding the event.
-- Refund creation and optional restocking are independently idempotent.
+- Cancellation/failure preserves the cart; verified paid success clears only the
+  matching cart.
+- Signed webhook events are mode checked, idempotent, amount/currency/tax validated,
+  and only paid sessions can decrement inventory. Abandoned processing claims become
+  retryable instead of permanently discarding an event.
+- Refund state and optional restocking are independently idempotent.
+- Customer and internal paid-order messages use a durable service-role-only outbox and
+  deterministic provider idempotency keys.
 - Seller cost basis and collection identifiers are no longer publicly queryable.
-- Checkout attempts are durably rate limited using an HMAC fingerprint.
-- Optional signed-in UI state uses verified JWT claims, duplicate checks are deduplicated
-  within a render, and navigation prefetch no longer floods Supabase Auth.
-- Security headers, safe error fallbacks, canonical/social metadata, robots rules,
-  sitemap, keyboard navigation, page headings, and mobile hit areas are present.
+- Checkout attempts are durably rate limited with an HMAC fingerprint.
+- Security headers, safe error fallbacks, Sentry hooks, canonical/social metadata,
+  robots rules, sitemap, keyboard navigation, page headings, and mobile hit areas are
+  present.
+- Next.js and its security-sensitive transitive dependencies were upgraded/repaired;
+  `npm audit --omit=dev` reports zero known vulnerabilities.
 
-## Verification completed on the hardened working tree
+## Verification completed on the current tree
 
-- Vitest: 13 files and 64 tests passed.
-- ESLint: passed with no findings.
+- Vitest: 13 files and 66 tests passed.
+- ESLint: passes; the logout full-reload exception is documented because Next.js
+  recommends clearing preserved user-scoped state on sign-out.
 - TypeScript: `tsc --noEmit` passed.
-- Next.js 16.2.4 production build: passed; 37 static/dynamic routes generated.
-- Local production server: `/shop`, `/robots.txt`, and `/sitemap.xml` return 200;
-  CSP, HSTS, frame denial, MIME sniffing protection, and referrer policy are present.
-- Chrome desktop: no horizontal overflow and a semantic shop heading is present.
-- Chrome 390 × 844: no horizontal overflow, mobile navigation is usable, and the shop
-  remains visibly fail-closed while launch settings are incomplete.
-- Secret scan: `.env.local` is ignored; no tracked Stripe secret or service-role token
-  was found. The only tracked JWT-shaped value is the intentionally public Supabase anon
-  key used by CI.
+- Next.js 16.3.4 production build: passed; 37 static/dynamic routes generated.
+- Supabase migrations: local and remote histories match through `20250831000000`.
+- Supabase remote schema lint: no warning-level findings.
+- Production dependency audit: zero known vulnerabilities.
+
+The final deployed Chrome and Stripe test-mode checks remain pending because the
+required Vercel/Stripe/Resend/Sentry/domain/business values are not configured.
 
 ## Required Vercel environment variables
 
@@ -144,6 +220,7 @@ Public values:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test key until launch approval)
+- `NEXT_PUBLIC_SENTRY_DSN`
 
 Server-only secrets:
 
@@ -154,14 +231,35 @@ Server-only secrets:
 - `SHOP_RATE_LIMIT_SECRET`
 - `JUSTTCG_API_KEY`
 - `PRICE_SYNC_SECRET`
+- `RESEND_API_KEY`
+- `ORDER_EMAIL_FROM`
+- `ORDER_NOTIFICATION_EMAIL`
+- `SENTRY_DSN`
+- `SENTRY_ORG`
+- `SENTRY_PROJECT`
+- `SENTRY_AUTH_TOKEN`
 
-Explicit non-secret controls:
+Explicit controls:
 
-- `STRIPE_TAX_MODE=none` or `automatic` only after the owner decides tax policy
+- `STRIPE_TAX_MODE=none` or `automatic` only after the tax decision
 - `STRIPE_LIVE_PAYMENTS_ENABLED=false` until an approved live launch
 
 ## Final launch gate
 
-Launch is allowed only when all launch blockers are closed, the hosted migration and
-environment are verified, Chrome desktop/mobile checks pass, a complete Stripe test-mode
-order/refund cycle passes, and the owner explicitly authorizes live payments.
+Go-live is allowed only when every launch blocker is closed, the deployed environment
+is verified, Chrome desktop/mobile tests pass, the complete Stripe test-mode
+order/email/refund cycle passes, backups and alerts are proven, and the owner explicitly
+authorizes live payments.
+
+## Primary external references
+
+- [Stripe Tax setup](https://docs.stripe.com/tax/set-up?dashboard-or-api=api)
+- [Supabase production SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
+- [Supabase backups](https://supabase.com/docs/guides/platform/backups)
+- [Resend SMTP](https://resend.com/docs/send-with-smtp)
+- [Resend idempotency keys](https://resend.com/docs/dashboard/emails/idempotency-keys)
+- [TCGplayer API access](https://docs.tcgplayer.com/docs/getting-started)
+- [TCGplayer price-point definitions](https://help.tcgplayer.com/hc/en-us/articles/222376867-What-do-the-different-price-points-on-TCGplayer-com-mean)
+- [Alliance account requirements](https://www.alliance-games.com/downloads/creditterms.pdf)
+- [Southern Hobby account requirements](https://www.southernhobby.com/new_account.php)
+- [PHD account requirements](https://www.phdgames.com/open-an-account-with-phd/)

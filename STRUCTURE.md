@@ -163,7 +163,6 @@ components/
 | `CollectionRow.tsx` | Edit one collection entry (qty, grade, trade, market) |
 | `ShowcasePicker.tsx` | Assign three showcase slots (autosave RPC) |
 | `ShowcaseGlassCase.tsx` | Premium public showcase hero + walnut stand |
-| `SlabShowcase.tsx` | Older unused slab display (superseded by glass case) |
 | `SetProgress.tsx` | Per-set completion UI (sort / hide zero) |
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
 | `PublicShelfToolbar.tsx` | All cards / For trade / With notes tabs |
@@ -235,7 +234,7 @@ lib/
 ├── supabase/
 │   ├── client.ts           # Browser Supabase client
 │   ├── server.ts           # Server Components / Route Handlers
-│   └── middleware.ts       # Cookie-aware client for proxy / session refresh
+│   └── proxy.ts            # Cookie-aware client for Proxy session refresh
 ├── types/
 │   ├── database.ts         # Generated-style DB types
 │   └── grading.ts          # Companies, grades, helpers
@@ -256,7 +255,7 @@ lib/
 | `prices/select-display-price.ts` | Pick display variant (NM / preferred / graded label) |
 | `prices/collection-value.ts` | Estimated total, top 5, by-set |
 | `prices/freshness.ts` | 24h stale helpers for sync |
-| `supabase/*` | Three Supabase client factories (browser / server / middleware) |
+| `supabase/*` | Supabase client factories for browser, server, admin, and Proxy use |
 | `types/database.ts` | Tables, RPCs, public collection row shapes |
 | `types/grading.ts` | Graded slab data model + formatters |
 | `validators/username.ts` | Normalize + validate public usernames |
@@ -312,7 +311,7 @@ Apply with `npx supabase db push` or by running files in the Supabase SQL editor
 
 ## `public/`
 
-Default Next.js static SVGs (`next.svg`, `vercel.svg`, etc.). App imagery mostly comes from the card catalog / Storage, not this folder.
+App icons and the web manifest. Card imagery comes from the catalog and Supabase Storage.
 
 ---
 

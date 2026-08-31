@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { dollarsToCents } from "@/lib/money";
 import {
-  dollarsToCents,
   parseOptcgNumber,
-  pickMarketVariant,
+  pickNearMintVariant,
   scoreCardMatch,
   MIN_ACCEPT_SCORE,
-} from "@/lib/justtcg";
+} from "@/lib/justtcg/match";
 import type { JustTcgVariant } from "@/lib/justtcg/types";
 
 function variant(
@@ -21,7 +21,7 @@ function variant(
 
 describe("justtcg helpers", () => {
   it("prefers Near Mint Normal for base cards", () => {
-    const picked = pickMarketVariant([
+    const picked = pickNearMintVariant([
       variant({ condition: "Lightly Played", printing: "Normal", price: 1 }),
       variant({ condition: "Near Mint", printing: "Foil", price: 9 }),
       variant({ condition: "Near Mint", printing: "Normal", price: 2.5 }),
@@ -35,7 +35,7 @@ describe("justtcg helpers", () => {
   });
 
   it("returns null when no priced variants", () => {
-    expect(pickMarketVariant([])).toBeNull();
+    expect(pickNearMintVariant([])).toBeNull();
   });
 
   it("parses OPTCG numbers including parallels", () => {

@@ -1,16 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
-
-export async function requireShopOwner() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user || !isShopOwner(user.id)) {
-    return { supabase, user: null as null, isOwner: false as const };
-  }
-  return { supabase, user, isOwner: true as const };
-}
+import { getShopOwnerUserId } from "@/lib/shop/config";
 
 export async function ensureShopSettings(ownerUserId: string) {
   const supabase = await createClient();

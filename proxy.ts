@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createMiddlewareClient } from "@/lib/supabase/middleware";
+import { createProxyClient } from "@/lib/supabase/proxy";
 import { safeNextPath } from "@/lib/auth/safe-next";
 import { getVerifiedUser } from "@/lib/supabase/verified-user";
 
@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const { supabase, supabaseResponse } = await createMiddlewareClient(request);
+  const { supabase, supabaseResponse } = await createProxyClient(request);
 
   // Public pages resolve their optional user state inside the server render.
   // Avoid a second Auth API request in Proxy for every browse, metadata, and

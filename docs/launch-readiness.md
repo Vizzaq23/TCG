@@ -222,16 +222,18 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Production dependency audit: zero known vulnerabilities.
 - Vercel deployment: `/shop`, `/robots.txt`, `/sitemap.xml`, manifest, favicon, and
   social image return 200 with CSP, HSTS, frame denial, MIME protection, permissions,
-  and referrer-policy headers.
+  and referrer-policy headers. The final deployed `/shop` canonical is
+  `https://tcg-lyart.vercel.app/shop`; robots and sitemap use the same origin.
 - Vercel Production variables: `NEXT_PUBLIC_APP_URL`, `SHOP_RATE_LIMIT_SECRET`, and
   `STRIPE_LIVE_PAYMENTS_ENABLED=false` were added without exposing the saved secret;
   the audited commit was redeployed successfully with those settings.
 - Chrome 1440 × 900 and 390 × 844: one semantic shop heading, working skip target and
   mobile menu, visible fail-closed messaging, and no horizontal page overflow.
 
-The deployed visual/static checks are complete. Stripe test-mode checkout, email,
-monitoring alerts, auth redirects, backup restore proof, and final-origin checks remain
-blocked by the unconfigured Vercel/Stripe/Resend/Sentry/domain/business values.
+The deployed visual/static and current-origin checks are complete. Stripe test-mode
+checkout, email, monitoring alerts, auth redirects, and backup restore proof remain
+blocked by the unconfigured Stripe/Resend/Sentry/Supabase/business values. If a custom
+domain replaces the current Vercel alias, repeat the origin-dependent checks.
 
 ## Required Vercel environment variables
 

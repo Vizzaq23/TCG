@@ -115,9 +115,10 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
   trace sampling. Create the Sentry project, configure the DSN/source-map secrets,
   create alerts for checkout/webhook errors, and verify with a test event.
 - Enable and inspect Vercel Observability for deployment/runtime failures.
-- The Supabase project has been upgraded to Pro. The backup API reports WAL-G
-  enabled, but no completed physical backup is listed yet. Confirm the first daily
-  restore point appears and verify its retention before taking payments.
+- The Supabase backup API reports WAL-G enabled, but the CLI does not expose the
+  billing tier and no completed physical backup is listed yet. If the upgrade was to
+  Supabase Pro, confirm that tier in the dashboard, then wait for the first daily
+  restore point and verify its retention before taking payments.
 - Schedule a separate logical database export and a restore drill after a backup
   destination and retention policy are selected. Supabase database backups do not
   substitute for a separate copy of uploaded storage objects.
@@ -209,8 +210,8 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Next.js 16.3.4 production build: passed; 37 static/dynamic routes generated.
 - Supabase migrations: local and remote histories match through `20250831000000`.
 - Supabase remote schema lint: no warning-level findings.
-- Supabase backup service: WAL-G enabled after the Pro upgrade; first completed backup
-  is not listed yet.
+- Supabase backup service: WAL-G enabled; billing tier and the first completed backup
+  are not yet verified.
 - Production dependency audit: zero known vulnerabilities.
 - Vercel deployment: `/shop`, `/robots.txt`, `/sitemap.xml`, manifest, favicon, and
   social image return 200 with CSP, HSTS, frame denial, MIME protection, permissions,

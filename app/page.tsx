@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Button } from "@/components/ui/Button";
 import {
@@ -8,6 +9,10 @@ import { HomeSunnyBackdrop } from "@/components/marketing/HomeSunnyBackdrop";
 import { CrewSignsStrip } from "@/components/marketing/CrewSignsStrip";
 import { isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const benefits = [
   {

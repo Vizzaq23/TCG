@@ -1,7 +1,11 @@
+import type { Metadata } from "next";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 
-export const metadata = { title: "Shipping" };
+export const metadata: Metadata = {
+  title: "Shipping",
+  alternates: { canonical: "/shop/shipping" },
+};
 
 export default function ShippingPage() {
   return (

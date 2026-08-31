@@ -114,11 +114,14 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Sentry error capture is integrated without default PII and with low production
   trace sampling. Create the Sentry project, configure the DSN/source-map secrets,
   create alerts for checkout/webhook errors, and verify with a test event.
-- Enable and inspect Vercel Observability for deployment/runtime failures.
+- Basic Vercel Observability is available on the current Hobby plan. Vercel confirms
+  that anomaly alerts, custom queries, and 30-day retention require Pro, so Sentry
+  alerts must be the launch alerting path unless the Vercel plan is upgraded.
 - The Supabase backup API reports WAL-G enabled, but the CLI does not expose the
-  billing tier and no completed physical backup is listed yet. If the upgrade was to
-  Supabase Pro, confirm that tier in the dashboard, then wait for the first daily
-  restore point and verify its retention before taking payments.
+  billing tier and no completed physical backup is listed yet. The owner clarified
+  that the recent upgrade was ChatGPT/Codex, not Supabase. Confirm the Supabase tier
+  in its dashboard, then wait for and verify the first managed restore point before
+  taking payments.
 - Schedule a separate logical database export and a restore drill after a backup
   destination and retention policy are selected. Supabase database backups do not
   substitute for a separate copy of uploaded storage objects.
@@ -140,18 +143,22 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 
 ### Domain, policies, and Vercel configuration
 
-- Choose and configure the production domain. Use the same exact HTTPS origin for
-  `NEXT_PUBLIC_APP_URL`, Supabase Auth, Stripe redirects/webhook, canonical metadata,
-  robots, and sitemap.
+- `https://tcg-lyart.vercel.app` is the verified test-stage production origin and is
+  now configured as `NEXT_PUBLIC_APP_URL` for Vercel Production. A later custom
+  domain remains a business/brand decision; if chosen, update Supabase Auth, Stripe,
+  metadata, robots, sitemap, and all policy links to the same exact HTTPS origin.
 - Publish approved privacy, terms, refund/return, shipping/cancellation, contact, and
   seller-disclosure text. Current policy pages are not legal sign-off.
-- Configure all required Vercel environment variables listed below. The local launch
-  environment currently has Supabase and market-data access only; Stripe, owner,
-  rate-limit, Resend, Sentry, app-origin, and tax-control values are absent.
+- Complete the Vercel account billing address. The dashboard currently labels it
+  missing or incomplete.
+- Configure all remaining required Vercel environment variables listed below.
+  Supabase, market-data access, the production app origin, a generated rate-limit
+  secret, and the explicit live-payment lock are present. Stripe, owner, Resend,
+  Sentry, and tax-control values remain absent.
 - The hardened tree is now served by `tcg-lyart.vercel.app` and passes desktop/mobile
-  Chrome layout checks. Configure the final origin before launch: canonical, Open
-  Graph, robots host, and sitemap URLs currently use a generated Vercel deployment
-  hostname because `NEXT_PUBLIC_APP_URL` is absent.
+  Chrome layout checks. Canonical, Open Graph, robots host, and sitemap URLs now use
+  that alias. Storefront and policy routes declare route-specific canonical URLs
+  instead of inheriting the homepage canonical.
 - Recheck auth and Checkout redirects plus webhook delivery after the final origin and
   Vercel environment are configured.
 
@@ -216,6 +223,9 @@ Approved approach: **Sentry + Vercel Observability + Supabase managed backups**.
 - Vercel deployment: `/shop`, `/robots.txt`, `/sitemap.xml`, manifest, favicon, and
   social image return 200 with CSP, HSTS, frame denial, MIME protection, permissions,
   and referrer-policy headers.
+- Vercel Production variables: `NEXT_PUBLIC_APP_URL`, `SHOP_RATE_LIMIT_SECRET`, and
+  `STRIPE_LIVE_PAYMENTS_ENABLED=false` were added without exposing the saved secret;
+  the audited commit was redeployed successfully with those settings.
 - Chrome 1440 × 900 and 390 × 844: one semantic shop heading, working skip target and
   mobile menu, visible fail-closed messaging, and no horizontal page overflow.
 
@@ -225,23 +235,23 @@ blocked by the unconfigured Vercel/Stripe/Resend/Sentry/domain/business values.
 
 ## Required Vercel environment variables
 
+Verified in **Production**: `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `JUSTTCG_API_KEY`,
+`PRICE_SYNC_SECRET`, `SHOP_RATE_LIMIT_SECRET`, and
+`STRIPE_LIVE_PAYMENTS_ENABLED=false`. Values were not copied into this report.
+
+The remaining required variables are:
+
 Public values:
 
-- `NEXT_PUBLIC_APP_URL`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` (test key until launch approval)
 - `NEXT_PUBLIC_SENTRY_DSN`
 
 Server-only secrets:
 
-- `SUPABASE_SERVICE_ROLE_KEY`
 - `SHOP_OWNER_USER_ID`
 - `STRIPE_SECRET_KEY` (test key until launch approval)
 - `STRIPE_WEBHOOK_SECRET`
-- `SHOP_RATE_LIMIT_SECRET`
-- `JUSTTCG_API_KEY`
-- `PRICE_SYNC_SECRET`
 - `RESEND_API_KEY`
 - `ORDER_EMAIL_FROM`
 - `ORDER_NOTIFICATION_EMAIL`
@@ -253,7 +263,8 @@ Server-only secrets:
 Explicit controls:
 
 - `STRIPE_TAX_MODE=none` or `automatic` only after the tax decision
-- `STRIPE_LIVE_PAYMENTS_ENABLED=false` until an approved live launch
+- Keep the configured `STRIPE_LIVE_PAYMENTS_ENABLED=false` until an approved live
+  launch.
 
 ## Final launch gate
 

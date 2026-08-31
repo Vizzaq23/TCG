@@ -29,7 +29,6 @@ export const metadata: Metadata = {
   description:
     "Catalog your One Piece TCG collection, showcase graded slabs and prized cards, and share a premium public profile.",
   applicationName: "One Piece TCG Shelf",
-  alternates: { canonical: "/" },
   category: "collectibles",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -42,7 +41,6 @@ export const metadata: Metadata = {
     description:
       "Catalog. Showcase. Share. Track cards, grades, trades, and portfolio value — then present your favorites in a lit glass case.",
     type: "website",
-    url: "/",
     siteName: "One Piece TCG Shelf",
     images: [
       {

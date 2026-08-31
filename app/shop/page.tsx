@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { isSupabaseConfigured } from "@/lib/env";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -14,9 +15,10 @@ import { sellableQuantity } from "@/lib/shop/inventory";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Shop",
   description: "Buy One Piece TCG singles, playsets, and bulk lots.",
+  alternates: { canonical: "/shop" },
 };
 
 export default async function ShopPage({

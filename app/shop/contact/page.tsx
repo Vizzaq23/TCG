@@ -1,8 +1,12 @@
+import type { Metadata } from "next";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 
-export const metadata = { title: "Contact" };
+export const metadata: Metadata = {
+  title: "Contact",
+  alternates: { canonical: "/shop/contact" },
+};
 
 export default async function ContactPage() {
   const settings = await getPublicShopSettings();

@@ -16,9 +16,13 @@ import {
 import { FollowingLists } from "@/components/social/FollowingLists";
 import { SocialActivityFeed } from "@/components/social/SocialActivityFeed";
 import { SuggestedCollectors } from "@/components/social/SuggestedCollectors";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 type Props = {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: SearchParamValue }>;
 };
 
 type ProfileLite = {
@@ -41,7 +45,7 @@ export default async function SocialPage({ searchParams }: Props) {
   }
 
   const { q: rawQ } = await searchParams;
-  const q = (rawQ ?? "").trim().replace(/^@/, "");
+  const q = (firstSearchParam(rawQ) ?? "").trim().replace(/^@/, "");
 
   const supabase = await createClient();
   const {
@@ -129,7 +133,7 @@ export default async function SocialPage({ searchParams }: Props) {
           title="Find collectors"
           description="Search by username or display name."
         />
-        <CollectorSearchForm q={q} />
+        <CollectorSearchForm key={q} q={q} />
         {q ? (
           searchHits.length ? (
             <ul className="surface-card divide-y divide-zinc-800/80 overflow-hidden rounded-[18px]">

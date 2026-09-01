@@ -4,12 +4,22 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/auth/safe-next";
 import { createClient } from "@/lib/supabase/server";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
-type Props = { searchParams: Promise<{ next?: string; error?: string }> };
+type Props = {
+  searchParams: Promise<{
+    next?: SearchParamValue;
+    error?: SearchParamValue;
+  }>;
+};
 
 export default async function LoginPage({ searchParams }: Props) {
   const params = await searchParams;
-  const nextPath = safeNextPath(params.next);
+  const nextPath = safeNextPath(firstSearchParam(params.next));
+  const error = firstSearchParam(params.error);
   const signupHref = `/signup?next=${encodeURIComponent(nextPath)}`;
 
   if (!isSupabaseConfigured()) {
@@ -54,9 +64,9 @@ export default async function LoginPage({ searchParams }: Props) {
           </Link>
         </p>
       </div>
-      {params.error && (
+      {error && (
         <p className="mb-5 rounded-[12px] border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          {params.error}
+          {error}
         </p>
       )}
       <LoginForm nextPath={nextPath} />

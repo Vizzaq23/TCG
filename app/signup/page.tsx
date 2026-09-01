@@ -4,12 +4,16 @@ import { SignupForm } from "@/components/auth/SignupForm";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/auth/safe-next";
 import { createClient } from "@/lib/supabase/server";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
-type Props = { searchParams: Promise<{ next?: string }> };
+type Props = { searchParams: Promise<{ next?: SearchParamValue }> };
 
 export default async function SignupPage({ searchParams }: Props) {
   const params = await searchParams;
-  const nextPath = safeNextPath(params.next);
+  const nextPath = safeNextPath(firstSearchParam(params.next));
   const loginHref = `/login?next=${encodeURIComponent(nextPath)}`;
 
   if (!isSupabaseConfigured()) {

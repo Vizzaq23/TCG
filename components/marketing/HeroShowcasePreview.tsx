@@ -37,7 +37,53 @@ const FALLBACK: HeroPreviewCard[] = [
     cardNumber: "OP01-016",
     rarity: "Rare",
   },
+  {
+    name: "Monkey D. Luffy",
+    imageUrl: null,
+    setName: "Straw Hat Crew",
+    cardNumber: "ST01-001",
+    rarity: "Leader",
+  },
+  {
+    name: "Donquixote Doflamingo",
+    imageUrl: null,
+    setName: "Romance Dawn",
+    cardNumber: "OP01-060",
+    rarity: "Super Rare",
+  },
+  {
+    name: "Shanks",
+    imageUrl: null,
+    setName: "Romance Dawn",
+    cardNumber: "OP01-120",
+    rarity: "Secret Rare",
+  },
+  {
+    name: "Monkey D. Luffy",
+    imageUrl: null,
+    setName: "Awakening of the New Era",
+    cardNumber: "OP05-119",
+    rarity: "Secret Rare",
+  },
+  {
+    name: "Gol D. Roger",
+    imageUrl: null,
+    setName: "Emperors in the New World",
+    cardNumber: "OP09-118",
+    rarity: "Secret Rare",
+  },
 ];
+
+function sampleCards(cards: HeroPreviewCard[], count: number): HeroPreviewCard[] {
+  const shuffled = [...cards];
+
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, count);
+}
 
 type Props = {
   cards?: HeroPreviewCard[];
@@ -46,7 +92,8 @@ type Props = {
 };
 
 export function HeroShowcasePreview({ cards = FALLBACK, className, themed }: Props) {
-  const display = cards.length >= 3 ? cards.slice(0, 3) : [...cards, ...FALLBACK].slice(0, 3);
+  const pool = cards.length >= 3 ? cards : [...cards, ...FALLBACK];
+  const display = sampleCards(pool, 3);
 
   return (
     <div

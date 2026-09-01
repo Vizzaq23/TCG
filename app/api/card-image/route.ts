@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       Referer: "https://en.onepiece-cardgame.com/",
       "User-Agent": "Mozilla/5.0 (compatible; OnePieceTCGShelf/1.0)",
     },
-    next: { revalidate: 60 * 60 * 24 * 7 },
+    cache: "no-store",
   });
 
   if (!upstream.ok) {

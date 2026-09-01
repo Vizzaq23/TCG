@@ -7,15 +7,25 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { CompareForm } from "@/components/collection/CompareForm";
 import { Badge } from "@/components/ui/Badge";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 type Props = {
-  searchParams: Promise<{ a?: string; b?: string }>;
+  searchParams: Promise<{ a?: SearchParamValue; b?: SearchParamValue }>;
 };
 
 export default async function ComparePage({ searchParams }: Props) {
   const { a, b } = await searchParams;
-  const usernameA = (a ?? "").trim().toLowerCase().replace(/^@/, "");
-  const usernameB = (b ?? "").trim().toLowerCase().replace(/^@/, "");
+  const usernameA = (firstSearchParam(a) ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/^@/, "");
+  const usernameB = (firstSearchParam(b) ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/^@/, "");
 
   if (!isSupabaseConfigured()) {
     return (

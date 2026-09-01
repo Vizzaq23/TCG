@@ -7,6 +7,10 @@ import { Pagination } from "@/components/ui/Pagination";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { toSetOptions } from "@/lib/catalog-options";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 const PAGE_SIZE = 24;
 
@@ -18,6 +22,8 @@ type SearchParams = {
   type?: string;
   page?: string;
 };
+
+type RawSearchParams = Partial<Record<keyof SearchParams, SearchParamValue>>;
 
 function uniqSorted(values: (string | null | undefined)[]) {
   return [...new Set(values.filter(Boolean) as string[])].sort((a, b) =>
@@ -57,7 +63,7 @@ function applyCardFilters<
 export default async function BrowsePage({
   searchParams,
 }: {
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<RawSearchParams>;
 }) {
   if (!isSupabaseConfigured()) {
     return (
@@ -70,7 +76,15 @@ export default async function BrowsePage({
     );
   }
 
-  const params = await searchParams;
+  const rawParams = await searchParams;
+  const params: SearchParams = {
+    q: firstSearchParam(rawParams.q),
+    set_name: firstSearchParam(rawParams.set_name),
+    rarity: firstSearchParam(rawParams.rarity),
+    color: firstSearchParam(rawParams.color),
+    type: firstSearchParam(rawParams.type),
+    page: firstSearchParam(rawParams.page),
+  };
   const supabase = await createClient();
 
   const { data: metaRows, error: metaError } = await supabase
@@ -149,15 +163,18 @@ export default async function BrowsePage({
         </div>
 
         <BrowseToolbar
-        q={q}
-        setName={params.set_name}
-        rarity={params.rarity}
-        color={params.color}
-        type={params.type}
-        setOptions={setOptions}
-        rarityOptions={rarityOptions}
-        colorOptions={colorOptions}
-        typeOptions={typeOptions}
+          key={[q, params.set_name, params.rarity, params.color, params.type]
+            .map((value) => value ?? "")
+            .join("\u001f")}
+          q={q}
+          setName={params.set_name}
+          rarity={params.rarity}
+          color={params.color}
+          type={params.type}
+          setOptions={setOptions}
+          rarityOptions={rarityOptions}
+          colorOptions={colorOptions}
+          typeOptions={typeOptions}
         />
 
         {!cards?.length ? (

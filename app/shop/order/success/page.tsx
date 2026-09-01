@@ -7,15 +7,20 @@ import { getStripe } from "@/lib/shop/stripe";
 import { isStripeConfigured } from "@/lib/shop/config";
 import { isCheckoutPaymentConfirmed } from "@/lib/shop/checkout";
 import { CheckoutCompletion } from "@/components/shop/CheckoutCompletion";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 export const metadata = { title: "Order status" };
 
 export default async function OrderSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: SearchParamValue }>;
 }) {
-  const { session_id: sessionId } = await searchParams;
+  const { session_id: rawSessionId } = await searchParams;
+  const sessionId = firstSearchParam(rawSessionId);
 
   let orderNumber: string | null = null;
   let total: number | null = null;

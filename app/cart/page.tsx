@@ -12,15 +12,20 @@ import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { getCheckoutConfigurationError } from "@/lib/shop/config";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 export const metadata = { title: "Cart" };
 
 export default async function CartPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cancelled?: string }>;
+  searchParams: Promise<{ cancelled?: SearchParamValue }>;
 }) {
-  const { cancelled } = await searchParams;
+  const { cancelled: rawCancelled } = await searchParams;
+  const cancelled = firstSearchParam(rawCancelled);
   const cart = await readCartCookie();
   const admin = tryCreateAdminClient();
   const user = await getVerifiedServerUser();

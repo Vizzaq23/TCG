@@ -14,6 +14,10 @@ import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity } from "@/lib/shop/inventory";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -24,9 +28,10 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kind?: string }>;
+  searchParams: Promise<{ kind?: SearchParamValue }>;
 }) {
-  const { kind: kindFilter } = await searchParams;
+  const { kind: rawKindFilter } = await searchParams;
+  const kindFilter = firstSearchParam(rawKindFilter);
 
   if (!isSupabaseConfigured()) {
     return (

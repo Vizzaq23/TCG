@@ -38,10 +38,18 @@ import {
   selectDailyTreasure,
   utcDateKey,
 } from "@/lib/collection/daily-treasure";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 type Props = {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ trade?: string; notes?: string; social?: string }>;
+  searchParams: Promise<{
+    trade?: SearchParamValue;
+    notes?: SearchParamValue;
+    social?: SearchParamValue;
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -69,7 +77,10 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
   }
 
   const { username } = await params;
-  const { trade, notes, social } = await searchParams;
+  const rawSearchParams = await searchParams;
+  const trade = firstSearchParam(rawSearchParams.trade);
+  const notes = firstSearchParam(rawSearchParams.notes);
+  const social = firstSearchParam(rawSearchParams.social);
   const slug = decodeURIComponent(username).toLowerCase();
   const tradeOnly = trade === "1";
   const notesOnly = !tradeOnly && notes === "1";

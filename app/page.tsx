@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { Button } from "@/components/ui/Button";
 import {
@@ -103,32 +104,10 @@ async function loadPreviewCards(): Promise<HeroPreviewCard[] | undefined> {
       .filter((c) => c.image_url)
       .sort((a, b) => scoreHeroCard(b) - scoreHeroCard(a));
 
-    const picks: CatalogPreview[] = [];
-    const used = new Set<string>();
+    if (!ranked.length) return undefined;
 
-    const take = (predicate: (c: CatalogPreview) => boolean) => {
-      const hit = ranked.find((c) => !used.has(c.card_number ?? c.name) && predicate(c));
-      if (!hit) return;
-      used.add(hit.card_number ?? hit.name);
-      picks.push(hit);
-    };
-
-    // Balanced trio: leader, chase/parallel, crew mate — all full card art
-    take((c) => /leader/i.test(c.rarity ?? "") || /luffy/i.test(c.name));
-    take((c) => /_p\d+$/i.test(c.card_number ?? "") || /secret|sec|\bsp\b|super/i.test(c.rarity ?? ""));
-    take((c) => /zoro|nami|sanji|robin|law|shanks|ace/i.test(c.name));
-
-    for (const card of ranked) {
-      if (picks.length >= 3) break;
-      const key = card.card_number ?? card.name;
-      if (used.has(key)) continue;
-      used.add(key);
-      picks.push(card);
-    }
-
-    if (!picks.length) return undefined;
-
-    return picks.slice(0, 3).map((card) => ({
+    // Give the showcase a strong pool to sample from on each homepage request.
+    return ranked.slice(0, 18).map((card) => ({
       name: card.name,
       imageUrl: card.image_url,
       setName: card.set_name,
@@ -141,6 +120,8 @@ async function loadPreviewCards(): Promise<HeroPreviewCard[] | undefined> {
 }
 
 export default async function HomePage() {
+  // The example shelf should be freshly sampled for every homepage visit.
+  await connection();
   const previewCards = await loadPreviewCards();
 
   return (

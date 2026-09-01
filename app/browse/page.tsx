@@ -6,6 +6,7 @@ import { AddToCollectionButton } from "@/components/cards/AddToCollectionButton"
 import { Pagination } from "@/components/ui/Pagination";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { toSetOptions } from "@/lib/catalog-options";
 
 const PAGE_SIZE = 24;
 
@@ -86,7 +87,7 @@ export default async function BrowsePage({
     );
   }
 
-  const setOptions = toOptions(uniqSorted(metaRows?.map((r) => r.set_name) ?? []));
+  const setOptions = toSetOptions(metaRows?.map((r) => r.set_name) ?? []);
   const rarityOptions = toOptions(uniqSorted(metaRows?.map((r) => r.rarity) ?? []));
   const colorOptions = toOptions(uniqSorted(metaRows?.map((r) => r.color) ?? []));
   const typeOptions = toOptions(uniqSorted(metaRows?.map((r) => r.type) ?? []));

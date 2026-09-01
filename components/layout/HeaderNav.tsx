@@ -42,11 +42,19 @@ export function HeaderNav() {
       }
     }
 
+    function onFocusIn(event: FocusEvent) {
+      if (!mobileMenuRef.current?.contains(event.target as Node)) {
+        closeMobileMenu();
+      }
+    }
+
     window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("focusin", onFocusIn);
     return () => {
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("focusin", onFocusIn);
     };
   }, []);
 
@@ -81,15 +89,7 @@ export function HeaderNav() {
         ))}
       </div>
 
-      <details
-        ref={mobileMenuRef}
-        className="group relative lg:hidden"
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-            closeMobileMenu();
-          }
-        }}
-      >
+      <details ref={mobileMenuRef} className="group relative lg:hidden">
         <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-[12px] border border-zinc-800 bg-zinc-900/70 text-zinc-300 transition hover:border-zinc-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 [&::-webkit-details-marker]:hidden">
           <span className="sr-only">Open navigation</span>
           <svg aria-hidden viewBox="0 0 24 24" className="size-5 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round">

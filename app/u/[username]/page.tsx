@@ -8,6 +8,7 @@ import type {
   ProfileFollowStatsRow,
   PublicCollectionRow,
   PublicShowcaseRow,
+  CreativeProfileFeaturesRow,
 } from "@/lib/types/database";
 import { formatGradedBadge, isGradedEntry } from "@/lib/types/grading";
 import { CardImage } from "@/components/cards/CardImage";
@@ -26,6 +27,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
+import { CreativeProfileSpotlight } from "@/components/profile/CreativeProfileSpotlight";
 import { FollowButton } from "@/components/social/FollowButton";
 import { ProfileFollowStats } from "@/components/social/ProfileFollowStats";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
@@ -108,7 +110,13 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
     });
   }
 
-  const [{ data: rows, error }, { data: showcaseRows }, { data: activityRows }, statsResult] =
+  const [
+    { data: rows, error },
+    { data: showcaseRows },
+    { data: activityRows },
+    statsResult,
+    { data: creativeRows },
+  ] =
     await Promise.all([
       supabase.rpc("get_public_collection", {
         target_username: profile.username,
@@ -121,6 +129,9 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
         p_limit: 15,
       }),
       supabase.rpc("get_profile_follow_stats", {
+        target_username: profile.username,
+      }),
+      supabase.rpc("get_profile_creative_features", {
         target_username: profile.username,
       }),
     ]);
@@ -147,6 +158,9 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
       : list;
   const isOwner = Boolean(viewer && viewer.id === profile.id);
   const isSignedIn = Boolean(viewer);
+  const creativeFeatures = (
+    (creativeRows ?? []) as CreativeProfileFeaturesRow[]
+  )[0] ?? null;
   const accent = getProfileAccent(
     isProfileAccent(profile.accent) ? profile.accent : "amber",
   );
@@ -233,6 +247,13 @@ export default async function PublicProfilePage({ params, searchParams }: Props)
 
   return (
     <PageContainer as="main" className="flex flex-col gap-10 py-8 sm:py-12">
+      {creativeFeatures ? (
+        <CreativeProfileSpotlight
+          features={creativeFeatures}
+          isOwner={isOwner}
+        />
+      ) : null}
+
       <ShowcaseGlassCase cards={showcaseWithPrices} />
 
       {treasure ? (

@@ -11,6 +11,7 @@ type Props = {
   displayName: string | null;
   avatarUrl: string | null;
   accentColor: string;
+  isCreative?: boolean;
 };
 
 export function AccountMenu({
@@ -18,6 +19,7 @@ export function AccountMenu({
   displayName,
   avatarUrl,
   accentColor,
+  isCreative = false,
 }: Props) {
   const menuId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -70,6 +72,7 @@ export function AccountMenu({
           "flex max-w-[11rem] items-center gap-2 rounded-[12px] border border-zinc-800 bg-zinc-900/60 py-1 pl-1 pr-2.5 transition",
           "hover:border-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
           open && "border-amber-500/40",
+          isCreative && "creator-account-button border-cyan-300/30",
         )}
         title={`Account · @${username}`}
       >
@@ -82,6 +85,9 @@ export function AccountMenu({
         <span className="hidden truncate text-xs text-zinc-300 sm:inline">
           @{username}
         </span>
+        {isCreative ? (
+          <span className="text-[10px] text-cyan-200" aria-label="Founding Creative">✦</span>
+        ) : null}
         <span
           aria-hidden
           className={cn(
@@ -103,9 +109,24 @@ export function AccountMenu({
           <div className="border-b border-zinc-800 px-3 py-2.5">
             <p className="truncate text-sm font-medium text-white">{label}</p>
             <p className="truncate text-xs text-zinc-500">@{username}</p>
+            {isCreative ? (
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-cyan-200">
+                ✦ Founding Creative
+              </p>
+            ) : null}
           </div>
 
           <div className="p-1.5">
+            {isCreative ? (
+              <Link
+                role="menuitem"
+                href="/creator-studio"
+                className={cn(itemClass, "mb-1 border border-cyan-300/15 bg-cyan-300/[0.05] text-cyan-100")}
+                onClick={() => setOpen(false)}
+              >
+                <span aria-hidden>✦</span> Creator Studio
+              </Link>
+            ) : null}
             <Link
               role="menuitem"
               href={`/u/${encodeURIComponent(username)}`}

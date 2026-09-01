@@ -55,6 +55,70 @@ export interface Database {
         };
         Relationships: [];
       };
+      account_entitlements: {
+        Row: {
+          profile_id: string;
+          entitlement_key: string;
+          badge_label: string;
+          active: boolean;
+          granted_at: string;
+        };
+        Insert: {
+          profile_id: string;
+          entitlement_key: string;
+          badge_label: string;
+          active?: boolean;
+          granted_at?: string;
+        };
+        Update: {
+          profile_id?: string;
+          entitlement_key?: string;
+          badge_label?: string;
+          active?: boolean;
+          granted_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "account_entitlements_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      creator_profiles: {
+        Row: {
+          profile_id: string;
+          spotlight_title: string;
+          spotlight_message: string;
+          profile_effect: string;
+          updated_at: string;
+        };
+        Insert: {
+          profile_id: string;
+          spotlight_title?: string;
+          spotlight_message?: string;
+          profile_effect?: string;
+          updated_at?: string;
+        };
+        Update: {
+          profile_id?: string;
+          spotlight_title?: string;
+          spotlight_message?: string;
+          profile_effect?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "creator_profiles_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       cards: {
         Row: {
           id: string;
@@ -948,6 +1012,18 @@ export interface Database {
         Args: Record<string, never>;
         Returns: CollectionStatsRow[];
       };
+      get_profile_creative_features: {
+        Args: { target_username: string };
+        Returns: CreativeProfileFeaturesRow[];
+      };
+      update_creator_profile: {
+        Args: {
+          p_spotlight_title: string;
+          p_spotlight_message: string;
+          p_profile_effect: string;
+        };
+        Returns: void;
+      };
       get_public_showcase: {
         Args: { target_username: string };
         Returns: PublicShowcaseRow[];
@@ -1175,6 +1251,15 @@ export type CollectionStatsRow = {
   portfolio_value_cents?: number;
   portfolio_value_cents_30d_ago?: number | null;
   valued_cards_count?: number;
+};
+
+export type CreativeProfileFeaturesRow = {
+  is_creative: boolean;
+  badge_label: string;
+  spotlight_title: string;
+  spotlight_message: string;
+  profile_effect: string;
+  granted_at: string;
 };
 
 export type ActivityEventRpcRow = {

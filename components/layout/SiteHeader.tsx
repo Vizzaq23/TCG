@@ -18,6 +18,7 @@ export async function SiteHeader() {
     avatar_url: string | null;
     accent: string;
   } | null = null;
+  let isCreative = false;
 
   if (isSupabaseConfigured()) {
     user = await getVerifiedServerUser();
@@ -29,6 +30,13 @@ export async function SiteHeader() {
         .eq("id", user.id)
         .maybeSingle();
       profile = prof;
+      if (profile) {
+        const { data: creativeRows } = await supabase.rpc(
+          "get_profile_creative_features",
+          { target_username: profile.username },
+        );
+        isCreative = Boolean(creativeRows?.length);
+      }
     }
   }
 
@@ -68,6 +76,7 @@ export async function SiteHeader() {
                   displayName={profile.display_name}
                   avatarUrl={profile.avatar_url}
                   accentColor={accent.swatch}
+                  isCreative={isCreative}
                 />
               ) : (
                 <Button href="/settings" size="sm" variant="ghost" className="ml-1">

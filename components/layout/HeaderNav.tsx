@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
@@ -16,6 +17,38 @@ const links = [
 
 export function HeaderNav() {
   const pathname = usePathname();
+  const mobileMenuRef = useRef<HTMLDetailsElement>(null);
+
+  function closeMobileMenu() {
+    if (mobileMenuRef.current) {
+      mobileMenuRef.current.open = false;
+    }
+  }
+
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname]);
+
+  useEffect(() => {
+    function onPointerDown(event: PointerEvent) {
+      if (!mobileMenuRef.current?.contains(event.target as Node)) {
+        closeMobileMenu();
+      }
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeMobileMenu();
+      }
+    }
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
 
   const navLinks = links.map((link) => {
     const active =
@@ -48,7 +81,15 @@ export function HeaderNav() {
         ))}
       </div>
 
-      <details className="group relative lg:hidden">
+      <details
+        ref={mobileMenuRef}
+        className="group relative lg:hidden"
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            closeMobileMenu();
+          }
+        }}
+      >
         <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-[12px] border border-zinc-800 bg-zinc-900/70 text-zinc-300 transition hover:border-zinc-700 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 [&::-webkit-details-marker]:hidden">
           <span className="sr-only">Open navigation</span>
           <svg aria-hidden viewBox="0 0 24 24" className="size-5 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round">
@@ -64,6 +105,7 @@ export function HeaderNav() {
               key={link.href}
               href={link.href}
               prefetch={false}
+              onClick={closeMobileMenu}
               className={cn(
                 "rounded-[10px] px-3 py-2.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
                 link.active ? "bg-amber-500/10 text-amber-200" : "text-zinc-300 hover:bg-zinc-900 hover:text-white",

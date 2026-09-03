@@ -122,7 +122,16 @@ export default async function ShopPage({
             key={f.href}
             href={f.href}
             prefetch={false}
-            className="inline-flex min-h-10 items-center rounded-md border border-zinc-800 px-3 py-1.5 text-zinc-300 hover:border-amber-500/40 hover:text-white"
+            aria-current={
+              (kindFilter ? f.href.endsWith(`=${kindFilter}`) : f.href === "/shop")
+                ? "page"
+                : undefined
+            }
+            className={`inline-flex min-h-10 items-center rounded-md border px-3 py-1.5 hover:border-amber-500/40 hover:text-white ${
+              (kindFilter ? f.href.endsWith(`=${kindFilter}`) : f.href === "/shop")
+                ? "border-amber-500/60 bg-amber-500/10 text-white"
+                : "border-zinc-800 text-zinc-300"
+            }`}
           >
             {f.label}
           </Link>

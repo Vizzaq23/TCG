@@ -199,6 +199,11 @@ export default async function ShopPage({
                       {listing.condition ? <Badge tone="accent">{listing.condition}</Badge> : null}
                     </div>
                     <p className="font-semibold text-white">{listing.title}</p>
+                    {card?.set_name || card?.rarity ? (
+                      <p className="text-xs text-zinc-500">
+                        {[card.set_name, card.rarity].filter(Boolean).join(" · ")}
+                      </p>
+                    ) : null}
                     <p className="mt-auto text-sm text-amber-300">
                       {formatUsdCents(listing.price_cents)}
                       <span className="ml-2 text-xs text-zinc-500">

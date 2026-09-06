@@ -9,6 +9,7 @@ import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
 import { kindLabel } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
+import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity } from "@/lib/shop/inventory";
@@ -45,6 +46,11 @@ export default async function ShopPage({
   const settings = await getPublicShopSettings();
   const user = await getVerifiedServerUser();
   const owner = isShopOwner(user?.id);
+  const cart = await readCartCookie();
+  const cartQuantity = cart.items.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
   let listings = null;
   let error: { message: string } | null = null;
@@ -95,7 +101,7 @@ export default async function ShopPage({
         />
         <div className="flex flex-wrap gap-2">
           <Button href="/cart" size="sm" variant="secondary">
-            Cart
+            {cartQuantity ? `Cart (${cartQuantity})` : "Cart"}
           </Button>
           {owner ? (
             <>

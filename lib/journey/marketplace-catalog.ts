@@ -1,6 +1,7 @@
 /** Server-only catalog composition; import Journey types separately in clients. */
 import marketplaceSnapshot from "@/lib/catalog/tcgplayer-catalog.json";
 import { marketplaceCatalogNumber, printedNumber } from "@/lib/catalog/tcgplayer-import";
+import { PRB_DON_GROUPS } from "@/lib/catalog/don-scope";
 import type { JourneyCatalogCard, JourneySet } from "./types";
 
 export function buildMarketplaceCatalog(seedCards: readonly JourneyCatalogCard[], seedSets: readonly JourneySet[]) {
@@ -10,7 +11,7 @@ export function buildMarketplaceCatalog(seedCards: readonly JourneyCatalogCard[]
   const byId = new Map(cards.map((card) => [card.id, card]));
   const english = new Map(seedCards.filter((card) => card.language === "en").map((card) => [card.id, card]));
   const characterNames = [...new Set(seedCards.filter((card) => card.language === "en" && ["Character", "Leader"].includes(card.type)).map((card) => card.name))];
-  const groups = marketplaceSnapshot.groups.map((group) => ({ id: `tcg:${group.groupId}`, label: `TCGplayer · ${group.name}`, count: 0 }));
+  const groups = marketplaceSnapshot.groups.map((group) => ({ id: `tcg:${group.groupId}`, label: `TCGplayer · ${group.name}${Object.hasOwn(PRB_DON_GROUPS, group.groupId) ? ` (${group.abbreviation}) · DON!!` : ""}`, count: 0 }));
   const groupById = new Map(groups.map((group) => [group.id, group]));
   let added = 0;
   let linked = 0;
@@ -51,7 +52,7 @@ export function buildMarketplaceCatalog(seedCards: readonly JourneyCatalogCard[]
         imageAvailable: product.imageAvailable,
         language: "unspecified", sourceCardId: String(product.productId),
         catalogSource: product.url, crew: product.subtypes,
-        originSet: baseId?.match(/^([A-Z]+\d*)-/)?.[1] ?? (product.cardType === "DON!!" ? "DON" : "TCG"),
+        originSet: baseId?.match(/^([A-Z]+\d*)-/)?.[1] ?? PRB_DON_GROUPS[product.groupId as keyof typeof PRB_DON_GROUPS] ?? (product.cardType === "DON!!" ? "DON" : "TCG"),
         setIds: [setId], setLabel: group.label,
         ...marketplace,
       };

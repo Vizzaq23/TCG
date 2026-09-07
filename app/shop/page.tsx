@@ -13,6 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity } from "@/lib/shop/inventory";
+import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
 import {
@@ -60,7 +61,7 @@ export default async function ShopPage({
     let query = admin
       .from("shop_listings")
       .select(
-        "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity )",
+        "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity, type )",
       )
       .eq("owner_user_id", ownerId)
       .eq("status", "active")
@@ -85,6 +86,8 @@ export default async function ShopPage({
   const withStock = [];
   for (const listing of listings ?? []) {
     if (!admin) break;
+    const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
+    if (card && !isVisibleCatalogCard(card)) continue;
     const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });

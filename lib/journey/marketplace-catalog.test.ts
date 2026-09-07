@@ -54,6 +54,6 @@ describe("TCGplayer Journey overlay", () => {
       expect(overlay.cards.filter((card) => card.setIds.includes(setId))).toHaveLength(group.counts.singles);
     }
     expect(overlay.coverage.marketplaceSourceBuild).toBe(marketplaceSnapshot.sourceBuild);
-    expect(overlay.coverage.marketplaceProducts).toBe(1530);
+    expect(overlay.coverage.marketplaceProducts).toBe(marketplaceSnapshot.products.length);
   });
 });

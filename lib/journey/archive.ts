@@ -5,6 +5,7 @@ import { arcForChapter, journeyCards } from "./catalog";
 import { getSceneConnection } from "./scene-connections";
 import { buildMarketplaceCatalog } from "./marketplace-catalog";
 import { printedNumber } from "@/lib/catalog/tcgplayer-import";
+import { isPrbDonGroup } from "@/lib/catalog/don-scope";
 import type { JourneyArchiveParams, JourneyArchiveResponse, JourneyCatalogCard, JourneyEntry } from "./types";
 
 type CharacterFact = {
@@ -111,7 +112,14 @@ function cardOrder(a: JourneyEntry, b: JourneyEntry): number {
 }
 
 const composedCatalog = buildMarketplaceCatalog(catalog.cards, setSnapshot);
-const entries: JourneyEntry[] = composedCatalog.cards.map((card) => {
+// Use exact marketplace identities for PRB DON!! rather than duplicating the
+// older artwork archive, which also contains unrelated booster/promo DON!!.
+const visibleCards = composedCatalog.cards.filter((card) => card.type !== "DON!!" || card.setIds.some((id) => id.startsWith("tcg:") && isPrbDonGroup(Number(id.slice(4)))));
+const membershipCounts = new Map<string, number>();
+for (const card of visibleCards) for (const id of card.setIds) membershipCounts.set(id, (membershipCounts.get(id) ?? 0) + 1);
+const visibleSets = composedCatalog.sets.map((set) => ({ ...set, count: membershipCounts.get(set.id) ?? 0 })).filter((set) => set.count > 0);
+const visibleMarketplaceCards = visibleCards.filter((card) => card.tcgplayerProductId);
+const entries: JourneyEntry[] = visibleCards.map((card) => {
   const entry = enrich(card);
   const scene = getSceneConnection(card.baseId, card.id);
   if (!scene) return { ...entry, storyChapter: entry.chapter };
@@ -140,7 +148,7 @@ const searchText = new Map(entries.map((card) => [card.id, [card.id, card.source
 const stats = {
   cards: entries.length,
   baseCards: new Set(entries.map((card) => printedNumber(card.baseId)).filter(Boolean)).size,
-  sets: composedCatalog.sets.length,
+  sets: visibleSets.length,
   mapped: entries.filter((card) => card.storyChapter !== null).length,
 };
 const coverage: JourneyArchiveResponse["coverage"] = {
@@ -148,15 +156,17 @@ const coverage: JourneyArchiveResponse["coverage"] = {
   catalogUpdatedAt: catalog.importedAt,
   characterSource: catalog.characterSource,
   characterSnapshotDate: catalog.characterSnapshotDate,
-  scope: `${catalog.sourceCoverage.englishCards.toLocaleString("en-US")} English printings from ${catalog.sourceCoverage.englishProducts} product groups, ${catalog.sourceCoverage.japaneseCards} additional Japanese source identifiers, ${catalog.sourceCoverage.donCards} DON!! records and ${composedCatalog.coverage.marketplaceProducts.toLocaleString("en-US")} TCGplayer singles (${composedCatalog.coverage.marketplaceAdded.toLocaleString("en-US")} additional marketplace identities).`,
+  scope: `${catalog.sourceCoverage.englishCards.toLocaleString("en-US")} English printings, ${catalog.sourceCoverage.japaneseCards} additional Japanese source identifiers and ${visibleMarketplaceCards.length.toLocaleString("en-US")} TCGplayer singles. DON!! selection is limited to PRB-01 and PRB-02 using exact marketplace printing identities.`,
   note: `Catalog snapshots include source-listed previews. English records retain precedence where regional source IDs overlap. TCGplayer product IDs remain distinct from printed card numbers; promo, event and alternate-art products may overlap other source printings without verified equivalence. Only regular OP17 number-and-name matches are attached to existing base cards. This is not exhaustive worldwide release coverage. DON!! and marketplace-only records do not infer image language. ${entries.filter((card) => !card.imageAvailable).length} records lack supplied artwork. Chapter coverage is partial; mentions, special chapters, character debuts and illustration scenes are distinguished.`,
   englishCards: catalog.sourceCoverage.englishCards,
   japaneseCards: catalog.sourceCoverage.japaneseCards,
-  donCards: catalog.sourceCoverage.donCards,
+  donCards: visibleCards.filter((card) => card.type === "DON!!").length,
   missingImages: entries.filter((card) => !card.imageAvailable).length,
   japaneseSource: catalog.sourceCoverage.japaneseSource,
-  donSource: catalog.sourceCoverage.donSource,
+  donSource: composedCatalog.coverage.marketplaceSource,
   ...composedCatalog.coverage,
+  marketplaceProducts: visibleMarketplaceCards.length,
+  marketplaceAdded: visibleMarketplaceCards.filter((card) => card.marketplaceIdentity === "marketplace-printing").length,
 };
 
 /** A bounded, read-only query; only one page and its selected entry leave the server. */
@@ -183,5 +193,5 @@ export function getJourneyArchive(params: JourneyArchiveParams = {}): JourneyArc
   const cards = filtered.slice((page - 1) * JOURNEY_PAGE_SIZE, page * JOURNEY_PAGE_SIZE);
   const selectedId = (params.card ?? "").trim().slice(0, 80).toLowerCase();
   const selected = selectedId ? entriesById.get(selectedId) ?? null : cards[0] ?? null;
-  return { cards, selected, total: filtered.length, page, totalPages, stats, sets: composedCatalog.sets, coverage };
+  return { cards, selected, total: filtered.length, page, totalPages, stats, sets: visibleSets, coverage };
 }

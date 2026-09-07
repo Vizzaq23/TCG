@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageContainer } from "@/components/ui/PageContainer";
 
 const links = [
+  { href: "/", label: "Home" },
   { href: "/journey", label: "Journey" },
   { href: "/shop", label: "Shop" },
   { href: "/browse", label: "Catalog" },

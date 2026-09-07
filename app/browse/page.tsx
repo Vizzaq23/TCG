@@ -7,7 +7,8 @@ import { Pagination } from "@/components/ui/Pagination";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { toSetOptions } from "@/lib/catalog-options";
-import { buildCatalogSearchFilter, normalizeCatalogSearchQuery, readCatalogMetadata, type CatalogMetadata } from "@/lib/catalog-query";
+import { buildVisibleCatalogFilter, normalizeCatalogSearchQuery, readCatalogMetadata, type CatalogMetadata } from "@/lib/catalog-query";
+import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import {
   firstSearchParam,
   type SearchParamValue,
@@ -43,10 +44,7 @@ function applyCardFilters<
   },
 >(query: T, params: SearchParams, q?: string) {
   let next = query;
-  const searchFilter = buildCatalogSearchFilter(q);
-  if (searchFilter) {
-    next = next.or(searchFilter);
-  }
+  next = next.or(buildVisibleCatalogFilter(q));
   if (params.set_name) {
     next = next.eq("set_name", params.set_name);
   }
@@ -91,7 +89,7 @@ export default async function BrowsePage({
 
   let metaRows: CatalogMetadata[];
   try {
-    metaRows = await readCatalogMetadata(supabase);
+    metaRows = (await readCatalogMetadata(supabase)).filter(isVisibleCatalogCard);
   } catch (error) {
     return (
       <PageContainer as="main" className="py-12">

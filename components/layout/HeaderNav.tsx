@@ -5,117 +5,153 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
-const links = [
+const primaryLinks = [
+  { href: "/", label: "Home" },
+  { href: "/browse", label: "Browse" },
   { href: "/journey", label: "Journey" },
   { href: "/shop", label: "Shop" },
-  { href: "/browse", label: "Browse" },
-  { href: "/collection", label: "My collection" },
-  { href: "/collection/portfolio", label: "Portfolio" },
-  { href: "/collection/trades", label: "Trades" },
-  { href: "/social", label: "Social" },
-  { href: "/compare", label: "Compare" },
 ];
+
+const groups = [
+  {
+    label: "Collection",
+    links: [
+      { href: "/collection", label: "My collection", description: "All the cards you call yours" },
+      { href: "/collection/portfolio", label: "Portfolio", description: "Keep track of your collection’s value" },
+      { href: "/collection/trades", label: "Trades", description: "Find a new home for your doubles" },
+    ],
+  },
+  {
+    label: "Community",
+    links: [
+      { href: "/social", label: "Collectors", description: "Discover shelves and find your crew" },
+      { href: "/compare", label: "Compare shelves", description: "See what you have in common" },
+    ],
+  },
+];
+
+function Chevron() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="shelf-nav-chevron" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="m4 6 4 4 4-4" />
+    </svg>
+  );
+}
 
 export function HeaderNav() {
   const pathname = usePathname();
-  const mobileMenuRef = useRef<HTMLDetailsElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
-  function closeMobileMenu() {
-    if (mobileMenuRef.current) {
-      mobileMenuRef.current.open = false;
-    }
+  function closeMenus() {
+    navRef.current?.querySelectorAll<HTMLDetailsElement>("details[open]").forEach((menu) => {
+      menu.open = false;
+    });
   }
 
   useEffect(() => {
-    closeMobileMenu();
+    closeMenus();
   }, [pathname]);
 
   useEffect(() => {
-    function onPointerDown(event: PointerEvent) {
-      if (!mobileMenuRef.current?.contains(event.target as Node)) {
-        closeMobileMenu();
-      }
+    function closeOutsideMenus(event: PointerEvent | FocusEvent) {
+      navRef.current?.querySelectorAll<HTMLDetailsElement>("details[open]").forEach((menu) => {
+        if (!menu.contains(event.target as Node)) menu.open = false;
+      });
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        closeMobileMenu();
-      }
+      if (event.key !== "Escape") return;
+      const menu = navRef.current?.querySelector<HTMLDetailsElement>("details[open]");
+      if (!menu) return;
+      if (menu.contains(document.activeElement)) menu.querySelector("summary")?.focus();
+      menu.open = false;
     }
 
-    function onFocusIn(event: FocusEvent) {
-      if (!mobileMenuRef.current?.contains(event.target as Node)) {
-        closeMobileMenu();
-      }
-    }
-
-    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerdown", closeOutsideMenus);
+    window.addEventListener("focusin", closeOutsideMenus);
     window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("focusin", onFocusIn);
+    window.addEventListener("resize", closeMenus);
     return () => {
-      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerdown", closeOutsideMenus);
+      window.removeEventListener("focusin", closeOutsideMenus);
       window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("focusin", onFocusIn);
+      window.removeEventListener("resize", closeMenus);
     };
   }, []);
 
-  const navLinks = links.map((link) => {
-    const active =
-      link.href === "/collection"
-        ? pathname === "/collection"
-        : pathname === link.href || pathname.startsWith(`${link.href}/`);
-
-    return { ...link, active };
-  });
+  function isActive(href: string) {
+    return pathname === href || (href !== "/" && href !== "/collection" && pathname.startsWith(`${href}/`));
+  }
 
   return (
-    <nav className="flex items-center" aria-label="Main">
-      <div className="hidden items-center gap-0.5 xl:flex">
-        {navLinks.map((link) => (
+    <nav ref={navRef} className="shelf-nav" aria-label="Main">
+      <div className="shelf-nav-desktop">
+        {primaryLinks.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             prefetch={false}
-            className={cn(
-              "manga-nav-link px-2.5 py-2 text-[13px] font-medium transition duration-150",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
-              link.active
-                ? "manga-nav-link-active text-white"
-                : "text-zinc-400 hover:bg-zinc-900 hover:text-white",
-            )}
-            aria-current={link.active ? "page" : undefined}
+            className={cn("shelf-nav-link", isActive(link.href) && "shelf-nav-link-active")}
+            aria-current={isActive(link.href) ? "page" : undefined}
           >
             {link.label}
           </Link>
         ))}
+        <span className="shelf-nav-divider" aria-hidden="true" />
+        {groups.map((group) => (
+          <details key={group.label} name="site-navigation" className="shelf-nav-dropdown">
+            <summary className={cn("shelf-nav-link", group.links.some((link) => isActive(link.href)) && "shelf-nav-link-active")}>
+              {group.label}<Chevron />
+            </summary>
+            <div className="shelf-nav-panel">
+              <p className="shelf-nav-heading">{group.label}</p>
+              {group.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  prefetch={false}
+                  onClick={closeMenus}
+                  className="shelf-nav-panel-link"
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                >
+                  <span>{link.label}<span className="shelf-nav-arrow" aria-hidden="true">↗</span></span>
+                  <small>{link.description}</small>
+                </Link>
+              ))}
+            </div>
+          </details>
+        ))}
       </div>
 
-      <details ref={mobileMenuRef} className="group relative xl:hidden">
-        <summary className="flex size-10 cursor-pointer list-none items-center justify-center border-2 border-zinc-700 bg-zinc-900 text-zinc-100 transition hover:border-zinc-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 [&::-webkit-details-marker]:hidden">
-          <span className="sr-only">Open navigation</span>
-          <svg aria-hidden viewBox="0 0 24 24" className="size-5 fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round">
-            <path d="M5 7h14M5 12h14M5 17h14" />
+      <details name="site-navigation" className="shelf-nav-mobile">
+        <summary className="shelf-nav-menu-button" aria-label="Navigation menu">
+          <span className="shelf-nav-menu-label">Menu</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <path className="shelf-nav-menu-lines" d="M5 8h14M5 16h14" />
+            <path className="shelf-nav-menu-cross" d="m6 6 12 12M6 18 18 6" />
           </svg>
         </summary>
-        <div className="absolute right-0 top-[calc(100%+0.65rem)] z-50 grid min-w-56 gap-1 border-2 border-zinc-600 bg-zinc-950 p-2 shadow-[5px_5px_0_#d92d32]">
-          <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-600">
-            Navigate
-          </p>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              prefetch={false}
-              onClick={closeMobileMenu}
-              className={cn(
-                "px-3 py-2.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40",
-                link.active ? "bg-[#d92d32] text-white" : "text-zinc-300 hover:bg-zinc-900 hover:text-white",
-              )}
-              aria-current={link.active ? "page" : undefined}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="shelf-nav-mobile-panel">
+          <div className="shelf-nav-mobile-intro"><span>Find your next chapter</span><span aria-hidden="true">↗</span></div>
+          <div className="shelf-nav-mobile-primary">
+            {primaryLinks.map((link) => (
+              <Link key={link.href} href={link.href} prefetch={false} onClick={closeMenus} className="shelf-nav-mobile-link" aria-current={isActive(link.href) ? "page" : undefined}>
+                {link.label}<span aria-hidden="true">↗</span>
+              </Link>
+            ))}
+          </div>
+          <div className="shelf-nav-mobile-groups">
+            {groups.map((group) => (
+              <div key={group.label}>
+                <p className="shelf-nav-heading">{group.label}</p>
+                {group.links.map((link) => (
+                  <Link key={link.href} href={link.href} prefetch={false} onClick={closeMenus} className="shelf-nav-mobile-secondary" aria-current={isActive(link.href) ? "page" : undefined}>
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </details>
     </nav>

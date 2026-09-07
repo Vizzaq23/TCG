@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { getProfileAccent, isProfileAccent } from "@/lib/profile";
 import { cn } from "@/lib/cn";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
+import "./header-nav.css";
 
 export async function SiteHeader() {
   let user: { id: string; email?: string } | null = null;
@@ -46,9 +47,10 @@ export async function SiteHeader() {
 
   return (
     <header className="manga-site-header sticky top-0 z-40">
-      <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-20 lg:px-8">
+      <div className="shelf-header-inner mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
+          aria-label="One Piece TCG Shelf home"
           prefetch={false}
           className={cn(
             "manga-brand group flex shrink-0 items-center gap-2.5 text-white",
@@ -68,9 +70,9 @@ export async function SiteHeader() {
 
         <div className="flex items-center gap-1 sm:gap-2">
           <HeaderNav />
-          {user ? (
-            <div className="flex items-center border-l border-zinc-800/80 pl-2 sm:pl-3">
-              {profile ? (
+          <div className="shelf-header-account">
+            {user ? (
+              profile ? (
                 <AccountMenu
                   username={profile.username}
                   displayName={profile.display_name}
@@ -82,19 +84,19 @@ export async function SiteHeader() {
                 <Button href="/settings" size="sm" variant="ghost" className="ml-1">
                   Account
                 </Button>
-              )}
-            </div>
-          ) : (
-            <Suspense
-              fallback={
-                <Button href="/login?next=/collection" size="sm" className="ml-1">
-                  Sign in
-                </Button>
-              }
-            >
-              <HeaderSignInLink />
-            </Suspense>
-          )}
+              )
+            ) : (
+              <Suspense
+                fallback={
+                  <Button href="/login?next=/collection" size="sm" className="ml-1">
+                    Sign in
+                  </Button>
+                }
+              >
+                <HeaderSignInLink />
+              </Suspense>
+            )}
+          </div>
         </div>
       </div>
     </header>

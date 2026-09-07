@@ -10,6 +10,8 @@ export type MarketplaceProduct = {
 };
 
 export const marketplaceGroups: Record<number, string> = {
+  23496: "Premium Booster -The Best- (PRB-01)",
+  24305: "Premium Booster -The Best- Vol. 2 (PRB-02)",
   24736: "The World's Strongest Warriors (OP-17)",
   24775: "OP-17 Release Event Cards",
   17675: "Promotion card",

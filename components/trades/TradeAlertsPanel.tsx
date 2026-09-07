@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
 import type { TradeAlertHitRow } from "@/lib/types/database";
 import { shelfCardPath } from "@/lib/shelf-links";
-import { buildCatalogSearchFilter, normalizeCatalogSearchQuery } from "@/lib/catalog-query";
+import { buildVisibleCatalogFilter, normalizeCatalogSearchQuery } from "@/lib/catalog-query";
 
 type AlertRow = {
   id: string;
@@ -47,7 +47,7 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
     const { data, error } = await supabase
       .from("cards")
       .select("id, name, set_name, card_number")
-      .or(buildCatalogSearchFilter(q)!)
+      .or(buildVisibleCatalogFilter(q))
       .order("name", { ascending: true })
       .limit(8);
     setPending(false);

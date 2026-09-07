@@ -14,7 +14,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 
 const CATEGORY = 68;
-const GROUPS = [24736, 24775, 17675];
+const GROUPS = [24736, 24775, 17675, 23496, 24305];
+const DON_ONLY_GROUPS = new Set([23496, 24305]);
 const HOST = "https://tcgcsv.com";
 const root = new URL("../lib/catalog/", import.meta.url);
 const rawPath = new URL("tcgplayer-source.json", root);
@@ -54,7 +55,7 @@ if (offline) {
   if (raw?.sourceBuild === sourceBuild && GROUPS.every((id) => raw.collections.some((group) => group.groupId === id))) {
     console.log("TCGCSV build is unchanged; using the saved source responses.");
   } else {
-    console.log("Fetching TCGplayer OP-17, its release-event cards, and the promotion catalog…");
+    console.log("Fetching TCGplayer OP-17, release-event, promo, and PRB-01/02 DON!! catalogs…");
     const groups = (await fetchCollection(`/tcgplayer/${CATEGORY}/groups`)).results
       .filter((group) => GROUPS.includes(group.groupId));
     assert.equal(groups.length, GROUPS.length, "A required TCGplayer group is missing");
@@ -96,6 +97,10 @@ for (const collection of raw.collections) {
     const baseId = number?.match(/^(?:(?:OP|ST|EB|PRB)\d{2}|P)-\d{3}$/)?.[0] ?? null;
     const don = fields.CardType?.toUpperCase() === "DON!!" || fields.Rarity?.toUpperCase() === "DON!!";
     const cardType = don ? "DON!!" : supportedTypes.get(fields.CardType?.toLowerCase()) ?? null;
+    if (DON_ONLY_GROUPS.has(product.groupId) && !don) {
+      excluded.push({ productId: product.productId, groupId: product.groupId, name: product.name, url: product.url, reason: "Only DON!! printings are selected from PRB-01 and PRB-02; numbered cards use the existing Bandai catalog." });
+      continue;
+    }
     // A serial/oversized promo can have a Number such as "1/1000" without
     // an OPxx-style base number. It remains a single, but cannot be merged
     // into an ordinary numbered card. Preserve that source distinction.

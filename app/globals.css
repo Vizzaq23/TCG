@@ -1556,12 +1556,9 @@ summary {
 }
 
 /* Shared manga imprint: dark ink shell keeps collection routes legible. */
-.manga-site-header { background: #131313; border-bottom: 3px solid #131313; box-shadow: 0 1px 0 #f3f0e730; }
 .manga-brand-mark { display: grid; place-items: center; width: 40px; height: 40px; border: 2px solid #f3f0e7; color: #f3f0e7; font: 800 1.6rem/1 var(--font-manga),Impact,sans-serif; transform: rotate(-5deg); box-shadow: 3px 3px 0 #d92d32; }
 .manga-brand-mark-dot { color: #ff777b; }
 .manga-brand-title { display: block; color: #f3f0e7; font: 800 1.7rem/.95 var(--font-manga),Impact,sans-serif; letter-spacing: -.015em; }
 .manga-brand-subtitle { display: block; padding-top: .28rem; font: 500 .48rem/1 var(--font-geist-mono),monospace; letter-spacing: .12em; color: #b4b2ac; }
-.manga-nav-link { position: relative; }
-.manga-nav-link-active { background: #d92d32; }
 .manga-site-footer .manga-brand-title { font-size: 1.5rem; }
 @media(max-width: 480px) { .manga-brand-title { font-size: 1.45rem; }.manga-brand-subtitle { font-size: .41rem; letter-spacing: .055em; }.manga-brand-mark { width: 33px; height: 33px; font-size: 1.3rem; } }

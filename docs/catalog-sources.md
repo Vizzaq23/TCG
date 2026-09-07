@@ -4,13 +4,15 @@ The site's browse pages, collection entries, comparisons, trade alerts and shop 
 
 The September 7, 2026 refresh added 1,683 database records and preserved all 4,571 existing UUIDs, bringing the shared catalog to 6,254 records. Every one of the 1,530 marketplace products in the imported source was verified after insertion. A second plan required no inserts or identity changes.
 
+The PRB DON!! update adds 120 exact TCGplayer product identities: 60 from PRB-01 (group 23496) and 60 from PRB-02 (group 24305). The database now contains 6,374 records, with all 6,254 prior UUIDs preserved and an empty repeat sync plan. Browse, new trade-alert searches, Journey, and the public shop listing view feature only those two DON!! sets. Existing owned cards, listings, prices and source snapshots remain stored; this is a catalog display preference, not an inventory deletion. Journey uses the marketplace DON!! identities rather than duplicating the older OPTCG artwork archive.
+
 ## Sources and coverage
 
 - The English Bandai catalog is exported through [Punk Records](https://github.com/buhbbl/punk-records): 4,843 printing identifiers across 60 products.
 - [TCGplayer promotion cards](https://www.tcgplayer.com/categories/trading-and-collectible-card-games/one-piece-card-game/one-piece-promotion-cards): 1,276 singles.
 - [TCGplayer OP-17](https://www.tcgplayer.com/product/712607/one-piece-card-game-the-world-s-strongest-warriors-monkey-d-luffy-030): 179 singles, including every OP17-001 through OP17-119 number, SP reprints and DON!! cards.
 - OP-17 Release Event Cards: 75 singles.
-- Structured TCGplayer product metadata is obtained through the [documented TCGCSV export](https://tcgcsv.com/docs), category 68, groups 17675, 24736 and 24775. The checked-in snapshot records source build time and canonical TCGplayer product URLs. 145 sealed/accessory records are excluded; oversized promos and unnumbered leaders are retained. 64 product records have no supplied artwork.
+- Structured TCGplayer product metadata is obtained through the [documented TCGCSV export](https://tcgcsv.com/docs), category 68, groups 17675, 24736, 24775, 23496 and 24305. The checked-in snapshot records source build time and canonical TCGplayer product URLs. Of 2,384 source products, 1,650 singles are retained; the 734 exclusions include sealed/accessory records and non-DON!! products in the two PRB groups. Numbered PRB reprints continue to use the Bandai catalog. The raw overlay retains 64 records without artwork; the displayed Journey selection has 56 after excluding other DON!! sets.
 
 TCGplayer product IDs identify individual marketplace printings. A printed card number alone cannot establish which promo, stamped, parallel, or alternate illustration a product represents. Regular OP-17 products with matching base names are linked to their corresponding Bandai base identifiers. Other products receive stable internal identifiers such as `P-106_tcg123456`; unnumbered records use `TCG-123456`. These suffixes are internal identities, not printed card numbers. Existing explicit marketplace mappings take precedence. Unresolved equivalence across sources can result in separate catalog entries, which must not be described as independently verified unique artwork.
 

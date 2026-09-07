@@ -6,15 +6,15 @@ import { GET } from "@/app/api/journey/route";
 import { getJourneyArchive, JOURNEY_PAGE_SIZE } from "./archive";
 
 describe("Journey catalog archive", () => {
-  it("includes all source printings and preserves reprint memberships", () => {
+  it("preserves numbered printings and counts only the selected DON!! collections", () => {
     const result = getJourneyArchive();
-    expect(result.total).toBe(snapshot.cards.length + result.coverage.marketplaceAdded);
+    expect(result.total).toBe(snapshot.cards.filter((card) => card.type !== "DON!!").length + result.coverage.marketplaceAdded);
     expect(result.total).toBeGreaterThan(4000);
     expect(result.stats.baseCards).toBe(new Set(snapshot.cards.filter((card) => card.type !== "DON!!").map((card) => card.baseId)).size);
     expect(result.stats.baseCards).toBeLessThan(result.stats.cards);
-    expect(result.sets).toHaveLength(seedSets.length + marketplaceSnapshot.groups.length);
+    expect(result.sets).toHaveLength(seedSets.length - 1 + marketplaceSnapshot.groups.length);
     expect(new Set(snapshot.cards.map((card) => card.id)).size).toBe(snapshot.cards.length);
-    expect(result.sets.reduce((sum, set) => sum + set.count, 0)).toBe(snapshot.productEntries + marketplaceSnapshot.products.length);
+    expect(result.sets.reduce((sum, set) => sum + set.count, 0)).toBe(snapshot.cards.filter((card) => card.type !== "DON!!").reduce((sum, card) => sum + card.setIds.length, 0) + result.coverage.marketplaceProducts);
     expect(result.sets.find((set) => set.id === "569901")!.count).toBeGreaterThan(300);
     expect(snapshot.cards.filter((card) => card.id.includes("_r")).every((card) => !card.baseId.includes("_"))).toBe(true);
   });
@@ -29,10 +29,19 @@ describe("Journey catalog archive", () => {
     expect(japanese.total).toBe(435);
     expect(japanese.cards.every((card) => card.language === "ja" && card.originalName && card.setIds.every((id) => id.startsWith("jp:")))).toBe(true);
     expect(japanese.cards.every((card) => card.image.startsWith("https://www.onepiece-cardgame.com/"))).toBe(true);
-    expect(don.total).toBe(snapshot.sourceCoverage.donCards + marketplaceSnapshot.stats.don);
-    expect(don.cards[0]).toMatchObject({ id: "DON-001", sourceCardId: "don_1", language: "unspecified", entryKind: "Uncharted", chapter: null });
-    expect(getJourneyArchive({ card: "DON-132" }).selected).toMatchObject({ image: "", imageAvailable: false });
-    expect(don.coverage.missingImages).toBe(snapshot.sourceCoverage.missingImages + marketplaceSnapshot.stats.missingImages);
+    expect(don.total).toBe(120);
+    for (const [set, group] of [["PRB01", "tcg:23496"], ["PRB02", "tcg:24305"]]) {
+      const cards = Array.from({ length: 3 }, (_, page) => getJourneyArchive({ set, type: "DON!!", page: page + 1 })).flatMap((result) => result.cards);
+      expect(cards).toHaveLength(60);
+      expect(cards.every((card) => card.setIds.includes(group) && card.tcgplayerProductId && card.type === "DON!!")).toBe(true);
+      expect(new Set(cards.map((card) => card.tcgplayerProductId)).size).toBe(60);
+    }
+    expect(getJourneyArchive({ card: "DON-132" }).selected).toBeNull();
+    expect(getJourneyArchive({ card: "TCG-482236" }).selected).toBeNull();
+    expect(getJourneyArchive({ set: "tcg:17675", type: "DON!!" }).total).toBe(0);
+    expect(getJourneyArchive({ set: "tcg:24736", type: "DON!!" }).total).toBe(0);
+    expect(don.coverage.donCards).toBe(120);
+    expect(don.coverage.missingImages).toBe(snapshot.cards.filter((card) => card.type !== "DON!!" && !card.imageAvailable).length + marketplaceSnapshot.products.filter((product) => !product.imageAvailable && (product.cardType !== "DON!!" || [23496, 24305].includes(product.groupId))).length);
     expect(getJourneyArchive({ language: "not-a-language" }).total).toBe(0);
   });
 
@@ -42,7 +51,7 @@ describe("Journey catalog archive", () => {
     expect(promo.cards.every((card) => card.setIds.includes("tcg:17675"))).toBe(true);
     expect(promo.selected).toMatchObject({ name: "Monkey.D.Luffy (Promotion Pack 2022)", chapter: 1, sceneChapter: null, tcgplayerProductId: 450299 });
     const op17 = getJourneyArchive({ set: "tcg:24736", card: "OP17-030" });
-    expect(op17.total).toBe(179);
+    expect(op17.total).toBe(169);
     expect(op17.selected).toMatchObject({ id: "OP17-030", tcgplayerProductId: 712607, chapter: 1 });
     expect(getJourneyArchive({ set: "tcg:24775" }).total).toBe(75);
     expect(getJourneyArchive({ card: "TCG-518691" }).selected).toMatchObject({ chapter: 1, characterName: "Monkey.D.Luffy" });

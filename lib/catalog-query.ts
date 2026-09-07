@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./types/database";
+import { CATALOG_DON_FILTER } from "./catalog/don-scope";
 
 export type CatalogMetadata = Pick<Database["public"]["Tables"]["cards"]["Row"], "id" | "set_name" | "rarity" | "color" | "type">;
 export const CATALOG_METADATA_COLUMNS = "id,set_name,rarity,color,type";
@@ -45,6 +46,12 @@ export function buildCatalogSearchFilter(value: string | null | undefined): stri
     conditions.push('card_number.imatch."^P-"', 'set_name.imatch."promo"', 'rarity.eq."Promo"');
   }
   return [...new Set(conditions)].join(",");
+}
+
+/** Combine search and catalog scope in one .or() to preserve both predicates. */
+export function buildVisibleCatalogFilter(value?: string | null): string {
+  const search = buildCatalogSearchFilter(value);
+  return search ? `and(or(${CATALOG_DON_FILTER}),or(${search}))` : CATALOG_DON_FILTER;
 }
 
 /** Read all public catalog metadata without relying on Supabase's row cap. */

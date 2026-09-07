@@ -26,8 +26,8 @@ export function SectionHeader({
       <div className="min-w-0 space-y-2">
         <TitleTag
           className={cn(
-            "font-display font-semibold tracking-[-0.035em] text-white",
-            TitleTag === "h1" ? "text-3xl sm:text-4xl" : "text-xl sm:text-2xl",
+            "font-[family-name:var(--font-manga)] font-bold uppercase leading-none tracking-[-0.01em] text-white",
+            TitleTag === "h1" ? "text-4xl sm:text-5xl" : "text-xl sm:text-3xl",
           )}
         >
           {title}

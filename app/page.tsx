@@ -1,201 +1,98 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
+import Link from "next/link";
+import Image from "next/image";
 import { PageContainer } from "@/components/ui/PageContainer";
-import { Button } from "@/components/ui/Button";
-import {
-  HeroShowcasePreview,
-  type HeroPreviewCard,
-} from "@/components/marketing/HeroShowcasePreview";
-import { HomeSunnyBackdrop } from "@/components/marketing/HomeSunnyBackdrop";
-import { CrewSignsStrip } from "@/components/marketing/CrewSignsStrip";
-import { isSupabaseConfigured } from "@/lib/env";
-import { createClient } from "@/lib/supabase/server";
+import "./home.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
+  description: "Every card has an origin story. Explore the One Piece card catalog, follow the manga journey, and build your collection.",
 };
 
-const benefits = [
-  {
-    eyebrow: "Catalog",
-    title: "Every card, clearly organized",
-    body: "Search the full catalog, record quantities and conditions, and keep the details that matter close at hand.",
-  },
-  {
-    eyebrow: "Value",
-    title: "See the collection behind the cards",
-    body: "Track cached market prices, portfolio movement, and set progress without turning the hobby into a spreadsheet.",
-  },
-  {
-    eyebrow: "Showcase",
-    title: "Present the pieces you prize most",
-    body: "Build a public shelf, spotlight raw cards or graded slabs, and make trade-ready cards easy to discover.",
-  },
+const destinations = [
+  { number: "01", label: "THE CARD ARCHIVE", title: "Find your next obsession.", text: "Search the whole catalog. From the first set to your next grail, the hunt starts here.", href: "/browse", action: "Explore all cards", card: "OP01-025", name: "Roronoa Zoro" },
+  { number: "02", label: "YOUR COLLECTION", title: "Build a legendary shelf.", text: "Every pull, every trade, every hard-earned favorite. Give your collection its own story.", href: "/collection", action: "Open my collection", card: "OP01-016", name: "Nami" },
+  { number: "03", label: "THE COLLECTORS", title: "Every pirate needs a crew.", text: "Meet other collectors, discover their shelves, and find the card that completes yours.", href: "/social", action: "Find your people", card: "OP01-120", name: "Shanks" },
 ];
 
-/** Prefer iconic / high-impact arts for the home treasure showcase. */
-const HERO_CARD_NUMBERS = [
-  "OP01-001",
-  "OP01-025",
-  "OP01-016",
-  "OP01-001_p1",
-  "OP01-025_p1",
-  "OP01-016_p1",
-  "ST01-001",
-  "OP01-060",
-  "OP05-119",
-  "OP09-118",
-];
-
-type CatalogPreview = {
-  name: string;
-  image_url: string | null;
-  set_name: string | null;
-  card_number: string | null;
-  rarity: string | null;
-};
-
-function scoreHeroCard(card: CatalogPreview): number {
-  const num = (card.card_number ?? "").toUpperCase();
-  const rarity = (card.rarity ?? "").toLowerCase();
-  let score = 0;
-
-  const preferredIndex = HERO_CARD_NUMBERS.findIndex((n) => n.toUpperCase() === num);
-  if (preferredIndex >= 0) score += 1000 - preferredIndex * 10;
-
-  if (rarity.includes("secret") || rarity === "sec" || rarity === "sp") score += 80;
-  else if (rarity.includes("leader") || rarity === "l") score += 70;
-  else if (rarity.includes("super") || rarity === "sr") score += 50;
-  else if (rarity.includes("rare") || rarity === "r") score += 20;
-
-  if (/_p\d+$/i.test(num)) score += 25;
-  if (/luffy|zoro|nami|shanks|ace|law|sanji|robin/i.test(card.name)) score += 15;
-
-  return score;
-}
-
-async function loadPreviewCards(): Promise<HeroPreviewCard[] | undefined> {
-  if (!isSupabaseConfigured()) return undefined;
-  try {
-    const supabase = await createClient();
-
-    const { data: preferred } = await supabase
-      .from("cards")
-      .select("name, image_url, set_name, card_number, rarity")
-      .in("card_number", HERO_CARD_NUMBERS)
-      .not("image_url", "is", null);
-
-    const { data: premium } = await supabase
-      .from("cards")
-      .select("name, image_url, set_name, card_number, rarity")
-      .not("image_url", "is", null)
-      .or(
-        "rarity.ilike.%Leader%,rarity.ilike.%Secret%,rarity.ilike.%SEC%,rarity.ilike.%SP%,rarity.ilike.%Super Rare%,rarity.eq.SR,rarity.eq.SEC",
-      )
-      .limit(24);
-
-    const byKey = new Map<string, CatalogPreview>();
-    for (const card of [...(preferred ?? []), ...(premium ?? [])]) {
-      const key = card.card_number ?? card.name;
-      if (!byKey.has(key)) byKey.set(key, card);
-    }
-
-    const ranked = [...byKey.values()]
-      .filter((c) => c.image_url)
-      .sort((a, b) => scoreHeroCard(b) - scoreHeroCard(a));
-
-    if (!ranked.length) return undefined;
-
-    // Give the showcase a strong pool to sample from on each homepage request.
-    return ranked.slice(0, 18).map((card) => ({
-      name: card.name,
-      imageUrl: card.image_url,
-      setName: card.set_name,
-      cardNumber: card.card_number,
-      rarity: card.rarity,
-    }));
-  } catch {
-    return undefined;
-  }
-}
-
-export default async function HomePage() {
-  // The example shelf should be freshly sampled for every homepage visit.
-  await connection();
-  const previewCards = await loadPreviewCards();
-
+export default function HomePage() {
   return (
-    <main className="home-ambient flex flex-1 flex-col">
-      <HomeSunnyBackdrop />
-
-      <PageContainer className="flex flex-col gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
-        <section className="home-hero grid items-center gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(30rem,1.08fr)] lg:gap-16">
-          <div className="home-hero-copy max-w-2xl space-y-7">
-            <p className="eyebrow">The collector workspace for One Piece TCG</p>
-            <div className="space-y-5">
-              <h1 className="font-display text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-6xl lg:text-[4.6rem]">
-                Build a collection worth showing.
-              </h1>
-              <p className="max-w-xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
-                Catalog your cards, understand their value, manage trades, and present your best
-                pulls in one polished shelf.
-              </p>
+    <main className="manga-home flex flex-1 flex-col">
+      <PageContainer>
+        <div className="manga-home-masthead">
+          <span><i aria-hidden /> THE ONE PIECE COLLECTOR’S COMPANION</span>
+          <span>CARDS. CHAPTERS. ADVENTURE.</span>
+        </div>
+        <section className="manga-home-hero" aria-labelledby="home-title">
+          <div className="manga-home-copy">
+            <p className="manga-home-eyebrow">THE STORY IS BIGGER THAN THE CARD.</p>
+            <h1 id="home-title">EVERY CARD.<br />AN <span>EPIC</span><br />ORIGIN.</h1>
+            <p className="manga-home-intro">The faces you collect. The moments you remember. Step into the story behind One Piece, one card at a time.</p>
+            <div className="manga-home-actions">
+              <Link className="manga-home-button" href="/journey">Enter the Journey <span aria-hidden>↗</span></Link>
+              <Link className="manga-home-button manga-home-button-outline" href="/browse">Explore all cards <span aria-hidden>→</span></Link>
             </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button href="/browse" size="lg" className="w-full sm:w-auto">
-                Explore the catalog
-                <span aria-hidden>→</span>
-              </Button>
-              <Button
-                href="/login?next=/collection"
-                variant="secondary"
-                size="lg"
-                className="w-full sm:w-auto"
-              >
-                View your collection
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-zinc-800/70 pt-5 text-xs font-medium uppercase tracking-[0.11em] text-zinc-500">
-              <span>Catalog</span>
-              <span className="text-amber-500/60">•</span>
-              <span>Portfolio</span>
-              <span className="text-amber-500/60">•</span>
-              <span>Trades</span>
-              <span className="text-amber-500/60">•</span>
-              <span>Showcase</span>
-            </div>
+            <nav className="manga-home-quicklinks" aria-label="Explore catalog highlights"><span>FRESH PAGES</span><Link href="/browse?q=OP-17">OP-17 ↗</Link><Link href="/browse?q=promos">Promo archive ↗</Link></nav>
+            <div className="manga-home-hero-note"><span aria-hidden>01</span><p>FROM ROMANCE DAWN<br /><strong>TO THE NEXT CHAPTER.</strong></p></div>
           </div>
-
-          <HeroShowcasePreview cards={previewCards} themed className="lg:translate-x-2" />
+          <div className="manga-home-spread" aria-label="One Piece card artwork arranged as a manga page">
+            <div className="manga-home-spread-top"><span>THE ADVENTURE NEVER ENDS</span><span>↙ READ THE STORY</span></div>
+            <Link href="/journey?card=EB01-050" className="manga-home-panel manga-home-panel-robin" aria-label="Explore the story behind I Want to Live in Journey">
+              <Image src="/cards/EB01-050.png" alt="Robin in the manga scene reproduced on the official I Want to Live card" width={600} height={838} sizes="(max-width: 760px) 85vw, 42vw" loading="eager" />
+              <span className="manga-home-caption">THE MOMENTS THAT STAY WITH YOU.</span>
+              <span className="manga-home-panel-number" aria-hidden>01</span>
+            </Link>
+            <div className="manga-home-spread-bottom">
+              <Link href="/journey?card=OP01-026" className="manga-home-panel manga-home-panel-redhawk" aria-label="Explore the story behind Red Hawk in Journey">
+                <Image src="/cards/OP01-026.png" alt="Red Hawk manga scene on the official One Piece card" width={600} height={838} sizes="(max-width: 760px) 42vw, 21vw" />
+                <span className="manga-home-caption">EVERY BATTLE.</span>
+              </Link>
+              <Link href="/journey?card=OP01-030" className="manga-home-panel manga-home-panel-crew" aria-label="Explore the story behind the crew's two year promise in Journey">
+                <Image src="/cards/OP01-030.png" alt="Straw Hat crew manga panels on the official In Two Years card" width={600} height={838} sizes="(max-width: 760px) 42vw, 21vw" />
+                <span className="manga-home-caption">EVERY PROMISE.</span>
+              </Link>
+            </div>
+            <span className="manga-home-impact" aria-hidden>ドン!!</span>
+            <div className="manga-home-spread-foot"><span>MANGA SCENES / OFFICIAL BANDAI CARD ART</span><span>→</span></div>
+          </div>
         </section>
-
-        <CrewSignsStrip />
-
-        <section className="space-y-8 border-t border-zinc-800/70 pt-10 sm:pt-12">
-          <div className="max-w-2xl space-y-3">
-            <p className="eyebrow">Designed around the hobby</p>
-            <h2 className="font-display text-balance text-3xl font-semibold tracking-[-0.04em] text-white sm:text-4xl">
-              The details stay useful. The cards stay center stage.
-            </h2>
+      </PageContainer>
+      <div className="manga-home-ticker" aria-label="Collect the cards. Relive the story. Find your crew.">
+        <span>COLLECT THE CARDS</span><i aria-hidden>✦</i><span>RELIVE THE STORY</span><i aria-hidden>✦</i><span>FIND YOUR CREW</span><i aria-hidden>✦</i><span aria-hidden>TO BE CONTINUED</span>
+      </div>
+      <PageContainer>
+        <section className="manga-home-destinations" aria-labelledby="destinations-title">
+          <div className="manga-home-section-heading">
+            <div><p className="manga-home-eyebrow">YOUR NEXT CHAPTER</p><h2 id="destinations-title">CHOOSE YOUR ADVENTURE.</h2></div>
+            <span className="manga-home-section-index" aria-hidden>CONTENTS / 01—03</span>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {benefits.map((item, i) => (
-              <article key={item.title} className="surface-card group rounded-[20px] p-6 transition duration-200 hover:-translate-y-1 hover:border-amber-500/20">
-                <div className="mb-10 flex items-center justify-between">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300/80">
-                    {item.eyebrow}
-                  </p>
-                  <span className="font-mono text-xs text-zinc-700">0{i + 1}</span>
-                </div>
-                <h3 className="font-display text-xl font-semibold tracking-[-0.025em] text-white">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-zinc-400">{item.body}</p>
-              </article>
+          <div className="manga-home-destination-grid">
+            {destinations.map((item) => (
+              <Link key={item.number} href={item.href} className="manga-home-destination">
+                <div className="manga-home-destination-art"><Image src={`/cards/${item.card}.png`} alt={`${item.name} official card artwork`} width={600} height={838} sizes="(max-width: 760px) 90vw, 30vw" /><span>{item.number}</span></div>
+                <div className="manga-home-destination-body"><p className="manga-home-eyebrow">{item.label}</p><h3>{item.title}</h3><p>{item.text}</p><span className="manga-home-text-link">{item.action}<span aria-hidden>↗</span></span></div>
+              </Link>
             ))}
           </div>
+        </section>
+        <section className="manga-home-journey" aria-labelledby="journey-invitation-title">
+          <div className="manga-home-journey-card">
+            <div className="manga-home-journey-card-label"><span>THE CARD</span><span>↘</span></div>
+            <Image src="/cards/OP01-120.png" alt="Shanks, One Piece TCG card OP01-120" width={600} height={838} sizes="(max-width: 760px) 60vw, 25vw" />
+            <span className="manga-home-card-tag">SHANKS / OP01-120</span>
+          </div>
+          <div className="manga-home-journey-copy">
+            <p className="manga-home-eyebrow">INTRODUCING / JOURNEY</p>
+            <h2 id="journey-invitation-title">BEFORE THE CARD.<br /><span>THERE WAS<br />THE STORY.</span></h2>
+            <p>A straw hat. A promise. An entire world waiting beyond the shore. Follow the people and moments behind your cards through Eiichiro Oda’s One Piece.</p>
+            <div className="manga-home-journey-features"><span>CHARACTER ORIGINS</span><span>STORY CONNECTIONS</span><span>THE WHOLE CATALOG</span></div>
+            <Link href="/journey" className="manga-home-button">Turn the first page <span aria-hidden>↗</span></Link>
+          </div>
+        </section>
+        <section className="manga-home-closing">
+          <p>YOUR NEXT GREAT FIND<br /><span>IS OUT THERE.</span></p>
+          <Link href="/shop" className="manga-home-button manga-home-button-outline">Find your next pull <span aria-hidden>↗</span></Link>
+          <span className="manga-home-continued" aria-hidden>TO BE CONTINUED <b>→</b></span>
         </section>
       </PageContainer>
     </main>

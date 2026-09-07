@@ -1,18 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #07090d;
-  --bg-elevated: #0c1017;
-  --bg-sunken: #05070a;
-  --foreground: #f7f8fa;
+  --background: #131313;
+  --bg-elevated: #1c1c1c;
+  --bg-sunken: #0b0b0b;
+  --foreground: #f3f0e7;
   --muted: #94a0b2;
   --fg-faint: #657084;
   --card: #121722;
   --border: #252c38;
   --border-subtle: rgba(221, 229, 240, 0.09);
-  --accent: #f6c75b;
-  --accent-hover: #ffe08a;
-  --accent-muted: rgba(246, 199, 91, 0.13);
+  --accent: #ed5b5f;
+  --accent-hover: #ff8588;
+  --accent-muted: rgba(217, 45, 50, 0.14);
+  --manga-paper: #f3f0e7;
+  --manga-ink: #131313;
+  --manga-red: #d92d32;
   --success: #3ddc97;
   --warning: #f5b942;
   --error: #ff6b78;
@@ -25,20 +28,20 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
-  --color-zinc-950: #07090d;
-  --color-zinc-900: #0c1017;
-  --color-zinc-800: #252c38;
-  --color-zinc-700: #384255;
+  --color-zinc-950: #131313;
+  --color-zinc-900: #1c1c1c;
+  --color-zinc-800: #303030;
+  --color-zinc-700: #464646;
   --color-zinc-600: #526076;
   --color-zinc-500: #748196;
   --color-zinc-400: #a2adbd;
   --color-zinc-300: #c6ced9;
   --color-zinc-200: #e0e5ec;
   --color-zinc-100: #f0f3f7;
-  --color-amber-500: #f6c75b;
-  --color-amber-400: #ffe08a;
-  --color-amber-300: #ffeaad;
-  --color-amber-200: #fff2cb;
+  --color-amber-500: #ed5b5f;
+  --color-amber-400: #ff8588;
+  --color-amber-300: #ffabad;
+  --color-amber-200: #ffcdce;
   --color-amber-100: #fff8e8;
   --font-sans: var(--font-geist-sans);
   --font-display: var(--font-space-grotesk);
@@ -66,8 +69,8 @@ body {
 }
 
 ::selection {
-  background: rgba(246, 199, 91, 0.28);
-  color: #fff8e8;
+  background: #d92d32;
+  color: #fff;
 }
 
 a,
@@ -92,7 +95,7 @@ summary {
 
 .surface-card {
   border: 1px solid rgba(221, 229, 240, 0.09);
-  background: linear-gradient(145deg, rgba(18, 23, 34, 0.96), rgba(10, 13, 20, 0.96));
+  background: linear-gradient(145deg, rgba(30, 30, 30, 0.96), rgba(18, 18, 18, 0.96));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
     0 18px 50px rgba(0, 0, 0, 0.2);
@@ -100,7 +103,7 @@ summary {
 
 .surface-muted {
   border: 1px solid rgba(221, 229, 240, 0.08);
-  background: rgba(12, 16, 23, 0.7);
+  background: rgba(28, 28, 28, 0.7);
 }
 
 .eyebrow {
@@ -1551,3 +1554,14 @@ summary {
     animation: none;
   }
 }
+
+/* Shared manga imprint: dark ink shell keeps collection routes legible. */
+.manga-site-header { background: #131313; border-bottom: 3px solid #131313; box-shadow: 0 1px 0 #f3f0e730; }
+.manga-brand-mark { display: grid; place-items: center; width: 40px; height: 40px; border: 2px solid #f3f0e7; color: #f3f0e7; font: 800 1.6rem/1 var(--font-manga),Impact,sans-serif; transform: rotate(-5deg); box-shadow: 3px 3px 0 #d92d32; }
+.manga-brand-mark-dot { color: #ff777b; }
+.manga-brand-title { display: block; color: #f3f0e7; font: 800 1.7rem/.95 var(--font-manga),Impact,sans-serif; letter-spacing: -.015em; }
+.manga-brand-subtitle { display: block; padding-top: .28rem; font: 500 .48rem/1 var(--font-geist-mono),monospace; letter-spacing: .12em; color: #b4b2ac; }
+.manga-nav-link { position: relative; }
+.manga-nav-link-active { background: #d92d32; }
+.manga-site-footer .manga-brand-title { font-size: 1.5rem; }
+@media(max-width: 480px) { .manga-brand-title { font-size: 1.45rem; }.manga-brand-subtitle { font-size: .41rem; letter-spacing: .055em; }.manga-brand-mark { width: 33px; height: 33px; font-size: 1.3rem; } }

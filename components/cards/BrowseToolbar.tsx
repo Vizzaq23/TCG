@@ -33,11 +33,11 @@ export function BrowseToolbar({
       action="/browse"
     >
       <label className="flex min-w-0 flex-col gap-2 text-xs font-medium text-zinc-300">
-        Search cards
+        Name, card number, or set
         <Input
           name="q"
           defaultValue={q}
-          placeholder="Name or character…"
+          placeholder="Luffy, OP17, P-123, promos…"
           className="placeholder:text-zinc-600"
         />
       </label>

@@ -29,10 +29,11 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kind?: SearchParamValue }>;
+  searchParams: Promise<{ kind?: SearchParamValue; sort?: SearchParamValue }>;
 }) {
-  const { kind: rawKindFilter } = await searchParams;
+  const { kind: rawKindFilter, sort: rawSort } = await searchParams;
   const kindFilter = firstSearchParam(rawKindFilter);
+  const sort = firstSearchParam(rawSort);
 
   if (!isSupabaseConfigured()) {
     return (
@@ -63,14 +64,19 @@ export default async function ShopPage({
       )
       .eq("owner_user_id", ownerId)
       .eq("status", "active")
-      .gt("quantity_available", 0)
-      .order("created_at", { ascending: false });
+      .gt("quantity_available", 0);
     if (
       kindFilter &&
       ["single", "playset", "bulk_lot", "rarity_set"].includes(kindFilter)
     ) {
       query = query.eq("kind", kindFilter);
     }
+    query =
+      sort === "price_asc"
+        ? query.order("price_cents", { ascending: true })
+        : sort === "price_desc"
+          ? query.order("price_cents", { ascending: false })
+          : query.order("created_at", { ascending: false });
     const result = await query;
     listings = result.data;
     error = result.error;
@@ -143,6 +149,17 @@ export default async function ShopPage({
           </Link>
         ))}
       </div>
+
+      <form action="/shop" className="flex flex-wrap items-center gap-2 text-sm">
+        {kindFilter ? <input type="hidden" name="kind" value={kindFilter} /> : null}
+        <label htmlFor="shop-sort" className="text-zinc-500">Sort</label>
+        <select id="shop-sort" name="sort" defaultValue={sort ?? "newest"} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+          <option value="newest">Newest</option>
+          <option value="price_asc">Price: low to high</option>
+          <option value="price_desc">Price: high to low</option>
+        </select>
+        <Button type="submit" size="sm" variant="ghost">Apply</Button>
+      </form>
 
       {!settings ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">

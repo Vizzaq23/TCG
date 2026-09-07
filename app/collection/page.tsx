@@ -19,6 +19,7 @@ import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { isShopOwner } from "@/lib/shop/config";
+import { readCatalogMetadata, type CatalogMetadata } from "@/lib/catalog-query";
 
 export default async function CollectionPage() {
   if (!isSupabaseConfigured()) {
@@ -107,9 +108,13 @@ export default async function CollectionPage() {
     ),
   );
 
-  const { data: catalogCards } = await supabase
-    .from("cards")
-    .select("id, set_name");
+  let catalogCards: CatalogMetadata[] = [];
+  let catalogError: string | null = null;
+  try {
+    catalogCards = await readCatalogMetadata(supabase);
+  } catch (error) {
+    catalogError = error instanceof Error ? error.message : "The full card catalog could not be loaded.";
+  }
 
   const setProgress = computeSetProgress(
     catalogCards ?? [],
@@ -203,6 +208,7 @@ export default async function CollectionPage() {
       </section>
 
       {setProgress.length > 0 && <SetProgress items={setProgress} />}
+      {catalogError && <p className="text-sm text-amber-200/90">Set progress unavailable: {catalogError}</p>}
 
       <section className="space-y-4">
         <SectionHeader

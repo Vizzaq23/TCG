@@ -4,9 +4,9 @@ import { cn } from "@/lib/cn";
 
 const variants = {
   primary:
-    "border border-amber-400/80 bg-amber-500 text-zinc-950 shadow-[0_8px_24px_rgba(246,199,91,0.12)] hover:-translate-y-0.5 hover:bg-amber-400 hover:shadow-[0_12px_30px_rgba(246,199,91,0.18)] focus-visible:ring-amber-400/50",
+    "border-2 border-[#d92d32] bg-[#d92d32] text-white shadow-[3px_3px_0_rgba(217,45,50,0.22)] hover:-translate-y-0.5 hover:border-[#b71f25] hover:bg-[#b71f25] focus-visible:ring-amber-400/50",
   secondary:
-    "border border-zinc-700 bg-zinc-900/70 text-zinc-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] hover:-translate-y-0.5 hover:border-zinc-500 hover:bg-zinc-800/70 focus-visible:ring-amber-500/30",
+    "border-2 border-zinc-700 bg-zinc-900 text-zinc-100 hover:-translate-y-0.5 hover:border-zinc-500 hover:bg-zinc-800 focus-visible:ring-amber-500/30",
   ghost:
     "border border-transparent bg-transparent text-zinc-300 hover:border-zinc-800 hover:bg-zinc-900/80 hover:text-white focus-visible:ring-zinc-500/40",
   destructive:
@@ -14,9 +14,9 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: "min-h-9 px-3.5 py-1.5 text-xs",
+  sm: "min-h-10 px-3.5 py-1.5 text-sm",
   md: "min-h-10 px-4.5 py-2 text-sm",
-  lg: "min-h-12 px-6 py-2.5 text-sm",
+  lg: "min-h-12 px-6 py-3 text-sm",
 } as const;
 
 type Variant = keyof typeof variants;
@@ -47,7 +47,7 @@ export function Button({
   ...props
 }: ButtonAsButton | ButtonAsLink) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-[12px] font-semibold transition duration-150 ease-out",
+    "inline-flex items-center justify-center gap-2 rounded-[2px] font-semibold transition duration-150 ease-out motion-reduce:transform-none motion-reduce:transition-none",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950",
     "disabled:pointer-events-none disabled:opacity-45",
     variants[variant],

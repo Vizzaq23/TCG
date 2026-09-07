@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageContainer } from "@/components/ui/PageContainer";
 
 const links = [
+  { href: "/journey", label: "Journey" },
   { href: "/shop", label: "Shop" },
   { href: "/browse", label: "Catalog" },
   { href: "/collection", label: "Collection" },
@@ -12,21 +13,21 @@ const links = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zinc-800/70 bg-zinc-950/75">
+    <footer className="manga-site-footer border-t-2 border-zinc-700 bg-zinc-950">
       <PageContainer className="flex flex-col gap-8 py-10 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-md space-y-3">
           <Link
             href="/"
             prefetch={false}
-            className="font-display inline-flex items-center gap-2.5 text-sm font-semibold tracking-tight text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
+            className="manga-brand inline-flex items-center gap-2.5 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
           >
-            <span aria-hidden className="grid size-7 place-items-center rounded-lg border border-amber-500/25 bg-amber-500/10 text-[10px] font-bold text-amber-300">
-              OP
+            <span aria-hidden className="manga-brand-mark">
+              <span>OP<span className="manga-brand-mark-dot">.</span></span>
             </span>
-            One Piece TCG Shelf
+            <span className="manga-brand-title">ONE PIECE TCG SHELF</span>
           </Link>
           <p className="text-sm leading-relaxed text-zinc-500">
-            Catalog, value, and present your collection in one focused collector workspace.
+            The cards are yours. The adventure is endless.
           </p>
         </div>
 
@@ -43,7 +44,7 @@ export function SiteFooter() {
               </Link>
             ))}
           </nav>
-          <p className="text-xs text-zinc-600">Collector tools for the One Piece Card Game.</p>
+          <p className="text-xs text-zinc-500">An independent fan project. ONE PIECE © Eiichiro Oda / Shueisha, Toei Animation. Card game © Bandai.</p>
         </div>
       </PageContainer>
     </footer>

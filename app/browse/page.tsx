@@ -7,6 +7,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { toSetOptions } from "@/lib/catalog-options";
+import { buildCatalogSearchFilter, normalizeCatalogSearchQuery, readCatalogMetadata, type CatalogMetadata } from "@/lib/catalog-query";
 import {
   firstSearchParam,
   type SearchParamValue,
@@ -37,13 +38,14 @@ function toOptions(values: string[]) {
 
 function applyCardFilters<
   T extends {
-    ilike: (column: string, pattern: string) => T;
+    or: (filters: string) => T;
     eq: (column: string, value: string) => T;
   },
 >(query: T, params: SearchParams, q?: string) {
   let next = query;
-  if (q) {
-    next = next.ilike("name", `%${q}%`);
+  const searchFilter = buildCatalogSearchFilter(q);
+  if (searchFilter) {
+    next = next.or(searchFilter);
   }
   if (params.set_name) {
     next = next.eq("set_name", params.set_name);
@@ -87,15 +89,14 @@ export default async function BrowsePage({
   };
   const supabase = await createClient();
 
-  const { data: metaRows, error: metaError } = await supabase
-    .from("cards")
-    .select("set_name, rarity, color, type");
-
-  if (metaError) {
+  let metaRows: CatalogMetadata[];
+  try {
+    metaRows = await readCatalogMetadata(supabase);
+  } catch (error) {
     return (
       <PageContainer as="main" className="py-12">
         <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-          {metaError.message}
+          {error instanceof Error ? error.message : "The catalog filters could not be loaded."}
         </p>
       </PageContainer>
     );
@@ -106,7 +107,7 @@ export default async function BrowsePage({
   const colorOptions = toOptions(uniqSorted(metaRows?.map((r) => r.color) ?? []));
   const typeOptions = toOptions(uniqSorted(metaRows?.map((r) => r.type) ?? []));
 
-  const q = params.q?.trim();
+  const q = normalizeCatalogSearchQuery(params.q);
 
   const rawPage = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
 
@@ -158,7 +159,7 @@ export default async function BrowsePage({
           <SectionHeader
             as="h1"
             title="Find your next card"
-            description="Search by character and narrow the catalog by set, rarity, color, or card type."
+            description="Search by name, card number, or set. Find OP17, promos, and alternate prints, then narrow by rarity, color, or type."
           />
         </div>
 

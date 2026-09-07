@@ -11,6 +11,8 @@ import { PriceChangeBadge } from "@/components/prices/PriceChangeBadge";
 import { PriceLastUpdated } from "@/components/prices/PriceLastUpdated";
 import { parseOptcgNumber } from "@/lib/justtcg/match";
 import { selectDisplayPrice, type PriceVariantRow } from "@/lib/prices/select-display-price";
+import { displayCardNumber, tcgplayerProductUrl } from "@/lib/catalog-links";
+import { getJourneyForCollectible } from "@/lib/journey/archive";
 
 type Props = { params: Promise<{ cardId: string }> };
 
@@ -47,6 +49,9 @@ export default async function CardDetailPage({ params }: Props) {
     );
   }
   if (!card) notFound();
+  const number = displayCardNumber(card.card_number);
+  const marketplaceUrl = tcgplayerProductUrl(card.tcgplayer_product_id);
+  const journey = getJourneyForCollectible(card.card_number, card.tcgplayer_product_id);
 
   const { data: priceRows } = await supabase
     .from("card_prices")
@@ -91,7 +96,7 @@ export default async function CardDetailPage({ params }: Props) {
           </div>
           <div className="relative mt-6 flex items-center justify-between gap-4 border-t border-zinc-800/70 pt-4">
             <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-600">Catalog image</p>
-            {card.card_number ? <p className="font-mono text-xs text-zinc-500">{card.card_number}</p> : null}
+            {number ? <p className="font-mono text-xs text-zinc-500">{number}</p> : null}
           </div>
         </div>
 
@@ -109,8 +114,9 @@ export default async function CardDetailPage({ params }: Props) {
               {card.name}
             </h1>
             <p className="text-sm leading-6 text-zinc-400 sm:text-base">
-              {[card.set_name, card.card_number].filter(Boolean).join(" · ")}
+              {[card.set_name, number].filter(Boolean).join(" · ")}
             </p>
+            {marketplaceUrl && <a href={marketplaceUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-sm text-amber-200 underline underline-offset-4 hover:text-white">View this printing on TCGplayer ↗</a>}
           </header>
 
           <div className="surface-card space-y-4 rounded-[20px] p-5 sm:p-6">
@@ -159,6 +165,7 @@ export default async function CardDetailPage({ params }: Props) {
           <div className="max-w-sm">
             <AddToCollectionButton cardId={card.id} />
           </div>
+          {journey && <div className="border-l-4 border-red-500 bg-zinc-900/70 p-5"><p className="text-xs font-semibold uppercase tracking-widest text-red-300">Beyond the card</p><h2 className="mt-2 text-2xl font-bold text-white">{journey.storyChapter ? "Every card has a story." : "Explore this card in Journey."}</h2><p className="mt-2 text-sm leading-6 text-zinc-400">{journey.storyChapter ? "Step into the manga-inspired reader for character origins, story connections, and chapter references." : "See its artwork, explore related stories, and keep a log of your discoveries."}</p><Button href={"/journey?card="+encodeURIComponent(journey.id)} variant="secondary" className="mt-4">Enter the story ↗</Button></div>}
         </div>
       </div>
       </PageContainer>

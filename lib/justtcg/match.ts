@@ -23,10 +23,11 @@ export function parseOptcgNumber(cardNumber: string | null | undefined): {
 } | null {
   const raw = cardNumber?.trim();
   if (!raw) return null;
-  const parallelMatch = raw.match(/_p(\d+)$/i);
+  const withoutMarketplaceId = raw.replace(/_tcg\d+$/i, "");
+  const parallelMatch = withoutMarketplaceId.match(/_p(\d+)$/i);
   const parallelIndex = parallelMatch ? Number.parseInt(parallelMatch[1], 10) : null;
-  const base = raw.replace(/_p\d+$/i, "");
-  const m = base.match(/^([A-Za-z]+\d+)-(\d+[A-Za-z]?)$/);
+  const base = withoutMarketplaceId.replace(/_p\d+$/i, "");
+  const m = base.match(/^([A-Za-z]+\d+|P)-(\d+[A-Za-z]?)$/i);
   return {
     raw,
     base,
@@ -38,6 +39,36 @@ export function parseOptcgNumber(cardNumber: string | null | undefined): {
 
 function normalizeNumber(value: string | null | undefined): string {
   return (value ?? "").trim().toLowerCase().replace(/^0+/, "") || "0";
+}
+
+function marketplaceIdFromNumber(cardNumber: string | null): string | null {
+  const match = cardNumber?.trim().match(/(?:_tcg(\d+)$|^TCG-(\d+)$)/i);
+  return match?.[1] ?? match?.[2] ?? null;
+}
+
+/** Exact marketplace identity takes precedence over naming/parallel-label heuristics. */
+function matchesMarketplaceIdentity(
+  card: JustTcgCard,
+  productId: string,
+  wanted: ReturnType<typeof parseOptcgNumber>,
+): boolean {
+  if (card.tcgplayerId?.trim() !== productId) return false;
+  const game = (card.game ?? "").toLowerCase().replace(/[^a-z]/g, "");
+  if (game !== "onepiece" && game !== "onepiececardgame") return false;
+
+  // An unnumbered DON!!/promo has only its product identity. Some provider rows
+  // omit collector numbers; the exact global product ID still identifies them.
+  if (!wanted?.setCode || !wanted.collector || !card.number?.trim()) return true;
+  const actual = parseOptcgNumber(card.number);
+  if (actual?.setCode && actual.collector) {
+    return actual.setCode.toLowerCase() === wanted.setCode.toLowerCase()
+      && normalizeNumber(actual.collector) === normalizeNumber(wanted.collector);
+  }
+
+  // The provider also uses collector-only numbers. A different full set code
+  // must never pass merely because its numeric tail happens to match.
+  return /^\d+[A-Za-z]?$/.test(card.number.trim())
+    && normalizeNumber(card.number) === normalizeNumber(wanted.collector);
 }
 
 function numbersLooselyEqual(a: string | null | undefined, b: string | null | undefined): boolean {
@@ -222,8 +253,9 @@ async function searchSafe(
 }
 
 /**
- * Match a catalog card to JustTCG. Prefer stored id, then exact number, then base+set.
- * Never accept name-only or collector-only hits.
+ * Match a catalog card to JustTCG. A supplied marketplace identity is mandatory:
+ * stored IDs and search responses must resolve to that exact product. Catalog
+ * cards without marketplace identity retain number/set matching.
  */
 export async function lookupOnePieceCard(input: {
   cardNumber: string | null;
@@ -239,6 +271,12 @@ export async function lookupOnePieceCard(input: {
       setName: input.setName,
     };
     const parsed = parseOptcgNumber(input.cardNumber);
+    const embeddedProductId = marketplaceIdFromNumber(input.cardNumber);
+    const suppliedProductId = input.tcgplayerProductId?.trim() || null;
+    if (embeddedProductId && suppliedProductId && embeddedProductId !== suppliedProductId) {
+      return { card: null, failure: { reason: "Conflicting TCGplayer product identities" } };
+    }
+    const productId = suppliedProductId ?? embeddedProductId;
 
     if (input.justtcgCardId?.trim()) {
       const byId = await searchSafe({
@@ -246,7 +284,10 @@ export async function lookupOnePieceCard(input: {
         limit: 5,
         include_null_prices: true,
       });
-      const stored = byId[0];
+      const stored = productId
+        ? byId.find((card) => matchesMarketplaceIdentity(card, productId, parsed))
+        : byId[0];
+      if (stored && productId) return { card: stored };
       if (stored && scoreCardMatch(stored, matchInput) >= MIN_ACCEPT_SCORE) {
         if (parsed?.parallelIndex == null || cardLooksParallel(stored)) {
           return { card: stored };
@@ -255,18 +296,16 @@ export async function lookupOnePieceCard(input: {
       // Stale/wrong stored id — fall through to search.
     }
 
-    if (input.tcgplayerProductId?.trim()) {
+    if (productId) {
       const byTcg = await searchSafe({
-        tcgplayerId: input.tcgplayerProductId.trim(),
+        tcgplayerId: productId,
         limit: 5,
         include_null_prices: true,
       });
-      const stored = byTcg[0];
-      if (stored && scoreCardMatch(stored, matchInput) >= MIN_ACCEPT_SCORE) {
-        if (parsed?.parallelIndex == null || cardLooksParallel(stored)) {
-          return { card: stored };
-        }
-      }
+      const exact = byTcg.find((card) => matchesMarketplaceIdentity(card, productId, parsed));
+      return exact
+        ? { card: exact }
+        : { card: null, failure: { reason: `No reliable JustTCG match for TCGplayer product ${productId}` } };
     }
 
     const game = await resolveOnePieceGameId();

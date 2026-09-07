@@ -1,0 +1,1658 @@
+[
+  {
+    "id": "OP01-001",
+    "name": "Roronoa Zoro",
+    "type": "Leader",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-001.png?260828",
+    "crew": [
+      "Supernovas",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-002",
+    "name": "Trafalgar Law",
+    "type": "Leader",
+    "colors": [
+      "Red",
+      "Green"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-002.png?260828",
+    "crew": [
+      "Supernovas",
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-003",
+    "name": "Monkey.D.Luffy",
+    "type": "Leader",
+    "colors": [
+      "Red",
+      "Green"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-003.png?260828",
+    "crew": [
+      "Supernovas",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-004",
+    "name": "Usopp",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-004.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-005",
+    "name": "Uta",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-005.png?260828",
+    "crew": [
+      "FILM"
+    ]
+  },
+  {
+    "id": "OP01-006",
+    "name": "Otama",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-006.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-007",
+    "name": "Caribou",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-007.png?260828",
+    "crew": [
+      "Supernovas",
+      "Caribou Pirates"
+    ]
+  },
+  {
+    "id": "OP01-008",
+    "name": "Cavendish",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-008.png?260828",
+    "crew": [
+      "Supernovas",
+      "Beautiful Pirates"
+    ]
+  },
+  {
+    "id": "OP01-009",
+    "name": "Carrot",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-009.png?260828",
+    "crew": [
+      "Minks"
+    ]
+  },
+  {
+    "id": "OP01-010",
+    "name": "Komachiyo",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-010.png?260828",
+    "crew": [
+      "Animal",
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-011",
+    "name": "Gordon",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-011.png?260828",
+    "crew": [
+      "FILM"
+    ]
+  },
+  {
+    "id": "OP01-012",
+    "name": "Sai",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-012.png?260828",
+    "crew": [
+      "Happosui Army"
+    ]
+  },
+  {
+    "id": "OP01-013",
+    "name": "Sanji",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-013.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-014",
+    "name": "Jinbe",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-014.png?260828",
+    "crew": [
+      "Fish-Man",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-015",
+    "name": "Tony Tony.Chopper",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-015.png?260828",
+    "crew": [
+      "Animal",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-016",
+    "name": "Nami",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-016.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-017",
+    "name": "Nico Robin",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-017.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-018",
+    "name": "Hajrudin",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-018.png?260828",
+    "crew": [
+      "Giant",
+      "New Giant Pirates"
+    ]
+  },
+  {
+    "id": "OP01-019",
+    "name": "Bartolomeo",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-019.png?260828",
+    "crew": [
+      "Supernovas",
+      "Barto Club"
+    ]
+  },
+  {
+    "id": "OP01-020",
+    "name": "Hyogoro",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-020.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-021",
+    "name": "Franky",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-021.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-022",
+    "name": "Brook",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-022.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-023",
+    "name": "Marco",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-023.png?260828",
+    "crew": [
+      "Former Whitebeard Pirates"
+    ]
+  },
+  {
+    "id": "OP01-024",
+    "name": "Monkey.D.Luffy",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-024.png?260828",
+    "crew": [
+      "Supernovas",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-025",
+    "name": "Roronoa Zoro",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-025.png?260828",
+    "crew": [
+      "Supernovas",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-026",
+    "name": "Gum-Gum Fire-Fist Pistol Red Hawk",
+    "type": "Event",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-026.png?260828",
+    "crew": [
+      "Supernovas",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-027",
+    "name": "Round Table",
+    "type": "Event",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-027.png?260828",
+    "crew": [
+      "Supernovas",
+      "Beautiful Pirates"
+    ]
+  },
+  {
+    "id": "OP01-028",
+    "name": "Green Star Rafflesia",
+    "type": "Event",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-028.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-029",
+    "name": "Radical Beam!!",
+    "type": "Event",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-029.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-030",
+    "name": "In Two Years!! At the Sabaody Archipelago!!",
+    "type": "Event",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-030.png?260828",
+    "crew": [
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-031",
+    "name": "Kouzuki Oden",
+    "type": "Leader",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-031.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kouzuki Clan"
+    ]
+  },
+  {
+    "id": "OP01-032",
+    "name": "Ashura Doji",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-032.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-033",
+    "name": "Izo",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-033.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Former Whitebeard Pirates"
+    ]
+  },
+  {
+    "id": "OP01-034",
+    "name": "Inuarashi",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-034.png?260828",
+    "crew": [
+      "Minks",
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-035",
+    "name": "Okiku",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-035.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-036",
+    "name": "Otsuru",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-036.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-037",
+    "name": "Kawamatsu",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-037.png?260828",
+    "crew": [
+      "Fish-Man",
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-038",
+    "name": "Kanjuro",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-038.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-039",
+    "name": "Killer",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-039.png?260828",
+    "crew": [
+      "Supernovas",
+      "Kid Pirates"
+    ]
+  },
+  {
+    "id": "OP01-040",
+    "name": "Kin'emon",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-040.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-041",
+    "name": "Kouzuki Momonosuke",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-041.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kouzuki Clan"
+    ]
+  },
+  {
+    "id": "OP01-042",
+    "name": "Komurasaki",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-042.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kouzuki Clan"
+    ]
+  },
+  {
+    "id": "OP01-043",
+    "name": "Shinobu",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-043.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-044",
+    "name": "Shachi",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-044.png?260828",
+    "crew": [
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-045",
+    "name": "Jean Bart",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-045.png?260828",
+    "crew": [
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-046",
+    "name": "Denjiro",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-046.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-047",
+    "name": "Trafalgar Law",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-047.png?260828",
+    "crew": [
+      "Supernovas",
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-048",
+    "name": "Nekomamushi",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-048.png?260828",
+    "crew": [
+      "Minks",
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-049",
+    "name": "Bepo",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-049.png?260828",
+    "crew": [
+      "Minks",
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-050",
+    "name": "Penguin",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-050.png?260828",
+    "crew": [
+      "Heart Pirates"
+    ]
+  },
+  {
+    "id": "OP01-051",
+    "name": "Eustass\"Captain\"Kid",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-051.png?260828",
+    "crew": [
+      "Supernovas",
+      "Kid Pirates"
+    ]
+  },
+  {
+    "id": "OP01-052",
+    "name": "Raizo",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-052.png?260828",
+    "crew": [
+      "Land of Wano",
+      "The Akazaya Nine"
+    ]
+  },
+  {
+    "id": "OP01-053",
+    "name": "Wire",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-053.png?260828",
+    "crew": [
+      "Kid Pirates"
+    ]
+  },
+  {
+    "id": "OP01-054",
+    "name": "X.Drake",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-054.png?260828",
+    "crew": [
+      "Supernovas",
+      "Navy",
+      "Drake Pirates"
+    ]
+  },
+  {
+    "id": "OP01-055",
+    "name": "You Can Be My Samurai!!",
+    "type": "Event",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-055.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kouzuki Clan"
+    ]
+  },
+  {
+    "id": "OP01-056",
+    "name": "Demon Face",
+    "type": "Event",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-056.png?260828",
+    "crew": [
+      "Supernovas",
+      "Hawkins Pirates"
+    ]
+  },
+  {
+    "id": "OP01-057",
+    "name": "Paradise Waterfall",
+    "type": "Event",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-057.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kouzuki Clan"
+    ]
+  },
+  {
+    "id": "OP01-058",
+    "name": "Punk Gibson",
+    "type": "Event",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-058.png?260828",
+    "crew": [
+      "Supernovas",
+      "Kid Pirates"
+    ]
+  },
+  {
+    "id": "OP01-059",
+    "name": "BE-BENG!!",
+    "type": "Event",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-059.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-060",
+    "name": "Donquixote Doflamingo",
+    "type": "Leader",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-060.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Donquixote Pirates"
+    ]
+  },
+  {
+    "id": "OP01-061",
+    "name": "Kaido",
+    "type": "Leader",
+    "colors": [
+      "Blue",
+      "Purple"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-061.png?260828",
+    "crew": [
+      "The Four Emperors",
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-062",
+    "name": "Crocodile",
+    "type": "Leader",
+    "colors": [
+      "Blue",
+      "Purple"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-062.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-063",
+    "name": "Arlong",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-063.png?260828",
+    "crew": [
+      "Fish-Man",
+      "Arlong Pirates"
+    ]
+  },
+  {
+    "id": "OP01-064",
+    "name": "Alvida",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-064.png?260828",
+    "crew": [
+      "Buggy Pirates"
+    ]
+  },
+  {
+    "id": "OP01-065",
+    "name": "Vergo",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-065.png?260828",
+    "crew": [
+      "Navy",
+      "Donquixote Pirates",
+      "Punk Hazard"
+    ]
+  },
+  {
+    "id": "OP01-066",
+    "name": "Krieg",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-066.png?260828",
+    "crew": [
+      "Krieg Pirates"
+    ]
+  },
+  {
+    "id": "OP01-067",
+    "name": "Crocodile",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-067.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-068",
+    "name": "Gecko Moria",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-068.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Thriller Bark Pirates"
+    ]
+  },
+  {
+    "id": "OP01-069",
+    "name": "Caesar Clown",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-069.png?260828",
+    "crew": [
+      "Scientist",
+      "Punk Hazard"
+    ]
+  },
+  {
+    "id": "OP01-070",
+    "name": "Dracule Mihawk",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-070.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea"
+    ]
+  },
+  {
+    "id": "OP01-071",
+    "name": "Jinbe",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-071.png?260828",
+    "crew": [
+      "Fish-Man",
+      "Straw Hat Crew"
+    ]
+  },
+  {
+    "id": "OP01-072",
+    "name": "Smiley",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-072.png?260828",
+    "crew": [
+      "Biological Weapon",
+      "Punk Hazard"
+    ]
+  },
+  {
+    "id": "OP01-073",
+    "name": "Donquixote Doflamingo",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-073.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Donquixote Pirates"
+    ]
+  },
+  {
+    "id": "OP01-074",
+    "name": "Bartholomew Kuma",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-074.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Revolutionary Army"
+    ]
+  },
+  {
+    "id": "OP01-075",
+    "name": "Pacifista",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-075.png?260828",
+    "crew": [
+      "Biological Weapon",
+      "Navy"
+    ]
+  },
+  {
+    "id": "OP01-076",
+    "name": "Bellamy",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-076.png?260828",
+    "crew": [
+      "Dressrosa"
+    ]
+  },
+  {
+    "id": "OP01-077",
+    "name": "Perona",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-077.png?260828",
+    "crew": [
+      "Thriller Bark Pirates"
+    ]
+  },
+  {
+    "id": "OP01-078",
+    "name": "Boa Hancock",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-078.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Kuja Pirates"
+    ]
+  },
+  {
+    "id": "OP01-079",
+    "name": "Ms. All Sunday",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-079.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-080",
+    "name": "Miss Doublefinger(Zala)",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-080.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-081",
+    "name": "Mocha",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-081.png?260828",
+    "crew": [
+      "Punk Hazard"
+    ]
+  },
+  {
+    "id": "OP01-082",
+    "name": "Monet",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-082.png?260828",
+    "crew": [
+      "Donquixote Pirates",
+      "Punk Hazard"
+    ]
+  },
+  {
+    "id": "OP01-083",
+    "name": "Mr.1(Daz.Bonez)",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-083.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-084",
+    "name": "Mr.2.Bon.Kurei(Bentham)",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-084.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-085",
+    "name": "Mr.3(Galdino)",
+    "type": "Character",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-085.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-086",
+    "name": "Overheat",
+    "type": "Event",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-086.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Donquixote Pirates"
+    ]
+  },
+  {
+    "id": "OP01-087",
+    "name": "Officer Agents",
+    "type": "Event",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-087.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-088",
+    "name": "Desert Spada",
+    "type": "Event",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-088.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-089",
+    "name": "Crescent Cutlass",
+    "type": "Event",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-089.png?260828",
+    "crew": [
+      "The Seven Warlords of the Sea",
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-090",
+    "name": "Baroque Works",
+    "type": "Event",
+    "colors": [
+      "Blue"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-090.png?260828",
+    "crew": [
+      "Baroque Works"
+    ]
+  },
+  {
+    "id": "OP01-091",
+    "name": "King",
+    "type": "Leader",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Leader",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-091.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-092",
+    "name": "Urashima",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-092.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-093",
+    "name": "Ulti",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-093.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-094",
+    "name": "Kaido",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-094.png?260828",
+    "crew": [
+      "The Four Emperors",
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-095",
+    "name": "Kyoshirou",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-095.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  },
+  {
+    "id": "OP01-096",
+    "name": "King",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "SuperRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-096.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-097",
+    "name": "Queen",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-097.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-098",
+    "name": "Kurozumi Orochi",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-098.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kurozumi Clan"
+    ]
+  },
+  {
+    "id": "OP01-099",
+    "name": "Kurozumi Semimaru",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-099.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kurozumi Clan"
+    ]
+  },
+  {
+    "id": "OP01-100",
+    "name": "Kurozumi Higurashi",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-100.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Kurozumi Clan"
+    ]
+  },
+  {
+    "id": "OP01-101",
+    "name": "Sasaki",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-101.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-102",
+    "name": "Jack",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-102.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-103",
+    "name": "Scratchmen Apoo",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-103.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "On-Air Pirates"
+    ]
+  },
+  {
+    "id": "OP01-104",
+    "name": "Speed",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-104.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-105",
+    "name": "Bao Huang",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-105.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-106",
+    "name": "Basil Hawkins",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-106.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "Hawkins Pirates"
+    ]
+  },
+  {
+    "id": "OP01-107",
+    "name": "Babanuki",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-107.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-108",
+    "name": "Hitokiri Kamazo",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-108.png?260828",
+    "crew": [
+      "Supernovas",
+      "Kid Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-109",
+    "name": "Who's.Who",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-109.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-110",
+    "name": "Fukurokuju",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-110.png?260828",
+    "crew": [
+      "Land of Wano",
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-111",
+    "name": "Black Maria",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-111.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-112",
+    "name": "Page One",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-112.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-113",
+    "name": "Holedem",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-113.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-114",
+    "name": "X.Drake",
+    "type": "Character",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-114.png?260828",
+    "crew": [
+      "Navy",
+      "Drake Pirates",
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-115",
+    "name": "Elephant's Marchoo",
+    "type": "Event",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-115.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-116",
+    "name": "Artificial Devil Fruit SMILE",
+    "type": "Event",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-116.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-117",
+    "name": "Sheep's Horn",
+    "type": "Event",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Common",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-117.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates",
+      "SMILE"
+    ]
+  },
+  {
+    "id": "OP01-118",
+    "name": "Ulti-Mortar",
+    "type": "Event",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Uncommon",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-118.png?260828",
+    "crew": [
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-119",
+    "name": "Thunder Bagua",
+    "type": "Event",
+    "colors": [
+      "Purple"
+    ],
+    "rarity": "Rare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-119.png?260828",
+    "crew": [
+      "The Four Emperors",
+      "Animal Kingdom Pirates"
+    ]
+  },
+  {
+    "id": "OP01-120",
+    "name": "Shanks",
+    "type": "Character",
+    "colors": [
+      "Red"
+    ],
+    "rarity": "SecretRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120.png?260828",
+    "crew": [
+      "The Four Emperors",
+      "Red-Haired Pirates"
+    ]
+  },
+  {
+    "id": "OP01-121",
+    "name": "Yamato",
+    "type": "Character",
+    "colors": [
+      "Green"
+    ],
+    "rarity": "SecretRare",
+    "image": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-121.png?260828",
+    "crew": [
+      "Land of Wano"
+    ]
+  }
+]

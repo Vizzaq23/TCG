@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
 import type { TradeAlertHitRow } from "@/lib/types/database";
 import { shelfCardPath } from "@/lib/shelf-links";
+import { buildCatalogSearchFilter, normalizeCatalogSearchQuery } from "@/lib/catalog-query";
 
 type AlertRow = {
   id: string;
@@ -36,7 +37,7 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
 
   async function search() {
     setMessage(null);
-    const q = query.trim();
+    const q = normalizeCatalogSearchQuery(query);
     if (q.length < 2) {
       setMessage("Type at least 2 characters to search the catalog.");
       return;
@@ -46,7 +47,8 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
     const { data, error } = await supabase
       .from("cards")
       .select("id, name, set_name, card_number")
-      .ilike("name", `%${q}%`)
+      .or(buildCatalogSearchFilter(q)!)
+      .order("name", { ascending: true })
       .limit(8);
     setPending(false);
     if (error) {
@@ -127,7 +129,7 @@ export function TradeAlertsPanel({ alerts, hits }: Props) {
                 void search();
               }
             }}
-            placeholder="Search by card name…"
+            placeholder="Name, number, or set (Luffy, OP17, promos)…"
             className="py-1.5 text-sm"
           />
         </Field>

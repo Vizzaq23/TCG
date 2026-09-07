@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Database } from "@/lib/types/database";
 import { CardImage } from "@/components/cards/CardImage";
 import { MarketPrice } from "@/components/prices/MarketPrice";
+import { displayCardNumber } from "@/lib/catalog-links";
 
 type Card = Database["public"]["Tables"]["cards"]["Row"];
 
@@ -44,7 +45,7 @@ export function CardTile({ card, footer }: Props) {
           {card.name}
         </Link>
         <p className="mt-1.5 line-clamp-1 text-[11px] text-zinc-500">
-          {[card.set_name, card.card_number].filter(Boolean).join(" · ") || "Catalog card"}
+          {[card.set_name, displayCardNumber(card.card_number)].filter(Boolean).join(" · ") || "Catalog card"}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {card.color ? (

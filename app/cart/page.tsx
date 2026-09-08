@@ -74,11 +74,18 @@ export default async function CartPage({
 
   return (
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
-      <SectionHeader
-        as="h1"
-        title="Cart"
-        description="Guest checkout is supported. Shipping address is collected on Stripe."
-      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <SectionHeader
+          as="h1"
+          title="Cart"
+          description="Guest checkout is supported. Shipping address is collected on Stripe."
+        />
+        {lines.length ? (
+          <Button href="/shop" size="sm" variant="ghost">
+            ← Continue shopping
+          </Button>
+        ) : null}
+      </div>
 
       {cancelled ? (
         <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">

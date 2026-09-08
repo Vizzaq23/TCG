@@ -33,9 +33,13 @@ const CONDITIONS = [
   "Damaged",
 ];
 
-type Props = { row: CollectionRowData; canListForSale?: boolean };
+type Props = {
+  row: CollectionRowData;
+  canListForSale?: boolean;
+  onRemoved: (id: string) => void;
+};
 
-export function CollectionRow({ row, canListForSale = false }: Props) {
+export function CollectionRow({ row, canListForSale = false, onRemoved }: Props) {
   const router = useRouter();
   const card = row.cards;
   const [quantity, setQuantity] = useState(String(row.quantity));
@@ -125,14 +129,25 @@ export function CollectionRow({ row, canListForSale = false }: Props) {
     if (!window.confirm("Remove this card from your collection?")) return;
     setMessage(null);
     setPending("remove");
-    const supabase = createClient();
-    const { error } = await supabase.from("user_collections").delete().eq("id", row.id);
-    setPending(null);
-    if (error) {
-      setMessage(error.message);
-      return;
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("user_collections")
+        .delete()
+        .eq("id", row.id)
+        .select("id")
+        .single();
+      if (error || data?.id !== row.id) {
+        setMessage(error?.message ?? "This card could not be removed. Please try again.");
+        return;
+      }
+      onRemoved(row.id);
+      router.refresh();
+    } catch {
+      setMessage("Could not remove this card. Check your connection and try again.");
+    } finally {
+      setPending(null);
     }
-    router.refresh();
   }
 
   const previewGraded = isGraded && gradingCompany && grade;

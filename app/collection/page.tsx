@@ -2,10 +2,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/env";
 import { CollectionStats } from "@/components/collection/CollectionStats";
-import { CollectionRow } from "@/components/collection/CollectionRow";
+import { CollectionInventory } from "@/components/collection/CollectionInventory";
 import { CopyShareLink } from "@/components/collection/CopyShareLink";
 import { SetProgress } from "@/components/collection/SetProgress";
-import { ShowcasePicker } from "@/components/collection/ShowcasePicker";
 import { TradeAlertsPanel } from "@/components/trades/TradeAlertsPanel";
 import { CollectionValueCard } from "@/components/prices/CollectionValueCard";
 import { computeSetProgress } from "@/lib/collection/set-progress";
@@ -174,38 +173,11 @@ export default async function CollectionPage() {
         {(rows?.length ?? 0) > 0 ? <CollectionValueCard summary={valueSummary} /> : null}
       </header>
 
-      {rows && rows.length > 0 && <ShowcasePicker rows={rows} />}
-
-      <section className="space-y-4">
-        <SectionHeader
-          title="Your cards"
-          description="Edit quantities, conditions, grades, estimated value, and trade status."
-        />
-        {rowsError ? (
-          <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-            {rowsError.message}
-          </p>
-        ) : !rows?.length ? (
-          <div className="empty-state px-6 py-14 text-center">
-            <p className="text-sm text-zinc-400">
-              You have not added any cards yet. Head to the catalog to start your shelf.
-            </p>
-            <div className="mt-5">
-              <Button href="/browse">Browse cards</Button>
-            </div>
-          </div>
-        ) : (
-          <ul className="flex flex-col gap-4">
-            {rows.map((row) => (
-              <CollectionRow
-                key={row.id}
-                row={row}
-                canListForSale={isShopOwner(user.id)}
-              />
-            ))}
-          </ul>
-        )}
-      </section>
+      <CollectionInventory
+        rows={rows ?? []}
+        error={rowsError?.message ?? null}
+        canListForSale={isShopOwner(user.id)}
+      />
 
       {setProgress.length > 0 && <SetProgress items={setProgress} />}
       {catalogError && <p className="text-sm text-amber-200/90">Set progress unavailable: {catalogError}</p>}

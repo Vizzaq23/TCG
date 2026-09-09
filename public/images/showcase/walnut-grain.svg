@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="180" viewBox="0 0 1200 180">
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".004 .19" numOctaves="3" seed="19" stitchTiles="stitch" result="grain"/>
+      <feColorMatrix in="grain" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="gamma" amplitude=".64" exponent="1.6" offset=".09"/>
+        <feFuncG type="gamma" amplitude=".4" exponent="1.6" offset=".035"/>
+        <feFuncB type="gamma" amplitude=".22" exponent="1.6" offset=".014"/>
+      </feComponentTransfer>
+    </filter>
+    <linearGradient id="tone" x2="1" y2=".1">
+      <stop stop-color="#392215"/>
+      <stop offset=".28" stop-color="#956243"/>
+      <stop offset=".56" stop-color="#613b27"/>
+      <stop offset=".8" stop-color="#8b5739"/>
+      <stop offset="1" stop-color="#442919"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#tone)" d="M0 0h1200v180H0z"/>
+  <path filter="url(#grain)" opacity=".58" d="M0 0h1200v180H0z"/>
+</svg>

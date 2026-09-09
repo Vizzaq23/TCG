@@ -162,6 +162,11 @@ export default async function ShopPage({
           <option value="price_desc">Price: high to low</option>
         </select>
         <Button type="submit" size="sm" variant="ghost">Apply</Button>
+        {kindFilter || sort ? (
+          <Button href="/shop" size="sm" variant="ghost">
+            Clear filters
+          </Button>
+        ) : null}
       </form>
 
       {!settings ? (

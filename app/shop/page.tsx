@@ -169,6 +169,12 @@ export default async function ShopPage({
         ) : null}
       </form>
 
+      {withStock.length > 0 ? (
+        <p className="text-sm text-zinc-500">
+          {withStock.length} {withStock.length === 1 ? "listing" : "listings"} available
+        </p>
+      ) : null}
+
       {!settings ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
           <p className="text-sm text-zinc-400">

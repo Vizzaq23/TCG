@@ -3,6 +3,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
+import { cartCountLabel } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { sellableQuantity } from "@/lib/shop/inventory";
 import { getPublicShopSettings } from "@/lib/shop/owner";
@@ -60,6 +61,7 @@ export default async function CartPage({
   }
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+  const itemCountLabel = cartCountLabel({ items: lines });
   const shipping = settings?.shipping_cents ?? null;
   const total = subtotal + (lines.length ? shipping ?? 0 : 0);
   const checkoutConfigurationError = getCheckoutConfigurationError();
@@ -78,7 +80,7 @@ export default async function CartPage({
         <SectionHeader
           as="h1"
           title="Cart"
-          description="Guest checkout is supported. Shipping address is collected on Stripe."
+          description="Review your items and totals before secure checkout."
         />
         {lines.length ? (
           <Button href="/shop" size="sm" variant="ghost">
@@ -138,8 +140,10 @@ export default async function CartPage({
           </ul>
 
           <div className="space-y-4">
-            <div className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 text-sm">
-              <div className="flex justify-between text-zinc-400">
+            <section aria-labelledby="order-summary-heading" className="rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 text-sm">
+              <h2 id="order-summary-heading" className="font-semibold text-white">Order summary</h2>
+              <p className="mt-1 text-xs text-zinc-500">{itemCountLabel} in your cart</p>
+              <div className="mt-3 flex justify-between text-zinc-400">
                 <span>Subtotal</span>
                 <span>{formatUsdCents(subtotal)}</span>
               </div>
@@ -153,7 +157,8 @@ export default async function CartPage({
                 <span>Total</span>
                 <span>{formatUsdCents(total)}</span>
               </div>
-            </div>
+              <p className="mt-4 rounded-lg bg-zinc-950/70 p-3 text-xs text-zinc-400">Guest checkout — no account required. Applicable taxes are calculated at checkout.</p>
+            </section>
             {!checkoutReady ? (
               <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
                 Checkout is not open yet. Store payment, shipping, and tax settings

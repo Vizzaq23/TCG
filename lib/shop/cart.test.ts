@@ -3,6 +3,7 @@ import {
   MAX_CART_LINES,
   MAX_ITEM_QUANTITY,
   cartCount,
+  cartCountLabel,
   parseCart,
   removeCartItem,
   serializeCart,
@@ -25,6 +26,11 @@ describe("cart", () => {
       { listingId: "b", quantity: 1 },
     ]);
     expect(cartCount(cart)).toBe(4);
+  });
+
+  it("labels singular and plural item counts", () => {
+    expect(cartCountLabel({ items: [{ listingId: "a", quantity: 1 }] })).toBe("1 item");
+    expect(cartCountLabel({ items: [{ listingId: "a", quantity: 2 }] })).toBe("2 items");
   });
 
   it("round-trips serialize", () => {

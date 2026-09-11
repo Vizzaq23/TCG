@@ -188,9 +188,13 @@ export async function POST(request: Request) {
         });
       }
       if (existing.status === "expired") {
-        await admin.rpc("shop_cancel_pending_order", {
+        if (existing.id !== pending.stripeCheckoutSessionId || existing.payment_status !== "unpaid") {
+          throw new Error("checkout_expiration_not_confirmed");
+        }
+        const { error: cancelError } = await admin.rpc("shop_cancel_pending_order", {
           p_order_id: pending.orderId,
         });
+        if (cancelError) throw cancelError;
         checkoutToken = crypto.randomUUID();
         cart.checkoutToken = checkoutToken;
         await writeCartCookie(cart);
@@ -281,18 +285,42 @@ export async function POST(request: Request) {
       tags: { area: "checkout", operation: "create_session" },
       extra: { orderId: pending.orderId },
     });
+    let cancelled = false;
     if (sessionId) {
       try {
-        await stripe.checkout.sessions.expire(sessionId);
-      } catch {
-        // The signed webhook remains authoritative if expiration races completion.
+        const expired = await stripe.checkout.sessions.expire(sessionId);
+        if (
+          expired.id !== sessionId ||
+          expired.status !== "expired" ||
+          expired.payment_status !== "unpaid"
+        ) {
+          throw new Error("checkout_expiration_not_confirmed");
+        }
+        const { error: cancelError } = await admin.rpc("shop_cancel_pending_order", {
+          p_order_id: pending.orderId,
+        });
+        if (cancelError) throw cancelError;
+        cancelled = true;
+      } catch (cleanupError) {
+        Sentry.captureException(cleanupError, {
+          tags: { area: "checkout", operation: "cancel_session" },
+          extra: { orderId: pending.orderId, sessionId },
+        });
       }
     }
-    await admin.rpc("shop_cancel_pending_order", { p_order_id: pending.orderId });
-    cart.checkoutToken = crypto.randomUUID();
-    await writeCartCookie(cart);
+    // A failed create/expire call can race a successful payment (or another
+    // request for this token). Keep the order payable by its signed webhook and
+    // retain its hold unless Stripe confirmed the session expired unpaid.
+    if (cancelled) {
+      cart.checkoutToken = crypto.randomUUID();
+      await writeCartCookie(cart);
+    }
     return json(
-      { error: "Stripe Checkout could not be started. Your cart was kept; please retry." },
+      {
+        error: cancelled
+          ? "Stripe Checkout could not be started. Your cart was kept; please retry."
+          : "Checkout status could not be confirmed. Your cart was kept; please try again shortly.",
+      },
       502,
     );
   }

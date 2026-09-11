@@ -2,9 +2,30 @@
 
 A collector platform for the **One Piece Card Game**. Browse the catalog, track what you own (quantity, condition, grades, trades), pin a three-card **Collector’s Showcase**, and share a public profile at `/u/yourname`.
 
-**Live demo:** [tcg-lyart.vercel.app](https://tcg-lyart.vercel.app/)
+**[Live app](https://tcg-lyart.vercel.app/) · [30-second walkthrough](https://www.quintinvizza.dev/demos/tcg-20260911.mp4) · [Engineering case study](https://www.quintinvizza.dev/projects/tcg-shelf) · [Portfolio](https://www.quintinvizza.dev/)**
+
+## Why I built it
+
+As a One Piece collector, I wanted a place to organize cards, understand estimated collection value, and share a shelf with other collectors. I built the application across its Next.js interface, TypeScript routes, Supabase authentication, PostgreSQL model, and server-side pricing workflow.
+
+[View my personal collection on Collectr](https://app.getcollectr.com/showcase/profile/@alostzoro).
+
+## Engineering highlights
+
+- Owner-scoped data access with Supabase Auth and PostgreSQL Row Level Security.
+- Server-side market-price caching, keeping provider credentials out of browser code.
+- Quantity-aware valuation with manual overrides and explicit handling of missing prices.
+- Public collector profiles separated from private collection views.
+
+Prices are cached estimates and can lag the market. Checkout availability is governed by the launch-readiness controls documented below.
+
+## Validation
+
+Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` against your configured checkout. Unit tests support focused logic checks; they do not replace database-policy integration tests or complete multi-account workflows. No new test-pass claim is implied by this documentation update.
 
 ## Screenshots
+
+These images document earlier interfaces. The linked September 2026 walkthrough shows the refreshed application.
 
 ### Home
 
@@ -23,7 +44,7 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 - **Catalog browse** — search and filter; add cards to your collection
 - **Collection dashboard** — quantities, conditions, graded slabs, trade flags, estimated values
 - **Portfolio stats** — value from cached market prices × quantity (manual overrides win)
-- **Live market prices** — server-side JustTCG sync into `card_prices` (no browser API calls)
+- **Cached market prices** — server-side JustTCG sync into `card_prices` (no browser API calls)
 - **Trade offers** — request / accept / decline on for-trade cards (inbox shows image, grade/condition, notes)
 - **Activity feed** — public profile events (adds, trades, showcase updates)
 - **Trade alerts** — watchlist when others list a card you want
@@ -54,7 +75,9 @@ A collector platform for the **One Piece Card Game**. Browse the catalog, track 
 ### 1. Install
 
 ```bash
-npm install
+git clone https://github.com/Vizzaq23/TCG.git
+cd TCG
+npm ci
 ```
 
 ### 2. Environment

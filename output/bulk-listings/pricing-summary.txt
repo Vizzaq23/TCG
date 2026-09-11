@@ -1,0 +1,249 @@
+{
+  "pricedCards": 1883,
+  "drafts": 654,
+  "singles": 56,
+  "playsets": 581,
+  "bulkLots": 17,
+  "below25c": 1524,
+  "bySet": [
+    {
+      "set": "OP01",
+      "name": "Romance Dawn",
+      "cards": 108
+    },
+    {
+      "set": "OP02",
+      "name": "Paramount War",
+      "cards": 109
+    },
+    {
+      "set": "OP03",
+      "name": "Pillars of Strength",
+      "cards": 112
+    },
+    {
+      "set": "OP04",
+      "name": "Kingdoms of Intrigue",
+      "cards": 111
+    },
+    {
+      "set": "OP05",
+      "name": "Awakening of the New Era",
+      "cards": 111
+    },
+    {
+      "set": "OP06",
+      "name": "Wings of the Captain",
+      "cards": 111
+    },
+    {
+      "set": "OP07",
+      "name": "500 Years in the Future",
+      "cards": 111
+    },
+    {
+      "set": "OP08",
+      "name": "Two Legends",
+      "cards": 111
+    },
+    {
+      "set": "OP09",
+      "name": "Emperors in the New World",
+      "cards": 111
+    },
+    {
+      "set": "OP10",
+      "name": "Royal Blood",
+      "cards": 111
+    },
+    {
+      "set": "OP11",
+      "name": "A Fist of Divine Speed",
+      "cards": 111
+    },
+    {
+      "set": "OP12",
+      "name": "Legacy of the Master",
+      "cards": 111
+    },
+    {
+      "set": "OP13",
+      "name": "Carrying On His Will",
+      "cards": 111
+    },
+    {
+      "set": "OP14",
+      "name": "The Azure Sea's Seven",
+      "cards": 111
+    },
+    {
+      "set": "OP15-EB04",
+      "name": "Adventure on Kami's Island",
+      "cards": 111
+    },
+    {
+      "set": "OP16",
+      "name": "The Time of Battle",
+      "cards": 111
+    },
+    {
+      "set": "OP17",
+      "name": "The World's Strongest Warriors",
+      "cards": 111
+    }
+  ],
+  "byRarity": {
+    "SR": 170,
+    "R": 436,
+    "C": 765,
+    "UC": 512
+  },
+  "ambiguous": [
+    [
+      {
+        "number": "OP01-005",
+        "name": "Uta",
+        "printing": "Normal"
+      },
+      {
+        "number": "OP01-005",
+        "name": "Uta",
+        "printing": "Foil"
+      }
+    ],
+    [
+      {
+        "number": "OP01-068",
+        "name": "Gecko Moria",
+        "printing": "Foil"
+      },
+      {
+        "number": "OP01-068",
+        "name": "Gecko Moria",
+        "printing": "Normal"
+      }
+    ],
+    [
+      {
+        "number": "OP01-086",
+        "name": "Overheat",
+        "printing": "Normal"
+      },
+      {
+        "number": "OP01-086",
+        "name": "Overheat",
+        "printing": "Foil"
+      }
+    ],
+    [
+      {
+        "number": "OP02-040",
+        "name": "Brook",
+        "printing": "Foil"
+      },
+      {
+        "number": "OP02-040",
+        "name": "Brook",
+        "printing": "Normal"
+      }
+    ],
+    [
+      {
+        "number": "OP02-041",
+        "name": "Monkey.D.Luffy (041)",
+        "printing": "Foil"
+      },
+      {
+        "number": "OP02-041",
+        "name": "Monkey.D.Luffy (041)",
+        "printing": "Normal"
+      }
+    ],
+    [
+      {
+        "number": "OP03-115",
+        "name": "Streusen",
+        "printing": "Normal"
+      },
+      {
+        "number": "OP03-115",
+        "name": "Streusen",
+        "printing": "Foil"
+      }
+    ]
+  ],
+  "highestRegularPrices": [
+    {
+      "number": "OP15-078",
+      "name": "Mamaragan",
+      "marketCents": 2494,
+      "url": "https://www.tcgplayer.com/product/685429/one-piece-card-game-adventure-on-kamis-island-mamaragan"
+    },
+    {
+      "number": "OP12-034",
+      "name": "Perona",
+      "marketCents": 1771,
+      "url": "https://www.tcgplayer.com/product/643764/one-piece-card-game-legacy-of-the-master-perona"
+    },
+    {
+      "number": "OP10-005",
+      "name": "Sanji",
+      "marketCents": 990,
+      "url": "https://www.tcgplayer.com/product/617037/one-piece-card-game-royal-blood-sanji"
+    },
+    {
+      "number": "OP14-096",
+      "name": "Ground Death",
+      "marketCents": 833,
+      "url": "https://www.tcgplayer.com/product/671427/one-piece-card-game-the-azure-seas-seven-ground-death"
+    },
+    {
+      "number": "OP15-088",
+      "name": "Pirates Docking Six",
+      "marketCents": 806,
+      "url": "https://www.tcgplayer.com/product/685441/one-piece-card-game-adventure-on-kamis-island-pirates-docking-six"
+    },
+    {
+      "number": "OP08-036",
+      "name": "Electrical Luna",
+      "marketCents": 792,
+      "url": "https://www.tcgplayer.com/product/558063/one-piece-card-game-two-legends-electrical-luna"
+    },
+    {
+      "number": "OP14-033",
+      "name": "Perona - OP14-033",
+      "marketCents": 782,
+      "url": "https://www.tcgplayer.com/product/666526/one-piece-card-game-the-azure-seas-seven-perona-op14-033"
+    },
+    {
+      "number": "OP07-077",
+      "name": "We're Going to Claim the One Piece!!!",
+      "marketCents": 761,
+      "url": "https://www.tcgplayer.com/product/545871/one-piece-card-game-500-years-in-the-future-were-going-to-claim-the-one-piece"
+    },
+    {
+      "number": "OP12-015",
+      "name": "Monkey.D.Luffy",
+      "marketCents": 754,
+      "url": "https://www.tcgplayer.com/product/643741/one-piece-card-game-legacy-of-the-master-monkeydluffy"
+    },
+    {
+      "number": "OP14-104",
+      "name": "Gecko Moria - OP14-104",
+      "marketCents": 673,
+      "url": "https://www.tcgplayer.com/product/666574/one-piece-card-game-the-azure-seas-seven-gecko-moria-op14-104"
+    },
+    {
+      "number": "OP14-112",
+      "name": "Boa Hancock - OP14-112",
+      "marketCents": 652,
+      "url": "https://www.tcgplayer.com/product/668342/one-piece-card-game-the-azure-seas-seven-boa-hancock-op14-112"
+    },
+    {
+      "number": "OP11-067",
+      "name": "Charlotte Katakuri (067)",
+      "marketCents": 651,
+      "url": "https://www.tcgplayer.com/product/632436/one-piece-card-game-a-fist-of-divine-speed-charlotte-katakuri-067"
+    }
+  ]
+}

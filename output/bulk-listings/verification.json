@@ -1,0 +1,106 @@
+{
+  "verifiedAt": "2026-09-09T00:43:06.701Z",
+  "pricedCards": 1883,
+  "drafts": 654,
+  "singles": 56,
+  "playsets": 581,
+  "bulkLots": 17,
+  "below25c": 1524,
+  "bySet": [
+    {
+      "set": "OP01",
+      "name": "Romance Dawn",
+      "cards": 108
+    },
+    {
+      "set": "OP02",
+      "name": "Paramount War",
+      "cards": 109
+    },
+    {
+      "set": "OP03",
+      "name": "Pillars of Strength",
+      "cards": 112
+    },
+    {
+      "set": "OP04",
+      "name": "Kingdoms of Intrigue",
+      "cards": 111
+    },
+    {
+      "set": "OP05",
+      "name": "Awakening of the New Era",
+      "cards": 111
+    },
+    {
+      "set": "OP06",
+      "name": "Wings of the Captain",
+      "cards": 111
+    },
+    {
+      "set": "OP07",
+      "name": "500 Years in the Future",
+      "cards": 111
+    },
+    {
+      "set": "OP08",
+      "name": "Two Legends",
+      "cards": 111
+    },
+    {
+      "set": "OP09",
+      "name": "Emperors in the New World",
+      "cards": 111
+    },
+    {
+      "set": "OP10",
+      "name": "Royal Blood",
+      "cards": 111
+    },
+    {
+      "set": "OP11",
+      "name": "A Fist of Divine Speed",
+      "cards": 111
+    },
+    {
+      "set": "OP12",
+      "name": "Legacy of the Master",
+      "cards": 111
+    },
+    {
+      "set": "OP13",
+      "name": "Carrying On His Will",
+      "cards": 111
+    },
+    {
+      "set": "OP14",
+      "name": "The Azure Sea's Seven",
+      "cards": 111
+    },
+    {
+      "set": "OP15-EB04",
+      "name": "Adventure on Kami's Island",
+      "cards": 111
+    },
+    {
+      "set": "OP16",
+      "name": "The Time of Battle",
+      "cards": 111
+    },
+    {
+      "set": "OP17",
+      "name": "The World's Strongest Warriors",
+      "cards": 111
+    }
+  ],
+  "byRarity": {
+    "SR": 170,
+    "R": 436,
+    "C": 765,
+    "UC": 512
+  },
+  "existingListingsUnchanged": 57,
+  "inventoryRowsUnchanged": 58,
+  "allDraftStockZero": true,
+  "allNearMint": true
+}

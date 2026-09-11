@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "productId": 685429,
+      "printing": "Foil",
+      "number": "OP15-078",
+      "marketCents": 2494,
+      "url": "https://www.tcgplayer.com/product/685429/one-piece-card-game-adventure-on-kamis-island-mamaragan",
+      "checkedAt": "2026-09-09T00:40:44.738Z",
+      "language": "English",
+      "condition": "Near Mint",
+      "method": "Read live TCGplayer product page Price Points panel in browser"
+    },
+    {
+      "productId": 643764,
+      "printing": "Foil",
+      "number": "OP12-034",
+      "marketCents": 1771,
+      "url": "https://www.tcgplayer.com/product/643764/one-piece-card-game-legacy-of-the-master-perona",
+      "checkedAt": "2026-09-09T00:40:44.739Z",
+      "language": "English",
+      "condition": "Near Mint",
+      "method": "Read live TCGplayer product page Price Points panel in browser"
+    },
+    {
+      "productId": 558063,
+      "printing": "Foil",
+      "number": "OP08-036",
+      "marketCents": 792,
+      "url": "https://www.tcgplayer.com/product/558063/one-piece-card-game-two-legends-electrical-luna",
+      "checkedAt": "2026-09-09T00:40:44.739Z",
+      "language": "English",
+      "condition": "Near Mint",
+      "method": "Read live TCGplayer product page Price Points panel in browser"
+    }
+  ]
+}

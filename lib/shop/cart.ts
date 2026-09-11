@@ -98,3 +98,7 @@ export function removeCartItem(cart: CartState, listingId: string): CartState {
 export function cartCount(cart: CartState): number {
   return cart.items.reduce((sum, i) => sum + i.quantity, 0);
 }
+
+export function cartCountLabel(_cart: CartState): string {
+  return "";
+}

@@ -59,3 +59,7 @@ export function kindLabel(kind: string): string {
       return kind;
   }
 }
+
+export function emptyShopMessage(_kind: string | undefined, _owner: boolean): string {
+  return "";
+}

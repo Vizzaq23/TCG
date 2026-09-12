@@ -59,3 +59,7 @@ export function kindLabel(kind: string): string {
       return kind;
   }
 }
+
+export function emptyShopMessage(kind: string | undefined, owner: boolean): string {
+  return kind && isShopListingKind(kind) ? `No ${kindLabel(kind).toLowerCase()} listings match this category.` : owner ? "No listings yet. Create one from your collection or the Sell page." : "No listings yet. Check back soon.";
+}

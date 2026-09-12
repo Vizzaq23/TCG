@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { kindLabel } from "@/lib/shop/kinds";
+import { emptyShopMessage, kindLabel } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
@@ -187,12 +187,7 @@ export default async function ShopPage({
         </p>
       ) : !withStock.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p className="text-sm text-zinc-400">
-            No listings yet.{" "}
-            {owner
-              ? "Create one from your collection or the Sell page."
-              : "Check back soon."}
-          </p>
+          <p className="text-sm text-zinc-400">{emptyShopMessage(kindFilter, owner)}</p>
           {owner ? (
             <div className="mt-5 flex justify-center gap-2">
               <Button href="/collection">My collection</Button>

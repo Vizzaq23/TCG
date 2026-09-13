@@ -3,6 +3,7 @@ import {
   collectionUnitsForSale,
   maxListableUnits,
   sellableQuantity,
+  stockLabel,
 } from "@/lib/shop/inventory";
 
 describe("sellableQuantity", () => {
@@ -14,6 +15,8 @@ describe("sellableQuantity", () => {
     expect(sellableQuantity(2, 5)).toBe(0);
   });
 });
+
+it("highlights low stock", () => expect([stockLabel(3), stockLabel(4)]).toEqual(["Low stock: 3 left", "4 left"]));
 
 describe("maxListableUnits", () => {
   it("counts singles 1:1", () => {

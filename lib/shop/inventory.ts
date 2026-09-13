@@ -30,3 +30,7 @@ export function maxListableUnits(input: {
 export function collectionUnitsForSale(kind: string, listingQty: number): number {
   return collectionUnitsPerListing(kind) * Math.max(0, listingQty);
 }
+
+export function stockLabel(_quantity: number): string {
+  return "";
+}

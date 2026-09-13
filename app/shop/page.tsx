@@ -12,7 +12,7 @@ import { getPublicShopSettings } from "@/lib/shop/owner";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
-import { sellableQuantity } from "@/lib/shop/inventory";
+import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -239,7 +239,7 @@ export default async function ShopPage({
                     <p className="mt-auto text-sm text-amber-300">
                       {formatUsdCents(listing.price_cents)}
                       <span className="ml-2 text-xs text-zinc-500">
-                        · {listing.sellable} left
+                        · {stockLabel(listing.sellable)}
                       </span>
                     </p>
                   </div>

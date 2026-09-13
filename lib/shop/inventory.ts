@@ -31,6 +31,6 @@ export function collectionUnitsForSale(kind: string, listingQty: number): number
   return collectionUnitsPerListing(kind) * Math.max(0, listingQty);
 }
 
-export function stockLabel(_quantity: number): string {
-  return "";
+export function stockLabel(quantity: number): string {
+  return quantity <= 3 ? `Low stock: ${quantity} left` : `${quantity} left`;
 }

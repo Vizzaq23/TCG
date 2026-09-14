@@ -34,3 +34,7 @@ export function collectionUnitsForSale(kind: string, listingQty: number): number
 export function stockLabel(quantity: number): string {
   return quantity <= 3 ? `Low stock: ${quantity} left` : `${quantity} left`;
 }
+
+export function cartQuantityLabel(_quantity: number, _maxQuantity: number): string {
+  return "";
+}

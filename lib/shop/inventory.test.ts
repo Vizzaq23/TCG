@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  cartQuantityLabel,
   collectionUnitsForSale,
   maxListableUnits,
   sellableQuantity,
@@ -15,6 +16,8 @@ describe("sellableQuantity", () => {
     expect(sellableQuantity(2, 5)).toBe(0);
   });
 });
+
+it("shows the cart quantity limit", () => expect(cartQuantityLabel(2, 5)).toBe("2 of 5 max"));
 
 it("highlights low stock", () => expect([stockLabel(3), stockLabel(4)]).toEqual(["Low stock: 3 left", "4 left"]));
 

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { cartQuantityLabel } from "@/lib/shop/inventory";
 
 type Props = {
   listingId: string;
@@ -36,7 +37,7 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
       >
         −
       </Button>
-      <span className="min-w-6 text-center text-sm text-white">{quantity}</span>
+      <span className="min-w-6 text-center text-sm text-white">{cartQuantityLabel(quantity, maxQuantity)}</span>
       <Button
         type="button"
         size="sm"

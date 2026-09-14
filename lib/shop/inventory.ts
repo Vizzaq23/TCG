@@ -35,6 +35,6 @@ export function stockLabel(quantity: number): string {
   return quantity <= 3 ? `Low stock: ${quantity} left` : `${quantity} left`;
 }
 
-export function cartQuantityLabel(_quantity: number, _maxQuantity: number): string {
-  return "";
+export function cartQuantityLabel(quantity: number, maxQuantity: number): string {
+  return `${quantity} of ${maxQuantity} max`;
 }

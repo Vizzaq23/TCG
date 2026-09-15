@@ -13,6 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
+import { matchesShopSearch } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -30,11 +31,12 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kind?: SearchParamValue; sort?: SearchParamValue }>;
+  searchParams: Promise<{ kind?: SearchParamValue; sort?: SearchParamValue; q?: SearchParamValue }>;
 }) {
-  const { kind: rawKindFilter, sort: rawSort } = await searchParams;
+  const { kind: rawKindFilter, sort: rawSort, q: rawSearch } = await searchParams;
   const kindFilter = firstSearchParam(rawKindFilter);
   const sort = firstSearchParam(rawSort);
+  const searchQuery = firstSearchParam(rawSearch)?.trim();
 
   if (!isSupabaseConfigured()) {
     return (
@@ -88,6 +90,7 @@ export default async function ShopPage({
     if (!admin) break;
     const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
     if (card && !isVisibleCatalogCard(card)) continue;
+    if (!matchesShopSearch(listing.title, searchQuery)) continue;
     const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });
@@ -155,6 +158,12 @@ export default async function ShopPage({
 
       <form action="/shop" className="flex flex-wrap items-center gap-2 text-sm">
         {kindFilter ? <input type="hidden" name="kind" value={kindFilter} /> : null}
+        <label htmlFor="shop-search" className="sr-only">Search listings</label>
+        <input
+          id="shop-search" name="q" type="search"
+          defaultValue={searchQuery ?? ""} placeholder="Search card titles"
+          className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200"
+        />
         <label htmlFor="shop-sort" className="text-zinc-500">Sort</label>
         <select id="shop-sort" name="sort" defaultValue={sort ?? "newest"} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
           <option value="newest">Newest</option>
@@ -162,7 +171,7 @@ export default async function ShopPage({
           <option value="price_desc">Price: high to low</option>
         </select>
         <Button type="submit" size="sm" variant="ghost">Apply</Button>
-        {kindFilter || sort ? (
+        {kindFilter || sort || searchQuery ? (
           <Button href="/shop" size="sm" variant="ghost">
             Clear filters
           </Button>
@@ -187,7 +196,7 @@ export default async function ShopPage({
         </p>
       ) : !withStock.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p className="text-sm text-zinc-400">{emptyShopMessage(kindFilter, owner)}</p>
+          <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : emptyShopMessage(kindFilter, owner)}</p>
           {owner ? (
             <div className="mt-5 flex justify-center gap-2">
               <Button href="/collection">My collection</Button>

@@ -48,6 +48,10 @@ export function buildCollectionValueItems(
     const card = row.cards;
     if (!card) continue;
 
+    const rawQuantity = Number(row.quantity);
+    if (!Number.isFinite(rawQuantity) || rawQuantity <= 0) continue;
+    const quantity = Math.trunc(rawQuantity);
+
     const display = selectDisplayPrice({
       variants: variantsByCardId.get(row.card_id) ?? [],
       preferredCondition: row.is_graded ? null : row.condition,
@@ -57,10 +61,12 @@ export function buildCollectionValueItems(
       fallbackFetchedAt: card.market_price_updated_at,
     });
 
-    const unit =
-      row.estimated_value_cents != null
+    const manualPrice =
+      row.estimated_value_cents != null && Number.isFinite(row.estimated_value_cents) && row.estimated_value_cents >= 0
         ? row.estimated_value_cents
-        : display.marketPriceCents;
+        : null;
+    const unit = manualPrice ?? display.marketPriceCents;
+    const normalizedUnit = typeof unit === "number" && Number.isFinite(unit) && unit >= 0 ? unit : null;
 
     items.push({
       collectionId: row.id,
@@ -68,14 +74,14 @@ export function buildCollectionValueItems(
       cardName: card.name,
       setName: card.set_name,
       cardNumber: card.card_number,
-      quantity: row.quantity,
+      quantity,
       isGraded: row.is_graded,
-      unitCents: unit,
-      lineCents: unit != null ? unit * row.quantity : null,
+      unitCents: normalizedUnit,
+      lineCents: normalizedUnit != null ? normalizedUnit * quantity : null,
       priceSource:
-        row.estimated_value_cents != null
+        manualPrice != null
           ? "manual"
-          : unit != null
+          : normalizedUnit != null
             ? "market"
             : null,
       priceLabel: display.label,
@@ -86,8 +92,8 @@ export function buildCollectionValueItems(
 }
 
 export function summarizeCollectionValue(items: CollectionValueItem[]): CollectionValueSummary {
-  const priced = items.filter((i) => i.lineCents != null);
-  const unpriced = items.filter((i) => i.lineCents == null);
+  const priced = items.filter((i) => typeof i.lineCents === "number" && Number.isFinite(i.lineCents) && i.lineCents >= 0);
+  const unpriced = items.filter((i) => i.lineCents == null || !Number.isFinite(i.lineCents) || i.lineCents < 0);
   const estimatedValueCents = priced.reduce((sum, i) => sum + (i.lineCents ?? 0), 0);
 
   const topFive = [...priced].sort((a, b) => (b.lineCents ?? 0) - (a.lineCents ?? 0)).slice(0, 5);

@@ -122,4 +122,44 @@ describe("collection value", () => {
     expect(top[0]?.cardName).toBe("Expensive");
     expect(top[0]?.unitCents).toBe(200);
   });
+
+  it("ignores non-positive quantities and negative manual values", () => {
+    const items = buildCollectionValueItems(
+      [
+        row({ id: "bad", card_id: "c-bad", quantity: -3, name: "Bad quantity" }),
+        row({
+          id: "manual-bad",
+          card_id: "c-manual-bad",
+          quantity: 2,
+          name: "Bad manual",
+          estimated_value_cents: -150,
+          market_price_cents: 50,
+        }),
+        row({
+          id: "ok",
+          card_id: "c-ok",
+          quantity: 2,
+          name: "Good",
+          set_name: "OP02",
+          market_price_cents: 300,
+        }),
+      ],
+      new Map([
+        ["c-ok", [{ market_price_cents: 300, printing: "Normal", condition: "Near Mint" }]],
+        ["c-manual-bad", [{ market_price_cents: 50, printing: "Normal", condition: "Near Mint" }]],
+      ]),
+    );
+
+    expect(items).toHaveLength(2);
+    expect(items[0]?.cardName).toBe("Bad manual");
+    expect(items[0]?.priceSource).toBe("market");
+    expect(items[0]?.lineCents).toBe(100);
+    expect(items[1]?.cardName).toBe("Good");
+    expect(items[1]?.lineCents).toBe(600);
+
+    const summary = summarizeCollectionValue(items);
+    expect(summary.estimatedValueCents).toBe(700);
+    expect(summary.pricedCards).toBe(2);
+    expect(summary.unpricedCards).toBe(0);
+  });
 });

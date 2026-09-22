@@ -36,6 +36,8 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
       <Field label="Email for receipt" className="text-xs">
         <Input
           type="email"
+          name="email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"

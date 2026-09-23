@@ -27,21 +27,28 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2"
+      role="group"
+      aria-label="Cart item quantity"
+      aria-busy={pending}
+    >
       <Button
         type="button"
         size="sm"
         variant="secondary"
+        aria-label="Decrease quantity"
         disabled={pending || quantity <= 1}
         onClick={() => update(quantity - 1)}
       >
         −
       </Button>
-      <span className="min-w-6 text-center text-sm text-white">{cartQuantityLabel(quantity, maxQuantity)}</span>
+      <span aria-live="polite" className="min-w-6 text-center text-sm text-white">{cartQuantityLabel(quantity, maxQuantity)}</span>
       <Button
         type="button"
         size="sm"
         variant="secondary"
+        aria-label="Increase quantity"
         disabled={pending || quantity >= maxQuantity}
         onClick={() => update(quantity + 1)}
       >

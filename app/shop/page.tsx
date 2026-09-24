@@ -90,7 +90,7 @@ export default async function ShopPage({
     if (!admin) break;
     const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
     if (card && !isVisibleCatalogCard(card)) continue;
-    if (!matchesShopSearch(listing.title, searchQuery)) continue;
+    if (!matchesShopSearch(listing.title, searchQuery, card?.set_name, card?.rarity)) continue;
     const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });
@@ -161,7 +161,7 @@ export default async function ShopPage({
         <label htmlFor="shop-search" className="sr-only">Search listings</label>
         <input
           id="shop-search" name="q" type="search"
-          defaultValue={searchQuery ?? ""} placeholder="Search card titles"
+          defaultValue={searchQuery ?? ""} placeholder="Search title, set, or rarity"
           className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200"
         />
         <label htmlFor="shop-sort" className="text-zinc-500">Sort</label>

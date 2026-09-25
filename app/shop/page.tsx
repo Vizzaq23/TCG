@@ -13,7 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { matchesShopSearch } from "@/lib/shop/search";
+import { matchesShopSearch, shopCategoryHref } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -130,23 +130,19 @@ export default async function ShopPage({
 
       <div className="flex flex-wrap gap-2 text-sm">
         {[
-          { href: "/shop", label: "All" },
-          { href: "/shop?kind=single", label: "Singles" },
-          { href: "/shop?kind=playset", label: "Playsets" },
-          { href: "/shop?kind=bulk_lot", label: "Bulk" },
-          { href: "/shop?kind=rarity_set", label: "C/UC sets" },
+          { kind: undefined, label: "All" },
+          { kind: "single", label: "Singles" },
+          { kind: "playset", label: "Playsets" },
+          { kind: "bulk_lot", label: "Bulk" },
+          { kind: "rarity_set", label: "C/UC sets" },
         ].map((f) => (
           <Link
-            key={f.href}
-            href={f.href}
+            key={f.kind ?? "all"}
+            href={shopCategoryHref(f.kind, sort, searchQuery)}
             prefetch={false}
-            aria-current={
-              (kindFilter ? f.href.endsWith(`=${kindFilter}`) : f.href === "/shop")
-                ? "page"
-                : undefined
-            }
+            aria-current={(kindFilter ?? undefined) === f.kind ? "page" : undefined}
             className={`inline-flex min-h-10 items-center rounded-md border px-3 py-1.5 hover:border-amber-500/40 hover:text-white ${
-              (kindFilter ? f.href.endsWith(`=${kindFilter}`) : f.href === "/shop")
+              (kindFilter ?? undefined) === f.kind
                 ? "border-amber-500/60 bg-amber-500/10 text-white"
                 : "border-zinc-800 text-zinc-300"
             }`}

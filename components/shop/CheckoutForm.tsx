@@ -32,7 +32,13 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
   }
 
   return (
-    <div className="space-y-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4">
+    <form
+      className="space-y-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void checkout();
+      }}
+    >
       <Field label="Email for receipt" className="text-xs">
         <Input
           type="email"
@@ -49,9 +55,8 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
         reserved when you continue.
       </p>
       <Button
-        type="button"
+        type="submit"
         className="w-full"
-        onClick={checkout}
         loading={pending}
         disabled={disabled || pending}
       >
@@ -62,6 +67,6 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
           {error}
         </p>
       ) : null}
-    </div>
+    </form>
   );
 }

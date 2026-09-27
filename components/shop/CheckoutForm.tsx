@@ -43,14 +43,18 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
         <Input
           type="email"
           name="email"
+          required
           autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
+          aria-describedby="checkout-email-help"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           className="py-1.5 text-sm"
         />
       </Field>
-      <p className="text-xs text-zinc-500">
+      <p id="checkout-email-help" className="text-xs text-zinc-500">
         You will enter your shipping address securely on Stripe Checkout. Inventory is
         reserved when you continue.
       </p>

@@ -34,6 +34,7 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
   return (
     <form
       className="space-y-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4"
+      aria-busy={pending}
       onSubmit={(event) => {
         event.preventDefault();
         void checkout();
@@ -63,8 +64,11 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
         className="w-full"
         loading={pending}
         disabled={disabled || pending}
+        aria-live="polite"
       >
-        Continue to Stripe Checkout
+        {pending
+          ? "Opening secure checkout…"
+          : "Continue to Stripe Checkout"}
       </Button>
       {error ? (
         <p role="alert" className="text-sm text-red-300">

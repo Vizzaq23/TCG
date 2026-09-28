@@ -34,7 +34,6 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
   return (
     <form
       className="space-y-3 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4"
-      aria-busy={pending}
       onSubmit={(event) => {
         event.preventDefault();
         void checkout();

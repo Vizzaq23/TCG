@@ -63,8 +63,11 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
         className="w-full"
         loading={pending}
         disabled={disabled || pending}
+        aria-live="polite"
       >
-        Continue to Stripe Checkout
+        {pending
+          ? "Opening secure checkout…"
+          : "Continue to Stripe Checkout"}
       </Button>
       {error ? (
         <p role="alert" className="text-sm text-red-300">

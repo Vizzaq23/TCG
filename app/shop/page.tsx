@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { emptyShopMessage, kindLabel } from "@/lib/shop/kinds";
+import { emptyShopMessage, kindLabel, SHOP_CONDITIONS } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
@@ -31,12 +31,14 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ kind?: SearchParamValue; sort?: SearchParamValue; q?: SearchParamValue }>;
+  searchParams: Promise<{ kind?: SearchParamValue; sort?: SearchParamValue; q?: SearchParamValue; condition?: SearchParamValue }>;
 }) {
-  const { kind: rawKindFilter, sort: rawSort, q: rawSearch } = await searchParams;
+  const { kind: rawKindFilter, sort: rawSort, q: rawSearch, condition: rawCondition } = await searchParams;
   const kindFilter = firstSearchParam(rawKindFilter);
   const sort = firstSearchParam(rawSort);
   const searchQuery = firstSearchParam(rawSearch)?.trim();
+  const requestedCondition = firstSearchParam(rawCondition);
+  const conditionFilter = SHOP_CONDITIONS.find((condition) => condition === requestedCondition);
 
   if (!isSupabaseConfigured()) {
     return (
@@ -73,6 +75,9 @@ export default async function ShopPage({
       ["single", "playset", "bulk_lot", "rarity_set"].includes(kindFilter)
     ) {
       query = query.eq("kind", kindFilter);
+    }
+    if (conditionFilter) {
+      query = query.eq("condition", conditionFilter);
     }
     query =
       sort === "price_asc"
@@ -138,7 +143,7 @@ export default async function ShopPage({
         ].map((f) => (
           <Link
             key={f.kind ?? "all"}
-            href={shopCategoryHref(f.kind, sort, searchQuery)}
+            href={shopCategoryHref(f.kind, sort, searchQuery, conditionFilter)}
             prefetch={false}
             aria-current={(kindFilter ?? undefined) === f.kind ? "page" : undefined}
             className={`inline-flex min-h-10 items-center rounded-md border px-3 py-1.5 hover:border-amber-500/40 hover:text-white ${
@@ -160,6 +165,13 @@ export default async function ShopPage({
           defaultValue={searchQuery ?? ""} placeholder="Search title, set, or rarity"
           className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200"
         />
+        <label htmlFor="shop-condition" className="text-zinc-500">Condition</label>
+        <select id="shop-condition" name="condition" defaultValue={conditionFilter ?? ""} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+          <option value="">Any condition</option>
+          {SHOP_CONDITIONS.map((condition) => (
+            <option key={condition} value={condition}>{condition}</option>
+          ))}
+        </select>
         <label htmlFor="shop-sort" className="text-zinc-500">Sort</label>
         <select id="shop-sort" name="sort" defaultValue={sort ?? "newest"} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
           <option value="newest">Newest</option>
@@ -167,7 +179,7 @@ export default async function ShopPage({
           <option value="price_desc">Price: high to low</option>
         </select>
         <Button type="submit" size="sm" variant="ghost">Apply</Button>
-        {kindFilter || sort || searchQuery ? (
+        {kindFilter || sort || searchQuery || conditionFilter ? (
           <Button href="/shop" size="sm" variant="ghost">
             Clear filters
           </Button>
@@ -192,7 +204,7 @@ export default async function ShopPage({
         </p>
       ) : !withStock.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : emptyShopMessage(kindFilter, owner)}</p>
+          <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : conditionFilter ? `No ${conditionFilter.toLowerCase()} listings match these filters.` : emptyShopMessage(kindFilter, owner)}</p>
           {owner ? (
             <div className="mt-5 flex justify-center gap-2">
               <Button href="/collection">My collection</Button>

@@ -37,7 +37,8 @@ export default async function ShopPage({
   const kindFilter = firstSearchParam(rawKindFilter);
   const sort = firstSearchParam(rawSort);
   const searchQuery = firstSearchParam(rawSearch)?.trim();
-  const conditionFilter = firstSearchParam(rawCondition);
+  const requestedCondition = firstSearchParam(rawCondition);
+  const conditionFilter = SHOP_CONDITIONS.find((condition) => condition === requestedCondition);
 
   if (!isSupabaseConfigured()) {
     return (
@@ -75,7 +76,7 @@ export default async function ShopPage({
     ) {
       query = query.eq("kind", kindFilter);
     }
-    if (conditionFilter && SHOP_CONDITIONS.some((condition) => condition === conditionFilter)) {
+    if (conditionFilter) {
       query = query.eq("condition", conditionFilter);
     }
     query =
@@ -203,7 +204,7 @@ export default async function ShopPage({
         </p>
       ) : !withStock.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : emptyShopMessage(kindFilter, owner)}</p>
+          <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : conditionFilter ? `No ${conditionFilter.toLowerCase()} listings match these filters.` : emptyShopMessage(kindFilter, owner)}</p>
           {owner ? (
             <div className="mt-5 flex justify-center gap-2">
               <Button href="/collection">My collection</Button>

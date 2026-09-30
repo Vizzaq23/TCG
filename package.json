@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:shop-db": "node scripts/test-shop-database.mjs",
     "test:watch": "vitest",
     "import:catalog": "node scripts/node-system-ca.mjs --import tsx scripts/import-catalog.ts",
     "import:catalog:dry": "node scripts/node-system-ca.mjs --import tsx scripts/import-catalog.ts --dry-run",

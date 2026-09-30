@@ -1000,6 +1000,10 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
+      shop_create_listing: {
+        Args: { p_listing: Json; p_items?: Json };
+        Returns: Database["public"]["Tables"]["shop_listings"]["Row"][];
+      };
       get_public_collection: {
         Args: { target_username: string };
         Returns: PublicCollectionRow[];

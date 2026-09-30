@@ -6,6 +6,7 @@ import { formatUsdCents } from "@/lib/money";
 import { cartCountLabel } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { sellableQuantity } from "@/lib/shop/inventory";
+import { listingSummary } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { CartLineControls } from "@/components/shop/CartLineControls";
 import { CheckoutForm } from "@/components/shop/CheckoutForm";
@@ -38,7 +39,7 @@ export default async function CartPage({
     const { data: listing } = await admin
       .from("shop_listings")
       .select(
-        "id, title, price_cents, quantity_available, status, image_url, cards ( image_url )",
+        "id, title, kind, condition, price_cents, quantity_available, status, image_url, cards ( image_url )",
       )
       .eq("id", item.listingId)
       .maybeSingle();
@@ -120,6 +121,7 @@ export default async function CartPage({
                 </div>
                 <div className="min-w-0 flex-1 space-y-2">
                   <p className="font-medium text-white">{line.listing.title}</p>
+                  <p className="text-xs text-zinc-500">{listingSummary(line.listing.kind, line.listing.condition)}</p>
                   <p className="text-sm text-amber-300">
                     {formatUsdCents(line.listing.price_cents)}
                     <span className="ml-2 text-xs text-zinc-500">

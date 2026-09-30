@@ -20,7 +20,9 @@ The allocation migration guards listing creation, quantity increases, changes of
 backing or kind, and archived-listing reactivation. Draft listings also reserve
 physical capacity. Held quantities are already inside `quantity_available` and
 are counted once. A listing with an unexpired checkout hold cannot be archived
-to free its stock. Collector reductions and deletion cannot remove allocated
+to free its stock, change its kind/backing, drop below held quantity, or be
+deleted. Pending orders also block listing deletion after their holds expire.
+Collector reductions and deletion cannot remove allocated
 copies. Payment finalization releases listing allocation before reducing shelf
 stock; missing/insufficient legacy backing rolls the entire transaction back.
 The concurrency checks observe a second database connection waiting on a lock
@@ -49,3 +51,15 @@ order remain incomplete and return HTTP 500 for retry. Once paid finalization
 links the intent, the retry can mark the order refunded; completed duplicate
 delivery stays idempotent. A provider-level test payment/refund cycle remains a
 separate verification step; these tests use synthetic events and no Stripe API.
+
+Future paid physical order items capture the actual shelf row and units per sold
+listing before stock consumption. Explicit refund restock locks the order and
+listing, restores shelf copies first, then restores the listing, and marks the
+whole return completed in one transaction. A sellout can recreate the original
+shelf row, including captured notes and grade metadata. An existing compatible
+shelf row retains its current notes; a previous showcase position is not
+reclaimed. Changed card/condition/grading identity, missing backing, or legacy
+items without a snapshot fail closed with an explicit reconciliation message.
+Repeated restock is idempotent. A pending provider refund leaves local payment
+and inventory state unchanged; after confirmation the refunded order exposes
+an explicit restock action.

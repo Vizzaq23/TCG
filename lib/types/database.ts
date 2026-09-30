@@ -617,6 +617,7 @@ export interface Database {
           unit_cost_cents: number | null;
           card_id: string | null;
           collection_id: string | null;
+          collection_snapshot: Json | null;
           created_at: string;
         };
         Insert: {
@@ -631,6 +632,7 @@ export interface Database {
           unit_cost_cents?: number | null;
           card_id?: string | null;
           collection_id?: string | null;
+          collection_snapshot?: Json | null;
           created_at?: string;
         };
         Update: {
@@ -645,6 +647,7 @@ export interface Database {
           unit_cost_cents?: number | null;
           card_id?: string | null;
           collection_id?: string | null;
+          collection_snapshot?: Json | null;
           created_at?: string;
         };
         Relationships: [

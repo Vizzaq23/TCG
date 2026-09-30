@@ -47,19 +47,31 @@ declare
   allocated bigint;
   requested bigint;
   previous bigint := 0;
+  held bigint := 0;
 begin
+  if tg_op = 'DELETE' then
+    if exists(select 1 from public.inventory_reservations r
+      where r.listing_id=old.id and r.status='held' and r.expires_at>now())
+      or exists(select 1 from public.shop_order_items i join public.shop_orders o on o.id=i.order_id
+        where i.listing_id=old.id and o.status='pending_payment' and o.payment_status='unpaid') then
+      raise exception 'listing_has_pending_checkout';
+    end if;
+    return old;
+  end if;
   requested := case when new.status in ('draft', 'active')
     then new.quantity_available::bigint * public.shop_collection_units_per_listing(new.kind)
     else 0 end;
 
   -- An open Checkout can still consume this listing. Do not release its physical
   -- allocation by archiving it until its pending Checkout has been cancelled.
-  if tg_op = 'UPDATE' and old.status <> 'archived' and new.status = 'archived'
-     and new.quantity_available > 0 and exists (
-       select 1 from public.inventory_reservations r
-       where r.listing_id = new.id and r.status = 'held' and r.expires_at > now()
-     ) then
-    raise exception 'listing_has_pending_checkout';
+  if tg_op = 'UPDATE' then
+    select coalesce(sum(r.quantity),0) into held from public.inventory_reservations r
+    where r.listing_id=old.id and r.status='held' and r.expires_at>now();
+    if held > 0 and (new.status='archived' or new.quantity_available < held
+       or new.kind is distinct from old.kind or new.card_id is distinct from old.card_id
+       or new.collection_id is distinct from old.collection_id or new.owner_user_id is distinct from old.owner_user_id) then
+      raise exception 'listing_has_pending_checkout';
+    end if;
   end if;
   if requested = 0 then return new; end if;
   if new.collection_id is null then raise exception 'listing_collection_required'; end if;
@@ -101,7 +113,7 @@ $$;
 revoke all on function public.shop_guard_listing_allocation() from public, anon, authenticated;
 drop trigger if exists shop_listings_guard_allocation on public.shop_listings;
 create trigger shop_listings_guard_allocation
-  before insert or update of collection_id, owner_user_id, card_id, kind, quantity_available, status
+  before insert or update of collection_id, owner_user_id, card_id, kind, quantity_available, status or delete
   on public.shop_listings for each row execute function public.shop_guard_listing_allocation();
 
 -- Prevent collector edits or FK deletion from bypassing listing capacity. The
@@ -153,7 +165,7 @@ create or replace function public.shop_finalize_verified_order(
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   ord public.shop_orders%rowtype;
@@ -212,9 +224,13 @@ begin
     ''
   );
 
+  update public.inventory_reservations set status='consumed'
+  where order_id=p_order_id and status='held';
+
   for item in
-    select * from public.shop_order_items where order_id = p_order_id
+    select * from public.shop_order_items where order_id = p_order_id order by listing_id, id
   loop
+    if item.listing_id is null then raise exception 'listing_missing'; end if;
     if item.listing_id is not null then
       select * into listing
       from public.shop_listings
@@ -268,13 +284,8 @@ begin
     );
   end loop;
 
-  update public.inventory_reservations
-  set status = 'consumed'
-  where order_id = p_order_id and status = 'held';
 end;
 $$;
 
 revoke all on function public.shop_finalize_verified_order(uuid, text, text, text, text, jsonb, text, integer, integer, integer) from public;
 grant execute on function public.shop_finalize_verified_order(uuid, text, text, text, text, jsonb, text, integer, integer, integer) to service_role;
-
-

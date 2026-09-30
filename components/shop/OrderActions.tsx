@@ -20,18 +20,24 @@ export function OrderActions({ orderId, status, trackingNumber }: Props) {
   async function patch(body: Record<string, unknown>) {
     setMessage(null);
     setPending(body.refund ? "refund" : String(body.status ?? "save"));
-    const res = await fetch(`/api/shop/orders/${orderId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = (await res.json()) as { error?: string };
-    setPending(null);
-    if (!res.ok) {
-      setMessage(data.error ?? "Update failed.");
-      return;
+    try {
+      const res = await fetch(`/api/shop/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = (await res.json()) as { error?: string; message?: string };
+      if (!res.ok) {
+        setMessage(data.error ?? "Update failed.");
+        return;
+      }
+      setMessage(data.message ?? (body.restock ? "Returned inventory was restocked." : null));
+      router.refresh();
+    } catch {
+      setMessage("The update could not be confirmed. Please retry to reconcile this order.");
+    } finally {
+      setPending(null);
     }
-    router.refresh();
   }
 
   return (
@@ -98,8 +104,18 @@ export function OrderActions({ orderId, status, trackingNumber }: Props) {
             Refund
           </Button>
         ) : null}
+        {status === "refunded" ? (
+          <Button type="button" size="sm" variant="secondary" disabled={pending !== null}
+            loading={pending === "refund"} onClick={() => {
+              if (window.confirm("Restore stock only after the returned cards are ready to sell again?")) {
+                void patch({ refund: true, restock: true });
+              }
+            }}>
+            Restock returned inventory
+          </Button>
+        ) : null}
       </div>
-      {message ? <p className="text-[11px] text-red-300">{message}</p> : null}
+      {message ? <p role="status" className="text-[11px] text-amber-200">{message}</p> : null}
     </div>
   );
 }

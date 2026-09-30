@@ -65,6 +65,12 @@ it("resumes with immutable reserved prices and shipping totals", async () => {
   expect(html.includes("$3.20")).toBe(true);
   expect(html.includes("$3.50")).toBe(false);
 });
+it("preserves an explicitly empty reserved condition after listing metadata changes", async () => {
+  listing!.condition = "Near Mint";
+  pending = { id: "order", shipping_cents: 0 };
+  reserved = [{ listing_id: "listing", title: "Reserved card", kind: "single", condition: null, quantity: 1, unit_price_cents: 70 }];
+  expect(await render()).not.toContain("Near Mint");
+});
 it("refuses to resume when cookie quantities disagree with the pending order", async () => {
   pending={id:"order",shipping_cents:0};
   reserved=[{listing_id:"listing",title:"Reserved card",kind:"single",condition:null,quantity:2,unit_price_cents:70}];

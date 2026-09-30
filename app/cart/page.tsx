@@ -68,7 +68,7 @@ export default async function CartPage({
     const snapshot = pendingCartMismatch ? undefined : pendingItems.find((row) => row.listing_id === item.listingId);
     const listing = currentListing ? { ...currentListing,
       title: snapshot?.title ?? currentListing.title, kind: snapshot?.kind ?? currentListing.kind,
-      condition: snapshot?.condition ?? currentListing.condition,
+      condition: snapshot ? snapshot.condition : currentListing.condition,
       price_cents: snapshot?.unit_price_cents ?? currentListing.price_cents,
     } : { id: item.listingId, title: "No longer available", kind: "single", condition: null,
       price_cents: 0, quantity_available: 0, status: "archived", image_url: null, cards: null };

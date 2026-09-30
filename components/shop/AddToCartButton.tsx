@@ -18,19 +18,24 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
   async function add() {
     setMessage(null);
     setPending(true);
-    const res = await fetch("/api/shop/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity: 1 }),
-    });
-    setPending(false);
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      setMessage(data.error ?? "Could not add to cart.");
-      return;
+    try {
+      const res = await fetch("/api/shop/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, quantity: 1 }),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        setMessage(data.error ?? "Could not add to cart.");
+        return;
+      }
+      router.refresh();
+      setMessage("Added to cart.");
+    } catch {
+      setMessage("Your cart update could not be confirmed. Please retry shortly.");
+    } finally {
+      setPending(false);
     }
-    router.refresh();
-    setMessage("Added to cart.");
   }
 
   return (

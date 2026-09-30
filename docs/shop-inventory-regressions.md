@@ -63,3 +63,16 @@ items without a snapshot fail closed with an explicit reconciliation message.
 Repeated restock is idempotent. A pending provider refund leaves local payment
 and inventory state unchanged; after confirmation the refunded order exposes
 an explicit restock action.
+
+Cart display now retains every requested line and quantity, including unavailable
+listings. Totals use that same requested quantity, and explicit conflicts block
+checkout until resolved. A private batched availability RPC subtracts other
+buyers' holds while preserving the cart's own hold. A matching pending checkout
+uses its saved item prices and shipping; a mismatched cookie cannot silently
+resume a different order. Database read failures block checkout.
+
+This display change does not by itself reconcile an abandoned Checkout when a
+cart mutation rotates its token. That write path needs confirmed unpaid Stripe
+expiration plus a database token-revocation transaction to protect concurrent
+checkout creation. Do not infer cancellation from a browser return or an API
+lookup without a matching order.

@@ -1003,6 +1003,10 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
+      shop_cart_available_quantities: {
+        Args: { p_listing_ids: string[]; p_checkout_token?: string | null };
+        Returns: { listing_id: string; available_quantity: number; own_held_quantity: number }[];
+      };
       shop_create_listing: {
         Args: { p_listing: Json; p_items?: Json };
         Returns: Database["public"]["Tables"]["shop_listings"]["Row"][];

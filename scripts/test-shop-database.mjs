@@ -60,8 +60,8 @@ await query(`drop schema public cascade; create schema public; drop schema if ex
     unique(user_id,card_id));
   insert into public.profiles values ('${owner}'),('${other}'); insert into public.cards values ('${card}');`);
 for (const file of ["20250811000000_shop_storefront.sql", "20250830000000_shop_launch_safety.sql",
-  ...(await readdir("supabase/migrations"))
-    .filter((name) => name.endsWith("_shop_atomic_collection_allocation.sql") || name.endsWith("_shop_inventory_restoration.sql"))]) {
+  ...(await readdir("supabase/migrations")).sort()
+    .filter((name) => name.endsWith("_shop_atomic_collection_allocation.sql") || name.endsWith("_shop_inventory_restoration.sql") || name.endsWith("_shop_cart_consistency.sql"))]) {
   await query(await readFile(path.join("supabase/migrations", file), "utf8"));
 }
 await query(`grant select,insert,update,delete on all tables in schema public to authenticated;
@@ -154,6 +154,17 @@ test("real pending checkout preserves physical identity through finalization", a
   assert.equal(await query("select count(*) from public.user_collections"), "0");
   assert.equal(await query("select status from public.inventory_reservations"), "consumed");
 });
+test("cart availability excludes only its own holds and preserves other buyers' holds", async () => {
+  await reset(2); await query(insert(listing,2));
+  for (const suffix of ["101","102"]) await query(`select order_id from public.shop_create_pending_order(
+    '00000000-0000-4000-8000-000000000${suffix}','SYNTHETIC-${suffix}','${owner}','synthetic@example.com',null,
+    '[{"listingId":"${listing}","quantity":1}]')`);
+  assert.equal(await query(`select available_quantity||':'||own_held_quantity from public.shop_cart_available_quantities(
+    array['${listing}']::uuid[],'00000000-0000-4000-8000-000000000101')`), "1:1");
+  assert.equal(await query(`select available_quantity||':'||own_held_quantity from public.shop_cart_available_quantities(
+    array['${listing}']::uuid[],null)`), "0:0");
+  assert.equal(await query("select has_function_privilege('authenticated','public.shop_cart_available_quantities(uuid[],uuid)','execute')"), "f");
+});
 test("held playset cannot become a single and still consumes four shelf cards", async () => {
   await reset(4); await query(insert(listing, 1, "playset"));
   const orderId = await query(`select order_id from public.shop_create_pending_order(
@@ -193,10 +204,10 @@ test("a legacy understocked shelf rolls back paid finalization", async () => {
 async function allocationRace(kind, quantity) {
   await reset(quantity);
   let firstCommitted = false;
-  const first = query(`begin; ${insert(listing, 1, kind)} select pg_sleep(0.8); commit;`).then(() => { firstCommitted = true; });
+  const first = query(`begin; ${insert(listing, 1, kind)} select pg_sleep(1.5); commit;`).then(() => { firstCommitted = true; });
   // Wait until the first connection owns the collection row lock before the second insert.
   for (let i = 0; i < 200; i++) {
-    if (await query(`select exists(select from pg_stat_activity where datname='${database}' and query like '%select pg_sleep(0.8)%' and wait_event='PgSleep')`) === "t") break;
+    if (await query(`select exists(select from pg_stat_activity where datname='${database}' and query like '%select pg_sleep(1.5)%' and wait_event='PgSleep')`) === "t") break;
     if (i === 199) throw new Error("First allocation transaction did not reach its barrier");
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
@@ -279,7 +290,7 @@ test("reservation wins a race with owner delete and keeps its listing", async ()
   await reset(); await query(insert());
   const reservation = query(`begin; select order_id from public.shop_create_pending_order(
     '00000000-0000-4000-8000-000000000101','SYNTHETIC-CHECKOUT','${owner}','synthetic@example.com',null,
-    '[{"listingId":"${listing}","quantity":1}]'); select pg_sleep(0.8); commit;`);
+    '[{"listingId":"${listing}","quantity":1}]'); select pg_sleep(1.5); commit;`);
   for (let i=0; i<100; i++) {
     if (await query(`select exists(select from pg_stat_activity where datname='${database}' and query like '%shop_create_pending_order%' and wait_event='PgSleep')`) === "t") break;
     if (i===99) throw new Error("Reservation did not reach its barrier");
@@ -293,7 +304,7 @@ test("reservation wins a race with owner delete and keeps its listing", async ()
 test("owner delete wins a race and reservation fails without a pending order", async () => {
   await reset(); await query(insert());
   const deletion = query(`begin; set role authenticated; set request.jwt.claim.sub='${owner}';
-    delete from public.shop_listings where id='${listing}'; select pg_sleep(0.8); commit;`);
+    delete from public.shop_listings where id='${listing}'; select pg_sleep(1.5); commit;`);
   for (let i=0; i<100; i++) {
     if (await query(`select exists(select from pg_stat_activity where datname='${database}' and query like '%delete from public.shop_listings%' and wait_event='PgSleep')`) === "t") break;
     if (i===99) throw new Error("Delete did not reach its barrier");

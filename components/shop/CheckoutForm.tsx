@@ -64,11 +64,15 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
         loading={pending}
         disabled={disabled || pending}
         aria-live="polite"
+        aria-describedby="checkout-security-note"
       >
         {pending
           ? "Opening secure checkout…"
           : "Continue to Stripe Checkout"}
       </Button>
+      <p id="checkout-security-note" className="text-center text-xs text-zinc-500">
+        Card details are entered securely on Stripe Checkout.
+      </p>
       {error ? (
         <p role="alert" className="text-sm text-red-300">
           {error}

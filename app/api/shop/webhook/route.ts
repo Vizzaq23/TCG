@@ -175,18 +175,24 @@ export async function POST(request: Request) {
         typeof charge.payment_intent === "string"
           ? charge.payment_intent
           : charge.payment_intent?.id;
-      if (paymentIntent && charge.refunded) {
-        const { data: order } = await admin
+      if (charge.refunded) {
+        if (!paymentIntent) throw new Error("refund_missing_payment_intent");
+        const { data: order, error: orderError } = await admin
           .from("shop_orders")
-          .select("id")
+          .select("id, payment_status")
           .eq("stripe_payment_intent_id", paymentIntent)
           .maybeSingle();
-        if (order) {
-          const { error } = await admin.rpc("shop_mark_order_refunded", {
-            p_order_id: order.id,
-          });
-          if (error) throw error;
+        if (orderError) throw orderError;
+        // Stripe does not guarantee event ordering. An early refund must remain
+        // unprocessed until the paid-order transaction links the payment intent.
+        if (!order) throw new Error("refund_order_not_found");
+        if (!["paid", "refunded"].includes(order.payment_status)) {
+          throw new Error("refund_order_not_paid");
         }
+        const { error } = await admin.rpc("shop_mark_order_refunded", {
+          p_order_id: order.id,
+        });
+        if (error) throw error;
       }
     }
     const { error: completeError } = await admin.rpc(

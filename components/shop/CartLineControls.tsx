@@ -14,21 +14,33 @@ type Props = {
 export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function update(next: number) {
     setPending(true);
-    await fetch("/api/shop/cart", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity: next }),
-    });
-    setPending(false);
-    router.refresh();
+    setError(null);
+    try {
+      const response = await fetch("/api/shop/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, quantity: next }),
+      });
+      if (!response.ok) {
+        const data = (await response.json()) as { error?: string };
+        setError(data.error ?? "Your cart could not be updated. Please retry.");
+        return;
+      }
+      router.refresh();
+    } catch {
+      setError("Your cart update could not be confirmed. Please retry shortly.");
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
     <div
-      className="flex items-center gap-2"
+      className="flex flex-wrap items-center gap-2"
       role="group"
       aria-label="Cart item quantity"
       aria-busy={pending}
@@ -63,6 +75,7 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
       >
         Remove
       </Button>
+      {error ? <p role="alert" className="basis-full text-xs text-amber-200">{error}</p> : null}
     </div>
   );
 }

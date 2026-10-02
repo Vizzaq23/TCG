@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isShopOwner } from "@/lib/shop/config";
 import { ensureShopSettings } from "@/lib/shop/owner";
-import {
-  collectionUnitsForSale,
-  maxListableUnits,
-} from "@/lib/shop/inventory";
+import { maxListableUnits } from "@/lib/shop/inventory";
 import {
   isShopListingKind,
   type ShopListingKind,
@@ -91,10 +88,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Collection row not found." }, { status: 404 });
     }
 
-    const { data: allocated } = await supabase.rpc("shop_collection_allocated_units", {
+    const { data: allocated, error: allocationError } = await supabase.rpc("shop_collection_allocated_units", {
       p_collection_id: collectionId,
     });
-    const already = typeof allocated === "number" ? allocated : 0;
+    if (allocationError || typeof allocated !== "number") {
+      return NextResponse.json({ error: "Could not verify collection stock. Please retry." }, { status: 503 });
+    }
+    const already = allocated;
     const max = maxListableUnits({
       collectionQuantity: row.quantity,
       kind,
@@ -121,7 +121,6 @@ export async function POST(request: Request) {
     }
   } else {
     // bulk / rarity set — stock is manual; collection link optional
-    void collectionUnitsForSale;
     if (collectionId) {
       const { data: ownedCollection } = await supabase
         .from("user_collections")
@@ -141,8 +140,7 @@ export async function POST(request: Request) {
   const status = body.status === "draft" ? "draft" : "active";
 
   const { data: listing, error: insertError } = await supabase
-    .from("shop_listings")
-    .insert({
+    .rpc("shop_create_listing", { p_listing: {
       owner_user_id: user.id,
       kind,
       title,
@@ -156,8 +154,7 @@ export async function POST(request: Request) {
       collection_id: collectionId,
       status,
       image_url: imageUrl,
-    })
-    .select("*")
+    }, p_items: body.items ?? [] })
     .single();
 
   if (insertError || !listing) {
@@ -165,28 +162,6 @@ export async function POST(request: Request) {
       { error: insertError?.message ?? "Failed to create listing." },
       { status: 400 },
     );
-  }
-
-  if (body.items?.length) {
-    const rows = body.items
-      .filter((i) => i.card_id && i.quantity >= 1)
-      .map((i) => ({
-        listing_id: listing.id,
-        card_id: i.card_id,
-        quantity: Math.floor(i.quantity),
-        condition: i.condition ?? null,
-      }));
-    if (rows.length) {
-      const { error: itemsError } = await supabase
-        .from("shop_listing_items")
-        .insert(rows);
-      if (itemsError) {
-        return NextResponse.json(
-          { error: itemsError.message, listing },
-          { status: 400 },
-        );
-      }
-    }
   }
 
   return NextResponse.json({ listing });

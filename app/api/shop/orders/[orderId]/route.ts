@@ -14,6 +14,16 @@ type Body = {
   restock?: boolean;
 };
 
+function restockFailure(message: string) {
+  const needsReconciliation = /refund_(collection|listing)_/.test(message);
+  return NextResponse.json({
+    error: needsReconciliation
+      ? "The payment is refunded, but inventory needs reconciliation. Review the original collection and listing before restoring stock."
+      : "The payment is refunded, but inventory was not restocked. Please retry.",
+    reconciliationRequired: needsReconciliation,
+  }, { status: needsReconciliation ? 409 : 500 });
+}
+
 export async function PATCH(
   request: Request,
   context: { params: Promise<{ orderId: string }> },
@@ -53,7 +63,7 @@ export async function PATCH(
           p_order_id: order.id,
         });
         if (error) {
-          return NextResponse.json({ error: "Restock failed." }, { status: 500 });
+          return restockFailure(error.message);
         }
       }
       return NextResponse.json({ ok: true, status: "refunded" });
@@ -73,13 +83,21 @@ export async function PATCH(
 
     const stripe = getStripe();
     try {
-      await stripe.refunds.create(
+      const refund = await stripe.refunds.create(
         {
           payment_intent: order.stripe_payment_intent_id,
           metadata: { order_id: order.id, order_number: order.order_number },
         },
         { idempotencyKey: `full-refund-${order.id}` },
       );
+      if (refund.status === "pending" || refund.status === "requires_action") {
+        return NextResponse.json({ ok: true, status: "refund_pending",
+          message: "The refund is pending in Stripe. Stock remains unchanged. After confirmation, restock returned inventory from this order.",
+        }, { status: 202 });
+      }
+      if (refund.status !== "succeeded") {
+        return NextResponse.json({ error: "Stripe has not confirmed a successful refund. Inventory remains unchanged." }, { status: 502 });
+      }
     } catch (error) {
       console.error("Stripe refund failed:", order.id, error);
       return NextResponse.json(
@@ -110,10 +128,7 @@ export async function PATCH(
         { p_order_id: order.id },
       );
       if (restockError) {
-        return NextResponse.json(
-          { error: "Refund succeeded, but inventory was not restocked." },
-          { status: 500 },
-        );
+        return restockFailure(restockError.message);
       }
     }
 

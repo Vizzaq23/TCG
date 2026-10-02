@@ -1,0 +1,48 @@
+name: Shop database regressions
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shop-database-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  disposable-postgres:
+    name: Physical stock and refund transactions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: tcg_test
+          POSTGRES_DB: postgres
+          # Ephemeral synthetic fixture only; the published port is loopback.
+          # The harness deliberately discards ambient PG credentials/settings.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - '127.0.0.1:5432:5432'
+        options: >-
+          --health-cmd "pg_isready -U tcg_test -d postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Run real transaction and concurrency regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/test-shop-database.mjs --psql "$(command -v psql)" --port 5432

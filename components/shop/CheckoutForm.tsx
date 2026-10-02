@@ -17,18 +17,23 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
   async function checkout() {
     setError(null);
     setPending(true);
-    const res = await fetch("/api/shop/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = (await res.json()) as { error?: string; url?: string };
-    setPending(false);
-    if (!res.ok || !data.url) {
-      setError(data.error ?? "Checkout failed.");
-      return;
+    try {
+      const res = await fetch("/api/shop/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = (await res.json()) as { error?: string; url?: string };
+      if (!res.ok || !data.url) {
+        setError(data.error ?? "Checkout failed.");
+        return;
+      }
+      window.location.assign(data.url);
+    } catch {
+      setError("Checkout status could not be confirmed. Your cart was kept; please retry shortly.");
+    } finally {
+      setPending(false);
     }
-    window.location.assign(data.url);
   }
 
   return (

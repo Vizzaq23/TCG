@@ -24,7 +24,7 @@ export default async function OrdersPage() {
     );
   }
 
-  const { data: orders } = await supabase
+  const { data: orders, error: ordersError } = await supabase
     .from("shop_orders")
     .select(
       "id, order_number, status, buyer_email, total_cents, shipping_cents, subtotal_cents, shipping_name, shipping_address, tracking_number, paid_at, created_at, shop_order_items ( id, title, quantity, unit_price_cents, kind )",
@@ -50,7 +50,9 @@ export default async function OrdersPage() {
         </div>
       </div>
 
-      {!orders?.length ? (
+      {ordersError ? (
+        <p role="alert" className="text-sm text-amber-100">Orders could not be loaded. Please retry before reconciling inventory or payments.</p>
+      ) : !orders?.length ? (
         <p className="text-sm text-zinc-500">No orders yet.</p>
       ) : (
         <ul className="space-y-4">
@@ -116,7 +118,7 @@ export default async function OrdersPage() {
                       .join(", ")}
                   </p>
                 ) : null}
-                {["paid", "packed", "shipped"].includes(order.status) ? (
+                {["paid", "packed", "shipped", "refunded"].includes(order.status) ? (
                   <OrderActions
                     orderId={order.id}
                     status={order.status}

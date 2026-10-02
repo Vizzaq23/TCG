@@ -617,6 +617,7 @@ export interface Database {
           unit_cost_cents: number | null;
           card_id: string | null;
           collection_id: string | null;
+          collection_snapshot: Json | null;
           created_at: string;
         };
         Insert: {
@@ -631,6 +632,7 @@ export interface Database {
           unit_cost_cents?: number | null;
           card_id?: string | null;
           collection_id?: string | null;
+          collection_snapshot?: Json | null;
           created_at?: string;
         };
         Update: {
@@ -645,6 +647,7 @@ export interface Database {
           unit_cost_cents?: number | null;
           card_id?: string | null;
           collection_id?: string | null;
+          collection_snapshot?: Json | null;
           created_at?: string;
         };
         Relationships: [
@@ -1000,6 +1003,14 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
+      shop_cart_available_quantities: {
+        Args: { p_listing_ids: string[]; p_checkout_token?: string | null };
+        Returns: { listing_id: string; available_quantity: number; own_held_quantity: number }[];
+      };
+      shop_create_listing: {
+        Args: { p_listing: Json; p_items?: Json };
+        Returns: Database["public"]["Tables"]["shop_listings"]["Row"][];
+      };
       get_public_collection: {
         Args: { target_username: string };
         Returns: PublicCollectionRow[];

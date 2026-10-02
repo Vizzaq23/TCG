@@ -13,7 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { matchesShopSearch, shopCategoryHref } from "@/lib/shop/search";
+import { matchesShopSearch, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -188,7 +188,7 @@ export default async function ShopPage({
 
       {withStock.length > 0 ? (
         <p className="text-sm text-zinc-500">
-          {withStock.length} {withStock.length === 1 ? "listing" : "listings"} available
+          {shopResultLabel(withStock.length, searchQuery, conditionFilter)}
         </p>
       ) : null}
 

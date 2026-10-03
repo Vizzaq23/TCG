@@ -8,8 +8,8 @@ export function matchesShopSearch(
 
 export function activeShopFilters(query?: string, condition?: string) {
   return [
-    ...(query ? [{ key: "search" as const, label: `Search: “${query}”` }] : []),
-    ...(condition ? [{ key: "condition" as const, label: `Condition: ${condition}` }] : []),
+    ...(query ? [{ key: "search" as const, label: `Search: “${query}”`, action: `Remove search filter: “${query}”` }] : []),
+    ...(condition ? [{ key: "condition" as const, label: `Condition: ${condition}`, action: `Remove condition filter: ${condition}` }] : []),
   ];
 }
 

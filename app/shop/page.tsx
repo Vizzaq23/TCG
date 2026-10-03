@@ -189,12 +189,12 @@ export default async function ShopPage({
       </form>
 
       {activeFilters.length > 0 ? (
-        <div aria-label="Active filters" className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-zinc-500">Active filters:</span>
+        <div role="group" aria-labelledby="active-shop-filters-label" className="flex flex-wrap items-center gap-2 text-sm">
+          <span id="active-shop-filters-label" className="text-zinc-500">Active filters:</span>
           {activeFilters.map((filter) => (
             <Button key={filter.key} href={shopCategoryHref(kindFilter, sort, filter.key === "search" ? undefined : searchQuery, filter.key === "condition" ? undefined : conditionFilter)} size="sm" variant="ghost">
-              <span aria-hidden="true">×</span>
-              {filter.label}
+              <span className="sr-only">{filter.action}</span>
+              <span aria-hidden="true">× {filter.label}</span>
             </Button>
           ))}
         </div>

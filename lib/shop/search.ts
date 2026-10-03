@@ -6,6 +6,13 @@ export function matchesShopSearch(
   return !query || [title, ...details].some((detail) => detail?.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
 }
 
+export function activeShopFilters(query?: string, condition?: string) {
+  return [
+    ...(query ? [{ key: "search" as const, label: `Search: “${query}”`, action: `Remove search filter: “${query}”` }] : []),
+    ...(condition ? [{ key: "condition" as const, label: `Condition: ${condition}`, action: `Remove condition filter: ${condition}` }] : []),
+  ];
+}
+
 export function shopResultLabel(count: number, query?: string, condition?: string): string {
   const noun = count === 1 ? "listing" : "listings";
   return `${count} ${noun} available${query ? ` matching “${query}”` : ""}${condition ? ` in ${condition} condition` : ""}`;

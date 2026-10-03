@@ -13,7 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { matchesShopSearch, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
+import { activeShopFilters, matchesShopSearch, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -108,6 +108,8 @@ export default async function ShopPage({
     }
   }
 
+  const activeFilters = activeShopFilters(searchQuery, conditionFilter);
+
   return (
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -185,6 +187,18 @@ export default async function ShopPage({
           </Button>
         ) : null}
       </form>
+
+      {activeFilters.length > 0 ? (
+        <div aria-label="Active filters" className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-zinc-500">Active filters:</span>
+          {activeFilters.map((filter) => (
+            <Button key={filter.key} href={shopCategoryHref(kindFilter, sort, filter.key === "search" ? undefined : searchQuery, filter.key === "condition" ? undefined : conditionFilter)} size="sm" variant="ghost">
+              <span aria-hidden="true">×</span>
+              {filter.label}
+            </Button>
+          ))}
+        </div>
+      ) : null}
 
       {withStock.length > 0 ? (
         <p className="text-sm text-zinc-500">

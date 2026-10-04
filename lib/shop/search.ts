@@ -1,9 +1,16 @@
+function normalizeShopSearch(value: string): string {
+  return value.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu)?.join("") ?? "";
+}
+
 export function matchesShopSearch(
   title: string,
   query: string | undefined,
   ...details: Array<string | null | undefined>
 ): boolean {
-  return !query || [title, ...details].some((detail) => detail?.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+  if (!query) return true;
+  const normalizedQuery = normalizeShopSearch(query);
+  if (!normalizedQuery) return false;
+  return [title, ...details].some((detail) => detail ? normalizeShopSearch(detail).includes(normalizedQuery) : false);
 }
 
 export function activeShopFilters(query?: string, condition?: string) {

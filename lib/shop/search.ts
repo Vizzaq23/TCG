@@ -8,9 +8,11 @@ export function matchesShopSearch(
   ...details: Array<string | null | undefined>
 ): boolean {
   if (!query) return true;
-  const normalizedQuery = normalizeShopSearch(query);
-  if (!normalizedQuery) return false;
-  return [title, ...details].some((detail) => detail ? normalizeShopSearch(detail).includes(normalizedQuery) : false);
+  const queryTerms = query.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  if (!queryTerms.length) return false;
+  return queryTerms.every((term) =>
+    [title, ...details].some((detail) => detail ? normalizeShopSearch(detail).includes(term) : false),
+  );
 }
 
 export function activeShopFilters(query?: string, condition?: string) {

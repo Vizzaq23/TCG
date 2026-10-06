@@ -1,5 +1,9 @@
+function shopSearchTerms(value: string): string[] {
+  return value.normalize("NFD").replace(/(\p{Script=Latin})\p{M}+/gu, "$1").normalize("NFC").toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+}
+
 function normalizeShopSearch(value: string): string {
-  return value.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu)?.join("") ?? "";
+  return shopSearchTerms(value).join("");
 }
 
 export function matchesShopSearch(
@@ -8,7 +12,7 @@ export function matchesShopSearch(
   ...details: Array<string | null | undefined>
 ): boolean {
   if (!query) return true;
-  const queryTerms = query.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  const queryTerms = shopSearchTerms(query);
   if (!queryTerms.length) return false;
   return queryTerms.every((term) =>
     [title, ...details].some((detail) => detail ? normalizeShopSearch(detail).includes(term) : false),

@@ -1,5 +1,5 @@
 function shopSearchTerms(value: string): string[] {
-  return value.normalize("NFD").replace(/\p{M}/gu, "").toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  return value.normalize("NFD").replace(/(\p{Script=Latin})\p{M}+/gu, "$1").normalize("NFC").toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 }
 
 function normalizeShopSearch(value: string): string {

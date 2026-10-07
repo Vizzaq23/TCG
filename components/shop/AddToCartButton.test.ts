@@ -5,7 +5,8 @@ import { AddToCartButton } from "@/components/shop/AddToCartButton";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn() }) }));
 
-it("offers every available quantity before adding to cart", () => {
-  const markup = renderToStaticMarkup(createElement(AddToCartButton, { listingId: "listing", maxQuantity: 3 }));
-  expect(markup).toMatch(/<select[^>]*name="quantity"[\s\S]*<option value="1"[^>]*>1<\/option>[\s\S]*<option value="3"[^>]*>3<\/option>/);
+it("offers only the quantity not already in the cart", () => {
+  const props = { listingId: "listing", maxQuantity: 5, existingQuantity: 2 } as { listingId: string; maxQuantity: number; existingQuantity: number };
+  const markup = renderToStaticMarkup(createElement(AddToCartButton, props));
+  expect(markup).toMatch(/<select[^>]*name="quantity"[\s\S]*<option value="1"[^>]*>1<\/option>[\s\S]*<option value="3"[^>]*>3<\/option><\/select>/);
 });

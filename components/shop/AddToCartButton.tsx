@@ -3,17 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { MAX_ITEM_QUANTITY } from "@/lib/shop/cart";
 
 type Props = {
   listingId: string;
   maxQuantity: number;
+  existingQuantity?: number;
   disabled?: boolean;
 };
 
-export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
+export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, disabled }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const quantityLimit = Math.max(0, Math.min(maxQuantity - existingQuantity, MAX_ITEM_QUANTITY - existingQuantity));
+  const selectedQuantity = Math.max(1, Math.min(Math.floor(quantity), Math.max(1, quantityLimit)));
 
   async function add() {
     setMessage(null);
@@ -21,7 +26,7 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
     const res = await fetch("/api/shop/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity: 1 }),
+      body: JSON.stringify({ listingId, quantity: selectedQuantity }),
     });
     setPending(false);
     if (!res.ok) {
@@ -34,14 +39,20 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-3">
+      {quantityLimit > 1 ? (
+        <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
+          Quantity
+          <input type="number" name="quantity" min={1} max={quantityLimit} step={1} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} className="min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200" />
+        </label>
+      ) : null}
       <Button
         type="button"
         onClick={add}
-        disabled={disabled || pending || maxQuantity < 1}
+        disabled={disabled || pending || quantityLimit < 1}
         loading={pending}
       >
-        {maxQuantity < 1 ? "Sold out" : "Add to cart"}
+        {quantityLimit < 1 ? (maxQuantity < 1 ? "Sold out" : "Maximum in cart") : "Add to cart"}
       </Button>
       {message ? (
         <p aria-live="polite" className="text-center text-[11px] text-zinc-400">

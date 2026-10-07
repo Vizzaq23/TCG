@@ -6,6 +6,7 @@ import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
 import { kindLabel } from "@/lib/shop/kinds";
 import { sellableQuantity } from "@/lib/shop/inventory";
+import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
@@ -18,7 +19,7 @@ export default async function ListingDetailPage({
   params: Promise<{ listingId: string }>;
 }) {
   const { listingId } = await params;
-  const user = await getVerifiedServerUser();
+  const [user, cart] = await Promise.all([getVerifiedServerUser(), readCartCookie()]);
   const owner = isShopOwner(user?.id);
   const ownerId = getShopOwnerUserId();
   const admin = tryCreateAdminClient();
@@ -48,6 +49,7 @@ export default async function ListingDetailPage({
     listing.quantity_available,
     typeof held === "number" ? held : 0,
   );
+  const existingQuantity = cart.items.find((item) => item.listingId === listing.id)?.quantity ?? 0;
 
   const card = listing.cards as {
     name: string;
@@ -136,7 +138,7 @@ export default async function ListingDetailPage({
 
           {listing.status === "active" ? (
             <div className="max-w-xs">
-              <AddToCartButton listingId={listing.id} maxQuantity={sellable} />
+              <AddToCartButton listingId={listing.id} maxQuantity={sellable} existingQuantity={existingQuantity} />
             </div>
           ) : null}
 

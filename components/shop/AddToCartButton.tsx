@@ -18,6 +18,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   const [message, setMessage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const quantityLimit = Math.max(0, Math.min(maxQuantity - existingQuantity, MAX_ITEM_QUANTITY - existingQuantity));
+  const selectedQuantity = Math.min(quantity, Math.max(1, quantityLimit));
 
   async function add() {
     setMessage(null);
@@ -25,7 +26,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
     const res = await fetch("/api/shop/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity }),
+      body: JSON.stringify({ listingId, quantity: selectedQuantity }),
     });
     setPending(false);
     if (!res.ok) {
@@ -42,7 +43,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
           Quantity
-          <select name="quantity" value={quantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value))} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+          <select name="quantity" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value))} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
             {Array.from({ length: quantityLimit }, (_, index) => index + 1).map((value) => (
               <option key={value} value={value}>{value}</option>
             ))}

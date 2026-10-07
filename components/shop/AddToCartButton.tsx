@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { MAX_ITEM_QUANTITY } from "@/lib/shop/cart";
 
 type Props = {
   listingId: string;
@@ -14,6 +15,8 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const quantityLimit = Math.min(maxQuantity, MAX_ITEM_QUANTITY);
 
   async function add() {
     setMessage(null);
@@ -21,7 +24,7 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
     const res = await fetch("/api/shop/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity: 1 }),
+      body: JSON.stringify({ listingId, quantity }),
     });
     setPending(false);
     if (!res.ok) {
@@ -34,7 +37,17 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-3">
+      {quantityLimit > 1 ? (
+        <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
+          Quantity
+          <select name="quantity" value={quantity} onChange={(event) => setQuantity(Number(event.target.value))} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+            {Array.from({ length: quantityLimit }, (_, index) => index + 1).map((value) => (
+              <option key={value} value={value}>{value}</option>
+            ))}
+          </select>
+        </label>
+      ) : null}
       <Button
         type="button"
         onClick={add}

@@ -8,15 +8,16 @@ import { MAX_ITEM_QUANTITY } from "@/lib/shop/cart";
 type Props = {
   listingId: string;
   maxQuantity: number;
+  existingQuantity?: number;
   disabled?: boolean;
 };
 
-export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
+export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, disabled }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const quantityLimit = Math.min(maxQuantity, MAX_ITEM_QUANTITY);
+  const quantityLimit = Math.max(0, Math.min(maxQuantity - existingQuantity, MAX_ITEM_QUANTITY - existingQuantity));
 
   async function add() {
     setMessage(null);
@@ -41,7 +42,7 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
           Quantity
-          <select name="quantity" value={quantity} onChange={(event) => setQuantity(Number(event.target.value))} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+          <select name="quantity" value={quantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value))} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
             {Array.from({ length: quantityLimit }, (_, index) => index + 1).map((value) => (
               <option key={value} value={value}>{value}</option>
             ))}
@@ -51,10 +52,10 @@ export function AddToCartButton({ listingId, maxQuantity, disabled }: Props) {
       <Button
         type="button"
         onClick={add}
-        disabled={disabled || pending || maxQuantity < 1}
+        disabled={disabled || pending || quantityLimit < 1}
         loading={pending}
       >
-        {maxQuantity < 1 ? "Sold out" : "Add to cart"}
+        {quantityLimit < 1 ? (maxQuantity < 1 ? "Sold out" : "Maximum in cart") : "Add to cart"}
       </Button>
       {message ? (
         <p aria-live="polite" className="text-center text-[11px] text-zinc-400">

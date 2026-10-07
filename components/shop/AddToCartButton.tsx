@@ -18,7 +18,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   const [message, setMessage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const quantityLimit = Math.max(0, Math.min(maxQuantity - existingQuantity, MAX_ITEM_QUANTITY - existingQuantity));
-  const selectedQuantity = Math.max(1, Math.min(quantity, Math.max(1, quantityLimit)));
+  const selectedQuantity = Math.max(1, Math.min(Math.floor(quantity), Math.max(1, quantityLimit)));
 
   async function add() {
     setMessage(null);
@@ -43,7 +43,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
           Quantity
-          <input type="number" name="quantity" min={1} max={quantityLimit} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} className="min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200" />
+          <input type="number" name="quantity" min={1} max={quantityLimit} step={1} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} className="min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200" />
         </label>
       ) : null}
       <Button

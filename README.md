@@ -1,4 +1,35 @@
-# One Piece TCG Shelf
+<!-- README presentation: Vizzaq23 portfolio palette -->
+<p align="center">
+  <a href="https://github.com/Vizzaq23"><img src="https://img.shields.io/badge/Vizzaq23%20%C2%B7%20COLLECTOR%20PLATFORM-101722?style=flat-square&amp;labelColor=101722&amp;color=D7B877" alt="Vizzaq23 · COLLECTOR PLATFORM" /></a>
+</p>
+
+<h1 align="center">One Piece TCG Shelf</h1>
+
+<p align="center"><strong>Build your collection. Showcase your favorites. Find your fellow collectors.</strong></p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-101722?style=flat-square&amp;labelColor=101722&amp;color=85CFE8" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-101722?style=flat-square&amp;labelColor=101722&amp;color=D7B877" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Supabase-101722?style=flat-square&amp;labelColor=101722&amp;color=B8A1E3" alt="Supabase" />
+  <img src="https://img.shields.io/badge/PostgreSQL-101722?style=flat-square&amp;labelColor=101722&amp;color=9FC9A2" alt="PostgreSQL" />
+</p>
+
+<p align="center">
+  <a href="https://tcg-lyart.vercel.app/">Live app</a> · <a href="https://www.quintinvizza.dev/demos/tcg-20260911.mp4">Watch walkthrough</a> · <a href="https://www.quintinvizza.dev/projects/tcg-shelf">Case study</a> · <a href="https://quintinvizza.dev">Portfolio</a> · <a href="https://github.com/Vizzaq23">GitHub profile</a>
+</p>
+
+<p align="center">
+  <a href="#overview">Overview</a> · <a href="#features">Features</a> · <a href="#quick-start">Quick start</a> · <a href="#screenshots">Screenshots</a> · <a href="docs/API.md">API</a>
+</p>
+
+<img src="https://raw.githubusercontent.com/Vizzaq23/Vizzaq23/main/assets/divider.svg" width="100%" alt="" />
+
+<p align="center">
+  <img src="./docs/screenshots/home.png" width="100%" alt="One Piece TCG Shelf home" />
+  <br /><sub>Earlier interface · see the walkthrough above for the September 2026 refresh</sub>
+</p>
+
+## Overview
 
 A collector platform for the **One Piece Card Game**. Browse the catalog, track what you own (quantity, condition, grades, trades), pin a three-card **Collector’s Showcase**, and share a public profile at `/u/yourname`.
 
@@ -29,7 +60,7 @@ These images document earlier interfaces. The linked September 2026 walkthrough 
 
 ### Home
 
-![Home — Grand Line hero and treasure showcase](./docs/screenshots/home.png)
+The home screen is shown in the preview above.
 
 ### Browse
 
@@ -165,3 +196,7 @@ See **[STRUCTURE.md](./STRUCTURE.md)** for a folder/file tree with explanations 
 ## Troubleshooting
 
 **TLS / `UNABLE_TO_VERIFY_LEAF_SIGNATURE` (Windows antivirus):** Node may not trust a local intercepting CA. Dev, build, start, and price-sync scripts already pass `--use-system-ca`; auth uses the Next.js Proxy (Node runtime). Restart the dev server after pulling related changes.
+
+<img src="https://raw.githubusercontent.com/Vizzaq23/Vizzaq23/main/assets/divider.svg" width="100%" alt="" />
+
+<p align="center"><sub>Built by <a href="https://github.com/Vizzaq23">Quintin Vizza</a> · <a href="https://quintinvizza.dev">Explore my work</a></sub></p>

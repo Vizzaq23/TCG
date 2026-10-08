@@ -41,9 +41,9 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   return (
     <div className="flex flex-col gap-3">
       {existingQuantity > 0 ? (
-        <p className="text-sm text-zinc-400">
-          {existingQuantity} {existingQuantity === 1 ? "item" : "items"} already in cart
-        </p>
+        <a href="/cart" className="text-sm text-amber-400 underline underline-offset-2">
+          {existingQuantity} {existingQuantity === 1 ? "item" : "items"} already in cart · View cart
+        </a>
       ) : null}
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">

@@ -6,6 +6,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn() }) }));
 it("shows remaining quantity and links existing cart context", () => {
   const markup = renderToStaticMarkup(createElement(AddToCartButton, { listingId: "listing", maxQuantity: 5, existingQuantity: 2 }));
   expect(markup).toMatch(/<input(?=[^>]*name="quantity")(?=[^>]*min="1")(?=[^>]*max="3")(?=[^>]*step="1")[^>]*>/);
-  expect(markup).toContain('<a href="/cart"');
-  expect(markup).toContain("2 items already in cart");
+  expect(markup).toMatch(/<a href="\/cart"[^>]*>.*2 items already in cart.*View cart →.*<\/a>/);
+  const singularMarkup = renderToStaticMarkup(createElement(AddToCartButton, { listingId: "listing", maxQuantity: 2, existingQuantity: 1 }));
+  expect(singularMarkup).toMatch(/<a href="\/cart"[^>]*>.*1 item already in cart.*View cart →.*<\/a>/);
 });

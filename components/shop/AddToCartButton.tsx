@@ -41,9 +41,10 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   return (
     <div className="flex flex-col gap-3">
       {existingQuantity > 0 ? (
-        <p className="text-sm text-zinc-400">
-          {existingQuantity} {existingQuantity === 1 ? "item" : "items"} already in cart
-        </p>
+        <a href="/cart" className="flex min-h-10 items-center justify-between gap-3 rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition hover:border-amber-500/50">
+          <span>{existingQuantity} {existingQuantity === 1 ? "item" : "items"} already in cart</span>
+          <span className="font-semibold text-amber-400 underline underline-offset-2">View cart →</span>
+        </a>
       ) : null}
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
@@ -62,7 +63,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
       {message ? (
         <p aria-live="polite" className="text-center text-[11px] text-zinc-400">
           {message}{" "}
-          {message === "Added to cart." ? (
+          {message === "Added to cart." && existingQuantity === 0 ? (
             <a href="/cart" className="text-amber-400 underline underline-offset-2">
               View cart
             </a>

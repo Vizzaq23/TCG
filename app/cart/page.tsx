@@ -132,6 +132,7 @@ export default async function CartPage({
                     listingId={line.listingId}
                     quantity={Math.min(line.quantity, line.sellable)}
                     maxQuantity={line.sellable}
+                    label={line.listing.title}
                   />
                 </div>
                 <p className="text-sm font-medium text-white">

@@ -9,9 +9,10 @@ type Props = {
   listingId: string;
   quantity: number;
   maxQuantity: number;
+  label: string;
 };
 
-export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
+export function CartLineControls({ listingId, quantity, maxQuantity, label }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
@@ -30,14 +31,14 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
     <div
       className="flex items-center gap-2"
       role="group"
-      aria-label="Cart item quantity"
+      aria-label={`Quantity for ${label}`}
       aria-busy={pending}
     >
       <Button
         type="button"
         size="sm"
         variant="secondary"
-        aria-label="Decrease quantity"
+        aria-label={`Decrease quantity for ${label}`}
         disabled={pending || quantity <= 1}
         onClick={() => update(quantity - 1)}
       >
@@ -48,7 +49,7 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
         type="button"
         size="sm"
         variant="secondary"
-        aria-label="Increase quantity"
+        aria-label={`Increase quantity for ${label}`}
         disabled={pending || quantity >= maxQuantity}
         onClick={() => update(quantity + 1)}
       >
@@ -58,6 +59,7 @@ export function CartLineControls({ listingId, quantity, maxQuantity }: Props) {
         type="button"
         size="sm"
         variant="ghost"
+        aria-label={`Remove ${label} from cart`}
         disabled={pending}
         onClick={() => update(0)}
       >

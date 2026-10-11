@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { kindLabel } from "@/lib/shop/kinds";
+import { kindLabel, listingItemSummary } from "@/lib/shop/kinds";
 import { sellableQuantity } from "@/lib/shop/inventory";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
@@ -122,16 +122,19 @@ export default async function ListingDetailPage({
 
           {items.length ? (
             <div className="rounded-[12px] border border-zinc-800 bg-zinc-900/40 p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              <p id="included-cards-heading" className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Includes
               </p>
-              <ul className="space-y-1 text-sm text-zinc-300">
-                {items.map((item) => (
-                  <li key={item.id}>
-                    {item.quantity}× {item.cards?.name ?? "Card"}
-                    {item.cards?.card_number ? ` (${item.cards.card_number})` : ""}
-                  </li>
-                ))}
+              <ul aria-labelledby="included-cards-heading" className="space-y-2 text-sm text-zinc-300">
+                {items.map((item) => {
+                  const details = listingItemSummary(item.cards?.set_name ?? null, item.cards?.card_number ?? null, item.condition);
+                  return (
+                    <li key={item.id} className="flex items-start justify-between gap-4">
+                      <span>{item.quantity}× {item.cards?.name ?? "Card"}</span>
+                      <span className="text-right text-xs text-zinc-500">{details}</span>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ) : null}

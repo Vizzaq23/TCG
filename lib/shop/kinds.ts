@@ -64,6 +64,10 @@ export function listingSummary(kind: string, condition: string | null): string {
   return condition ? `${kindLabel(kind)} · ${condition}` : kindLabel(kind);
 }
 
+export function listingHref(listingId: string): string {
+  return `/shop/${encodeURIComponent(listingId)}`;
+}
+
 export function listingItemSummary(
   setName: string | null,
   cardNumber: string | null,

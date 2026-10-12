@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
@@ -111,16 +112,16 @@ export default async function CartPage({
                 key={line.listingId}
                 className="flex gap-4 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4"
               >
-                <a href={listingHref(line.listingId)} aria-label={`View ${line.listing.title}`} className="relative h-24 w-16 flex-shrink-0 overflow-hidden rounded-[10px] border border-zinc-800 bg-zinc-950 transition hover:border-amber-400/60 focus-visible:outline-2 focus-visible:outline-amber-400">
+                <Link href={listingHref(line.listingId)} prefetch={false} aria-label={`View ${line.listing.title}`} className="relative h-24 w-16 flex-shrink-0 overflow-hidden rounded-[10px] border border-zinc-800 bg-zinc-950 transition hover:border-amber-400/60 focus-visible:outline-2 focus-visible:outline-amber-400">
                   {line.image ? (
                     <CardImage
                       src={line.image}
                       className="absolute inset-0 h-full w-full object-contain"
                     />
                   ) : null}
-                </a>
+                </Link>
                 <div className="min-w-0 flex-1 space-y-2">
-                  <a href={listingHref(line.listingId)} className="font-medium text-white hover:text-amber-300 hover:underline">{line.listing.title}</a>
+                  <Link href={listingHref(line.listingId)} prefetch={false} className="font-medium text-white hover:text-amber-300 hover:underline">{line.listing.title}</Link>
                   <p className="text-xs text-zinc-500">{listingSummary(line.listing.kind, line.listing.condition)}</p>
                   <p className="text-sm text-amber-300">
                     {formatUsdCents(line.listing.price_cents)}

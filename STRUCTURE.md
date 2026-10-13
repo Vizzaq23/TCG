@@ -60,6 +60,7 @@ app/
 │   ├── prices/sync/route.ts           # Legacy sync (410 Gone)
 │   ├── avatar/route.ts     # POST/DELETE profile photo (service-role upload)
 │   ├── card-image/route.ts # Proxy for official card art hosts
+│   ├── collection/import/route.ts  # Authenticated CSV → user_collections upsert
 │   └── v1/                 # Public JSON API (profile, collection, showcase, activity, trades)
 ├── auth/
 │   └── callback/route.ts   # OAuth / email-confirm code exchange → redirect
@@ -102,7 +103,8 @@ app/
 | `auth/callback/route.ts` | Exchanges `code` for session; sanitizes `next` redirect |
 | `browse/page.tsx` | Server-filtered catalog + pagination |
 | `browse/[cardId]/page.tsx` | Card detail with variant market prices from cache |
-| `collection/page.tsx` | Stats, showcase editor, card rows, set progress, trade alerts |
+| `collection/page.tsx` | Stats, showcase editor, CSV import, card rows, set progress, trade alerts |
+| `api/collection/import/route.ts` | Parse CSV body, match `card_number`, upsert owner rows |
 | `collection/portfolio/page.tsx` | Cache-first valuation + holdings |
 | `settings/page.tsx` | Profile customization (photo, username, bio, accent) |
 | `social/page.tsx` | Search collectors, suggestions, follow lists, following activity |
@@ -165,6 +167,7 @@ components/
 | `ShowcaseGlassCase.tsx` | Premium public showcase hero + walnut stand |
 | `SetProgress.tsx` | Per-set completion UI (sort / hide zero) |
 | `CopyShareLink.tsx` | Copy `/u/username` to clipboard |
+| `CollectionImportDialog.tsx` | CSV file picker, preview, import API call |
 | `PublicShelfToolbar.tsx` | All cards / For trade / With notes tabs |
 | `ShelfMatchCard.tsx` | Visitor vs owner collection overlap snapshot |
 | `DailyTreasurePull.tsx` | Per-day spotlight card on public profiles |
@@ -227,6 +230,8 @@ components/
 lib/
 ├── auth/safe-next.ts       # Allow only internal redirect paths
 ├── collection/set-progress.ts
+├── collection/import-csv.ts
+├── collection/daily-treasure.ts
 ├── justtcg/                # Secure JustTCG HTTP client + OPTCG matching
 ├── prices/                 # card_prices repository, display selection, valuation
 ├── money.ts                # cents ↔ USD display
@@ -249,6 +254,7 @@ lib/
 |------|------|
 | `auth/safe-next.ts` | Blocks open redirects (`//`, absolute URLs) |
 | `collection/set-progress.ts` | Computes owned/total per set name |
+| `collection/import-csv.ts` | Collection CSV parse + download template |
 | `collection/daily-treasure.ts` | Deterministic daily spotlight picker |
 | `justtcg/*` | API client (`x-api-key`), types, card match scoring |
 | `prices/repository.ts` | Upsert `card_prices` + denorm NM onto `cards` |

@@ -6,7 +6,7 @@ import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
 import { cartCountLabel } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
-import { sellableQuantity } from "@/lib/shop/inventory";
+import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { listingHref, listingSummary } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { CartLineControls } from "@/components/shop/CartLineControls";
@@ -126,7 +126,7 @@ export default async function CartPage({
                   <p className="text-sm text-amber-300">
                     {formatUsdCents(line.listing.price_cents)}
                     <span className="ml-2 text-xs text-zinc-500">
-                      · {line.sellable} in stock
+                      · {stockLabel(line.sellable)}
                     </span>
                   </p>
                   <CartLineControls

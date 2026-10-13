@@ -19,7 +19,7 @@ describe("sellableQuantity", () => {
 
 it("shows the cart quantity limit", () => expect(cartQuantityLabel(2, 5)).toBe("2 of 5 max"));
 
-it("highlights low stock", () => expect([stockLabel(3), stockLabel(4)]).toEqual(["Low stock: 3 left", "4 left"]));
+it("clarifies unavailable and low stock", () => expect([stockLabel(0), stockLabel(3), stockLabel(4)]).toEqual(["Sold out", "Low stock: 3 left", "4 left"]));
 
 describe("maxListableUnits", () => {
   it("counts singles 1:1", () => {

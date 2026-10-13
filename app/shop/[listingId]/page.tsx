@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
 import { kindLabel, listingItemSummary } from "@/lib/shop/kinds";
-import { sellableQuantity } from "@/lib/shop/inventory";
+import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
@@ -112,7 +112,7 @@ export default async function ListingDetailPage({
             {formatUsdCents(listing.price_cents)}
           </p>
           <p className="text-sm text-zinc-400">
-            {sellable} available
+            {stockLabel(sellable)}
           </p>
           {listing.description ? (
             <p className="whitespace-pre-wrap text-sm text-zinc-300">

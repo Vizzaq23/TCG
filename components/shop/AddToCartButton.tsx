@@ -52,13 +52,19 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
           <input type="number" name="quantity" min={1} max={quantityLimit} step={1} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} className="min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200" />
         </label>
       ) : null}
+      <p className="text-center text-xs text-zinc-500" id="add-to-cart-availability">
+        {quantityLimit} {quantityLimit === 1 ? "item" : "items"} available to add
+      </p>
       <Button
         type="button"
         onClick={add}
         disabled={disabled || pending || quantityLimit < 1}
         loading={pending}
+        aria-describedby="add-to-cart-availability"
       >
-        {quantityLimit < 1 ? (maxQuantity < 1 ? "Sold out" : "Maximum in cart") : "Add to cart"}
+        {quantityLimit < 1
+          ? (maxQuantity < 1 ? "Sold out" : "Maximum in cart")
+          : `Add ${selectedQuantity} to cart`}
       </Button>
       {message ? (
         <p aria-live="polite" className="text-center text-[11px] text-zinc-400">

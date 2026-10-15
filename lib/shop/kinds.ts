@@ -76,6 +76,11 @@ export function listingItemSummary(
   return [setName, cardNumber, condition].filter(Boolean).join(" · ") || "Details unavailable";
 }
 
+export function listingItemCountLabel(quantities: number[]): string {
+  const count = quantities.reduce((total, quantity) => total + quantity, 0);
+  return `${count} ${count === 1 ? "card" : "cards"} total`;
+}
+
 export function emptyShopMessage(kind: string | undefined, owner: boolean): string {
   return kind && isShopListingKind(kind) ? `No ${kindLabel(kind).toLowerCase()} listings match this category.` : owner ? "No listings yet. Create one from your collection or the Sell page." : "No listings yet. Check back soon.";
 }

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { kindLabel, listingItemSummary } from "@/lib/shop/kinds";
+import { kindLabel, listingItemCountLabel, listingItemSummary } from "@/lib/shop/kinds";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
@@ -69,6 +69,7 @@ export default async function ListingDetailPage({
       set_name: string | null;
     } | null;
   }>;
+  const includedCardCountLabel = listingItemCountLabel(items.map((item) => item.quantity));
 
   return (
     <PageContainer as="main" className="py-8 sm:py-10">
@@ -124,6 +125,9 @@ export default async function ListingDetailPage({
             <div className="rounded-[12px] border border-zinc-800 bg-zinc-900/40 p-4">
               <p id="included-cards-heading" className="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Includes
+                <span className="ml-2 normal-case tracking-normal text-zinc-600">
+                  · {includedCardCountLabel}
+                </span>
               </p>
               <ul aria-labelledby="included-cards-heading" className="space-y-2 text-sm text-zinc-300">
                 {items.map((item) => {

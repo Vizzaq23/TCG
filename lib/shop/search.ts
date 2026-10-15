@@ -6,6 +6,10 @@ function normalizeShopSearch(value: string): string {
   return shopSearchTerms(value).join("");
 }
 
+export function shopCardDetails(...details: Array<string | null | undefined>): string[] {
+  return details.filter((detail): detail is string => Boolean(detail));
+}
+
 export function matchesShopSearch(
   title: string,
   query: string | undefined,

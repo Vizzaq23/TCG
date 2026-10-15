@@ -13,7 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { activeShopFilters, matchesShopSearch, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
+import { activeShopFilters, matchesShopSearch, shopCardDetails, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -65,7 +65,7 @@ export default async function ShopPage({
     let query = admin
       .from("shop_listings")
       .select(
-        "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, rarity, type )",
+        "id, title, kind, condition, quantity_available, price_cents, image_url, card_id, cards ( image_url, set_name, card_number, rarity, color, type )",
       )
       .eq("owner_user_id", ownerId)
       .eq("status", "active")
@@ -95,7 +95,8 @@ export default async function ShopPage({
     if (!admin) break;
     const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
     if (card && !isVisibleCatalogCard(card)) continue;
-    if (!matchesShopSearch(listing.title, searchQuery, card?.set_name, card?.rarity)) continue;
+    const cardDetails = shopCardDetails(card?.set_name, card?.card_number, card?.rarity, card?.color, card?.type);
+    if (!matchesShopSearch(listing.title, searchQuery, ...cardDetails)) continue;
     const { data: held } = await admin.rpc("shop_held_quantity", {
       p_listing_id: listing.id,
     });
@@ -164,7 +165,7 @@ export default async function ShopPage({
         <label htmlFor="shop-search" className="sr-only">Search listings</label>
         <input
           id="shop-search" name="q" type="search"
-          defaultValue={searchQuery ?? ""} placeholder="Search title, set, or rarity"
+          defaultValue={searchQuery ?? ""} placeholder="Search title, set, number, color, or type"
           className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200"
         />
         <label htmlFor="shop-condition" className="text-zinc-500">Condition</label>
@@ -234,9 +235,13 @@ export default async function ShopPage({
             const card = listing.cards as {
               image_url: string | null;
               set_name: string | null;
+              card_number: string | null;
               rarity: string | null;
+              color: string | null;
+              type: string | null;
             } | null;
             const image = listing.image_url || card?.image_url;
+            const cardDetails = shopCardDetails(card?.set_name, card?.card_number, card?.rarity, card?.color, card?.type);
             return (
               <li key={listing.id}>
                 <Link
@@ -262,10 +267,12 @@ export default async function ShopPage({
                       {listing.condition ? <Badge tone="accent">{listing.condition}</Badge> : null}
                     </div>
                     <p className="font-semibold text-white">{listing.title}</p>
-                    {card?.set_name || card?.rarity ? (
-                      <p className="text-xs text-zinc-500">
-                        {[card.set_name, card.rarity].filter(Boolean).join(" · ")}
-                      </p>
+                    {cardDetails.length ? (
+                      <ul aria-label="Card details" className="flex flex-wrap gap-1.5 text-xs text-zinc-500">
+                        {cardDetails.map((detail) => (
+                          <li key={detail} className="rounded bg-zinc-950/70 px-2 py-1">{detail}</li>
+                        ))}
+                      </ul>
                     ) : null}
                     <p className="mt-auto text-sm text-amber-300">
                       {formatUsdCents(listing.price_cents)}

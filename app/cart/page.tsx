@@ -118,7 +118,14 @@ export default async function CartPage({
                       src={line.image}
                       className="absolute inset-0 h-full w-full object-contain"
                     />
-                  ) : null}
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className="flex h-full items-center justify-center px-1 text-center text-[10px] text-zinc-500"
+                    >
+                      No art
+                    </span>
+                  )}
                 </Link>
                 <div className="min-w-0 flex-1 space-y-2">
                   <Link href={listingHref(line.listingId)} prefetch={false} className="font-medium text-white hover:text-amber-300 hover:underline">{line.listing.title}</Link>

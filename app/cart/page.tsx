@@ -143,9 +143,12 @@ export default async function CartPage({
                     label={line.listing.title}
                   />
                 </div>
-                <p className="text-sm font-medium text-white">
-                  {formatUsdCents(line.lineTotal)}
-                </p>
+                <div className="text-right">
+                  <p className="text-xs text-zinc-500">Line total</p>
+                  <p className="text-sm font-medium text-white">
+                    {formatUsdCents(line.lineTotal)}
+                  </p>
+                </div>
               </li>
             ))}
           </ul>

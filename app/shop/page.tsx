@@ -84,7 +84,11 @@ export default async function ShopPage({
         ? query.order("price_cents", { ascending: true })
         : sort === "price_desc"
           ? query.order("price_cents", { ascending: false })
-          : query.order("created_at", { ascending: false });
+          : sort === "title_asc"
+            ? query.order("title", { ascending: true })
+            : sort === "title_desc"
+              ? query.order("title", { ascending: false })
+              : query.order("created_at", { ascending: false });
     const result = await query;
     listings = result.data;
     error = result.error;
@@ -180,6 +184,8 @@ export default async function ShopPage({
           <option value="newest">Newest</option>
           <option value="price_asc">Price: low to high</option>
           <option value="price_desc">Price: high to low</option>
+          <option value="title_asc">Title: A to Z</option>
+          <option value="title_desc">Title: Z to A</option>
         </select>
         <Button type="submit" size="sm" variant="ghost">Apply</Button>
         {kindFilter || sort || searchQuery || conditionFilter ? (

@@ -23,10 +23,14 @@ export function matchesShopSearch(
   );
 }
 
-export function activeShopFilters(query?: string, condition?: string) {
+const SHOP_SORT_LABELS: Record<string, string> = { price_asc: "Price low to high", price_desc: "Price high to low", title_asc: "Title A to Z", title_desc: "Title Z to A" };
+
+export function activeShopFilters(query?: string, condition?: string, sort?: string) {
+  const sortLabel = sort ? SHOP_SORT_LABELS[sort] : undefined;
   return [
     ...(query ? [{ key: "search" as const, label: `Search: “${query}”`, action: `Remove search filter: “${query}”` }] : []),
     ...(condition ? [{ key: "condition" as const, label: `Condition: ${condition}`, action: `Remove condition filter: ${condition}` }] : []),
+    ...(sortLabel ? [{ key: "sort" as const, label: `Sort: ${sortLabel}`, action: `Remove sort: ${sortLabel}` }] : []),
   ];
 }
 

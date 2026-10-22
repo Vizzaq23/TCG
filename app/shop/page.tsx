@@ -113,7 +113,7 @@ export default async function ShopPage({
     }
   }
 
-  const activeFilters = activeShopFilters(searchQuery, conditionFilter);
+  const activeFilters = activeShopFilters(searchQuery, conditionFilter, sort);
 
   return (
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
@@ -199,7 +199,7 @@ export default async function ShopPage({
         <div role="group" aria-labelledby="active-shop-filters-label" className="flex flex-wrap items-center gap-2 text-sm">
           <span id="active-shop-filters-label" className="text-zinc-500">Active filters:</span>
           {activeFilters.map((filter) => (
-            <Button key={filter.key} href={shopCategoryHref(kindFilter, sort, filter.key === "search" ? undefined : searchQuery, filter.key === "condition" ? undefined : conditionFilter)} size="sm" variant="ghost">
+            <Button key={filter.key} href={shopCategoryHref(kindFilter, filter.key === "sort" ? undefined : sort, filter.key === "search" ? undefined : searchQuery, filter.key === "condition" ? undefined : conditionFilter)} size="sm" variant="ghost">
               <span className="sr-only">{filter.action}</span>
               <span aria-hidden="true">× {filter.label}</span>
             </Button>

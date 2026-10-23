@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { emptyShopMessage, kindLabel, SHOP_CONDITIONS } from "@/lib/shop/kinds";
+import { emptyShopMessage, kindLabel, listingHref, SHOP_CONDITIONS } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
@@ -114,6 +114,7 @@ export default async function ShopPage({
   }
 
   const activeFilters = activeShopFilters(searchQuery, conditionFilter, sort);
+  const currentShopHref = shopCategoryHref(kindFilter, sort, searchQuery, conditionFilter);
 
   return (
     <PageContainer as="main" className="space-y-8 py-8 sm:py-10">
@@ -251,7 +252,7 @@ export default async function ShopPage({
             return (
               <li key={listing.id}>
                 <Link
-                  href={`/shop/${listing.id}`}
+                  href={listingHref(listing.id, currentShopHref)}
                   prefetch={false}
                   className="flex h-full flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40 transition hover:border-amber-500/40"
                 >

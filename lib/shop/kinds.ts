@@ -64,8 +64,15 @@ export function listingSummary(kind: string, condition: string | null): string {
   return condition ? `${kindLabel(kind)} · ${condition}` : kindLabel(kind);
 }
 
-export function listingHref(listingId: string): string {
-  return `/shop/${encodeURIComponent(listingId)}`;
+export function listingHref(listingId: string, returnTo?: string): string {
+  const base = `/shop/${encodeURIComponent(listingId)}`;
+  if (!returnTo || returnTo === "/shop") return base;
+  const params = new URLSearchParams({ returnTo });
+  return `${base}?${params}`;
+}
+
+export function listingReturnHref(value: string | undefined): string {
+  return value?.startsWith("/shop?") ? value : "/shop";
 }
 
 export function listingItemSummary(

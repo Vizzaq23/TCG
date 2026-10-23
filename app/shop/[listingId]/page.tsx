@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { kindLabel, listingItemCountLabel, listingItemSummary } from "@/lib/shop/kinds";
+import { kindLabel, listingItemCountLabel, listingItemSummary, listingReturnHref } from "@/lib/shop/kinds";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
@@ -12,13 +12,20 @@ import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
+import {
+  firstSearchParam,
+  type SearchParamValue,
+} from "@/lib/search-params";
 
 export default async function ListingDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ listingId: string }>;
+  searchParams: Promise<{ returnTo?: SearchParamValue }>;
 }) {
-  const { listingId } = await params;
+  const [{ listingId }, { returnTo: rawReturnTo }] = await Promise.all([params, searchParams]);
+  const returnTo = listingReturnHref(firstSearchParam(rawReturnTo));
   const [user, cart] = await Promise.all([getVerifiedServerUser(), readCartCookie()]);
   const owner = isShopOwner(user?.id);
   const ownerId = getShopOwnerUserId();
@@ -74,7 +81,7 @@ export default async function ListingDetailPage({
   return (
     <PageContainer as="main" className="py-8 sm:py-10">
       <div className="mb-6">
-        <Button href="/shop" size="sm" variant="ghost">
+        <Button href={returnTo} size="sm" variant="ghost">
           ← Back to shop
         </Button>
       </div>

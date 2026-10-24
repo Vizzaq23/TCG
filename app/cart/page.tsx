@@ -63,6 +63,7 @@ export default async function CartPage({
   }
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
+  const hiddenItemCount = admin ? cart.items.length - lines.length : 0;
   const itemCountLabel = cartCountLabel({ items: lines });
   const shipping = settings?.shipping_cents ?? null;
   const total = subtotal + (lines.length ? shipping ?? 0 : 0);
@@ -94,6 +95,12 @@ export default async function CartPage({
       {cancelled ? (
         <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
           Checkout was cancelled. Your cart is still here if inventory remains.
+        </p>
+      ) : null}
+
+      {hiddenItemCount > 0 ? (
+        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
+          {hiddenItemCount} saved cart {hiddenItemCount === 1 ? "item could" : "items could"} not be displayed and may no longer be available.
         </p>
       ) : null}
 

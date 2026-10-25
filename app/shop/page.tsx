@@ -57,6 +57,9 @@ export default async function ShopPage({
     (total, item) => total + item.quantity,
     0,
   );
+  const cartQuantities = new Map(
+    cart.items.map((item) => [item.listingId, item.quantity] as const),
+  );
 
   let listings = null;
   let error: { message: string } | null = null;
@@ -249,6 +252,7 @@ export default async function ShopPage({
             } | null;
             const image = listing.image_url || card?.image_url;
             const cardDetails = shopCardDetails(card?.set_name, card?.card_number, card?.rarity, card?.color, card?.type);
+            const inCart = cartQuantities.get(listing.id) ?? 0;
             return (
               <li key={listing.id}>
                 <Link
@@ -274,6 +278,11 @@ export default async function ShopPage({
                       {listing.condition ? <Badge tone="accent">{listing.condition}</Badge> : null}
                     </div>
                     <p className="font-semibold text-white">{listing.title}</p>
+                    {inCart > 0 ? (
+                      <p className="text-xs font-medium text-amber-200">
+                        {inCart} {inCart === 1 ? "item" : "items"} in cart
+                      </p>
+                    ) : null}
                     {cardDetails.length ? (
                       <ul aria-label="Card details" className="flex flex-wrap gap-1.5 text-xs text-zinc-500">
                         {cardDetails.map((detail) => (

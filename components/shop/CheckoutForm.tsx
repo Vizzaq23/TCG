@@ -21,8 +21,13 @@ export function CheckoutForm({ defaultEmail = "", disabled }: Props) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
-    });
-    const data = (await res.json()) as { error?: string; url?: string };
+    }).catch(() => null);
+    if (!res) {
+      setPending(false);
+      setError("Checkout could not be reached. Check your connection and try again.");
+      return;
+    }
+    const data = (await res.json().catch(() => ({}))) as { error?: string; url?: string };
     setPending(false);
     if (!res.ok || !data.url) {
       setError(data.error ?? "Checkout failed.");

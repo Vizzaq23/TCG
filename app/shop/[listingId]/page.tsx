@@ -35,7 +35,7 @@ export default async function ListingDetailPage({
   const { data: listing } = await admin
     .from("shop_listings")
     .select(
-      "id, owner_user_id, kind, title, description, condition, quantity_available, price_cents, status, image_url, card_id, cards ( name, set_name, card_number, rarity, image_url ), shop_listing_items ( id, quantity, condition, cards ( name, card_number, set_name ) )",
+      "id, owner_user_id, kind, title, description, condition, quantity_available, price_cents, status, image_url, card_id, cards ( name, set_name, card_number, rarity, color, type, image_url ), shop_listing_items ( id, quantity, condition, cards ( name, card_number, set_name ) )",
     )
     .eq("id", listingId)
     .eq("owner_user_id", ownerId)
@@ -63,6 +63,8 @@ export default async function ListingDetailPage({
     set_name: string | null;
     card_number: string | null;
     rarity: string | null;
+    color: string | null;
+    type: string | null;
     image_url: string | null;
   } | null;
   const image = listing.image_url || card?.image_url;
@@ -110,7 +112,13 @@ export default async function ListingDetailPage({
             </h1>
             {card ? (
               <p className="text-sm text-zinc-500">
-                {[card.set_name, card.card_number, card.rarity]
+                {[
+                  card.set_name,
+                  card.card_number,
+                  card.rarity,
+                  card.color,
+                  card.type,
+                ]
                   .filter(Boolean)
                   .join(" · ")}
               </p>

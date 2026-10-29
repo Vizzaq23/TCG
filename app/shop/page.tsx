@@ -290,12 +290,17 @@ export default async function ShopPage({
                         ))}
                       </ul>
                     ) : null}
-                    <p className="mt-auto text-sm text-amber-300">
-                      {formatUsdCents(listing.price_cents)}
-                      <span className="ml-2 text-xs text-zinc-500">
-                        · {stockLabel(listing.sellable)}
+                    <div className="mt-auto flex items-end justify-between gap-3">
+                      <p className="text-sm text-amber-300">
+                        {formatUsdCents(listing.price_cents)}
+                        <span className="ml-2 text-xs text-zinc-500">
+                          · {stockLabel(listing.sellable)}
+                        </span>
+                      </p>
+                      <span aria-hidden="true" className="shrink-0 text-xs font-medium text-amber-200 underline underline-offset-2">
+                        View details →
                       </span>
-                    </p>
+                    </div>
                   </div>
                 </Link>
               </li>

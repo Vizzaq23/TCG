@@ -23,19 +23,24 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   async function add() {
     setMessage(null);
     setPending(true);
-    const res = await fetch("/api/shop/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingId, quantity: selectedQuantity }),
-    });
-    setPending(false);
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      setMessage(data.error ?? "Could not add to cart.");
-      return;
+    try {
+      const res = await fetch("/api/shop/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ listingId, quantity: selectedQuantity }),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        setMessage(data.error ?? "Could not add to cart.");
+        return;
+      }
+      router.refresh();
+      setMessage("Added to cart.");
+    } catch {
+      setMessage("Could not reach the shop. Check your connection and try again.");
+    } finally {
+      setPending(false);
     }
-    router.refresh();
-    setMessage("Added to cart.");
   }
 
   return (

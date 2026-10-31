@@ -29,38 +29,43 @@ export default async function CartPage({
 }) {
   const { cancelled: rawCancelled } = await searchParams;
   const cancelled = firstSearchParam(rawCancelled);
-  const cart = await readCartCookie();
+  const [cart, user, settings] = await Promise.all([
+    readCartCookie(),
+    getVerifiedServerUser(),
+    getPublicShopSettings(),
+  ]);
   const admin = tryCreateAdminClient();
-  const user = await getVerifiedServerUser();
-  const settings = await getPublicShopSettings();
 
-  const lines = [];
-  for (const item of cart.items) {
-    if (!admin) break;
-    const { data: listing } = await admin
-      .from("shop_listings")
-      .select(
-        "id, title, kind, condition, price_cents, quantity_available, status, image_url, cards ( image_url )",
+  const resolvedLines = admin
+    ? await Promise.all(
+        cart.items.map(async (item) => {
+          const { data: listing } = await admin
+            .from("shop_listings")
+            .select(
+              "id, title, kind, condition, price_cents, quantity_available, status, image_url, cards ( image_url )",
+            )
+            .eq("id", item.listingId)
+            .maybeSingle();
+          if (!listing || listing.status !== "active") return null;
+          const { data: held } = await admin.rpc("shop_held_quantity", {
+            p_listing_id: listing.id,
+          });
+          const sellable = sellableQuantity(
+            listing.quantity_available,
+            typeof held === "number" ? held : 0,
+          );
+          const card = listing.cards as { image_url: string | null } | null;
+          return {
+            ...item,
+            listing,
+            sellable,
+            image: listing.image_url || card?.image_url,
+            lineTotal: listing.price_cents * item.quantity,
+          };
+        }),
       )
-      .eq("id", item.listingId)
-      .maybeSingle();
-    if (!listing || listing.status !== "active") continue;
-    const { data: held } = await admin.rpc("shop_held_quantity", {
-      p_listing_id: listing.id,
-    });
-    const sellable = sellableQuantity(
-      listing.quantity_available,
-      typeof held === "number" ? held : 0,
-    );
-    const card = listing.cards as { image_url: string | null } | null;
-    lines.push({
-      ...item,
-      listing,
-      sellable,
-      image: listing.image_url || card?.image_url,
-      lineTotal: listing.price_cents * item.quantity,
-    });
-  }
+    : [];
+  const lines = resolvedLines.filter((line) => line !== null);
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0);
   const hiddenItemCount = admin ? cart.items.length - lines.length : 0;

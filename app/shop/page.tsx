@@ -97,24 +97,25 @@ export default async function ShopPage({
     error = result.error;
   }
 
-  const withStock = [];
-  for (const listing of listings ?? []) {
-    if (!admin) break;
-    const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
-    if (card && !isVisibleCatalogCard(card)) continue;
-    const cardDetails = shopCardDetails(card?.set_name, card?.card_number, card?.rarity, card?.color, card?.type);
-    if (!matchesShopSearch(listing.title, searchQuery, ...cardDetails)) continue;
-    const { data: held } = await admin.rpc("shop_held_quantity", {
-      p_listing_id: listing.id,
-    });
-    const available = sellableQuantity(
-      listing.quantity_available,
-      typeof held === "number" ? held : 0,
-    );
-    if (available > 0) {
-      withStock.push({ ...listing, sellable: available });
-    }
-  }
+  const resolvedListings = admin
+    ? await Promise.all(
+        (listings ?? []).map(async (listing) => {
+          const card = Array.isArray(listing.cards) ? listing.cards[0] : listing.cards;
+          if (card && !isVisibleCatalogCard(card)) return null;
+          const cardDetails = shopCardDetails(card?.set_name, card?.card_number, card?.rarity, card?.color, card?.type);
+          if (!matchesShopSearch(listing.title, searchQuery, ...cardDetails)) return null;
+          const { data: held } = await admin.rpc("shop_held_quantity", {
+            p_listing_id: listing.id,
+          });
+          const available = sellableQuantity(
+            listing.quantity_available,
+            typeof held === "number" ? held : 0,
+          );
+          return available > 0 ? { ...listing, sellable: available } : null;
+        }),
+      )
+    : [];
+  const withStock = resolvedListings.filter((listing) => listing !== null);
 
   const activeFilters = activeShopFilters(searchQuery, conditionFilter, sort);
   const currentShopHref = shopCategoryHref(kindFilter, sort, searchQuery, conditionFilter);

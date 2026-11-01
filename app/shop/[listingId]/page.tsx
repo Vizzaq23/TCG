@@ -92,10 +92,16 @@ export default async function ListingDetailPage({
           {image ? (
             <CardImage
               src={image}
+              alt={`${listing.title} card artwork`}
+              loading="eager"
               className="absolute inset-0 h-full w-full object-contain p-4"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-600">
+            <div
+              role="img"
+              aria-label={`${listing.title} card artwork unavailable`}
+              className="flex h-full items-center justify-center text-sm text-zinc-600"
+            >
               No art
             </div>
           )}

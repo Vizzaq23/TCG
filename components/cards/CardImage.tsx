@@ -37,7 +37,12 @@ export function CardImage({
 
   if (failed) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-zinc-900 text-[10px] text-zinc-500">
+      <div
+        role={alt ? "img" : undefined}
+        aria-label={alt || undefined}
+        aria-hidden={alt ? undefined : true}
+        className="flex h-full w-full items-center justify-center bg-zinc-900 text-[10px] text-zinc-500"
+      >
         Image unavailable
       </div>
     );

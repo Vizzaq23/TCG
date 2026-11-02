@@ -145,7 +145,7 @@ export default async function ShopPage({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 text-sm">
+      <nav aria-label="Product categories" className="flex flex-wrap gap-2 text-sm">
         {[
           { kind: undefined, label: "All" },
           { kind: "single", label: "Singles" },
@@ -167,9 +167,9 @@ export default async function ShopPage({
             {f.label}
           </Link>
         ))}
-      </div>
+      </nav>
 
-      <form action="/shop" className="flex flex-wrap items-center gap-2 text-sm">
+      <form action="/shop" aria-label="Search and filter listings" className="flex flex-wrap items-center gap-2 text-sm">
         {kindFilter ? <input type="hidden" name="kind" value={kindFilter} /> : null}
         <label htmlFor="shop-search" className="sr-only">Search listings</label>
         <input
@@ -213,23 +213,23 @@ export default async function ShopPage({
       ) : null}
 
       {withStock.length > 0 ? (
-        <p className="text-sm text-zinc-500">
+        <p role="status" aria-live="polite" className="text-sm text-zinc-500">
           {shopResultLabel(withStock.length, searchQuery, conditionFilter)}
         </p>
       ) : null}
 
       {!settings ? (
-        <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
+        <div role="status" className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
           <p className="text-sm text-zinc-400">
             The shop is not open for checkout yet. Please check back soon.
           </p>
         </div>
       ) : error ? (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+        <p role="alert" className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
           {error.message}
         </p>
       ) : !withStock.length ? (
-        <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
+        <div role="status" className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
           <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : conditionFilter ? `No ${conditionFilter.toLowerCase()} listings match these filters.` : emptyShopMessage(kindFilter, owner)}</p>
           {owner ? (
             <div className="mt-5 flex justify-center gap-2">
@@ -241,7 +241,7 @@ export default async function ShopPage({
           ) : null}
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul aria-label="Available listings" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {withStock.map((listing) => {
             const card = listing.cards as {
               image_url: string | null;

@@ -158,7 +158,7 @@ export default async function ShopPage({
             href={shopCategoryHref(f.kind, sort, searchQuery, conditionFilter)}
             prefetch={false}
             aria-current={(kindFilter ?? undefined) === f.kind ? "page" : undefined}
-            className={`inline-flex min-h-10 items-center rounded-md border px-3 py-1.5 hover:border-amber-500/40 hover:text-white ${
+            className={`inline-flex min-h-10 items-center rounded-md border px-3 py-1.5 hover:border-amber-500/40 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 ${
               (kindFilter ?? undefined) === f.kind
                 ? "border-amber-500/60 bg-amber-500/10 text-white"
                 : "border-zinc-800 text-zinc-300"
@@ -175,17 +175,17 @@ export default async function ShopPage({
         <input
           id="shop-search" name="q" type="search"
           defaultValue={searchQuery ?? ""} placeholder="Search title, set, number, color, or type"
-          className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200"
+          className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
         />
         <label htmlFor="shop-condition" className="text-zinc-500">Condition</label>
-        <select id="shop-condition" name="condition" defaultValue={conditionFilter ?? ""} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+        <select id="shop-condition" name="condition" defaultValue={conditionFilter ?? ""} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50">
           <option value="">Any condition</option>
           {SHOP_CONDITIONS.map((condition) => (
             <option key={condition} value={condition}>{condition}</option>
           ))}
         </select>
         <label htmlFor="shop-sort" className="text-zinc-500">Sort</label>
-        <select id="shop-sort" name="sort" defaultValue={sort ?? "newest"} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200">
+        <select id="shop-sort" name="sort" defaultValue={sort ?? "newest"} className="min-h-10 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50">
           <option value="newest">Newest</option>
           <option value="price_asc">Price: low to high</option>
           <option value="price_desc">Price: high to low</option>
@@ -259,7 +259,7 @@ export default async function ShopPage({
                 <Link
                   href={listingHref(listing.id, currentShopHref)}
                   prefetch={false}
-                  className="flex h-full flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40 transition hover:border-amber-500/40"
+                  className="flex h-full flex-col overflow-hidden rounded-[14px] border border-zinc-800 bg-zinc-900/40 transition hover:border-amber-500/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
                 >
                   <div className="relative aspect-[3/4] bg-zinc-950">
                     {image ? (

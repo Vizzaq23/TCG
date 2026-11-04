@@ -12,10 +12,15 @@ type Props = {
   disabled?: boolean;
 };
 
+type Feedback = {
+  text: string;
+  kind: "success" | "error";
+};
+
 export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, disabled }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<Feedback | null>(null);
   const [quantity, setQuantity] = useState(1);
   const quantityLimit = Math.max(0, Math.min(maxQuantity - existingQuantity, MAX_ITEM_QUANTITY - existingQuantity));
   const selectedQuantity = Math.max(1, Math.min(Math.floor(quantity), Math.max(1, quantityLimit)));
@@ -31,13 +36,19 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
       });
       if (!res.ok) {
         const data = (await res.json()) as { error?: string };
-        setMessage(data.error ?? "Could not add to cart.");
+        setMessage({
+          text: data.error ?? "Could not add to cart.",
+          kind: "error",
+        });
         return;
       }
       router.refresh();
-      setMessage("Added to cart.");
+      setMessage({ text: "Added to cart.", kind: "success" });
     } catch {
-      setMessage("Could not reach the shop. Check your connection and try again.");
+      setMessage({
+        text: "Could not reach the shop. Check your connection and try again.",
+        kind: "error",
+      });
     } finally {
       setPending(false);
     }
@@ -72,9 +83,12 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
           : `Add ${selectedQuantity} to cart`}
       </Button>
       {message ? (
-        <p aria-live="polite" className="text-center text-[11px] text-zinc-400">
-          {message}{" "}
-          {message === "Added to cart." && existingQuantity === 0 ? (
+        <p
+          role={message.kind === "error" ? "alert" : "status"}
+          className={`text-center text-[11px] ${message.kind === "error" ? "text-red-300" : "text-emerald-300"}`}
+        >
+          {message.text}{" "}
+          {message.kind === "success" && existingQuantity === 0 ? (
             <a href="/cart" className="text-amber-400 underline underline-offset-2">
               View cart
             </a>

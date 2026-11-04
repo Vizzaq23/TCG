@@ -98,27 +98,27 @@ export default async function CartPage({
       </div>
 
       {cancelled ? (
-        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
+        <p role="status" className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
           Checkout was cancelled. Your cart is still here if inventory remains.
         </p>
       ) : null}
 
       {hiddenItemCount > 0 ? (
-        <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
+        <p role="alert" className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
           {hiddenItemCount} saved cart {hiddenItemCount === 1 ? "item could" : "items could"} not be displayed and may no longer be available.
         </p>
       ) : null}
 
       {!lines.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p className="text-sm text-zinc-400">Your cart is empty.</p>
+          <p role="status" className="text-sm text-zinc-400">Your cart is empty.</p>
           <div className="mt-5">
             <Button href="/shop">Browse shop</Button>
           </div>
         </div>
       ) : (
         <div className="grid gap-8 lg:grid-cols-[1fr_minmax(0,320px)]">
-          <ul className="space-y-4">
+          <ul aria-label="Cart items" className="space-y-4">
             {lines.map((line) => (
               <li
                 key={line.listingId}
@@ -186,7 +186,7 @@ export default async function CartPage({
               <p className="mt-4 rounded-lg bg-zinc-950/70 p-3 text-xs text-zinc-400">Guest checkout — no account required. Applicable taxes are calculated at checkout.</p>
             </section>
             {!checkoutReady ? (
-              <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
+              <p role="status" className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-100">
                 Checkout is not open yet. Store payment, shipping, and tax settings
                 must be completed before orders can be accepted.
               </p>

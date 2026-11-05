@@ -130,12 +130,12 @@ export default async function ListingDetailPage({
               </p>
             ) : null}
           </div>
-          <p className="text-2xl font-semibold text-amber-300">
-            {formatUsdCents(listing.price_cents)}
-          </p>
-          <p className="text-sm text-zinc-400">
-            {stockLabel(sellable)}
-          </p>
+          <dl className="grid max-w-xs grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1 text-sm">
+            <dt className="text-zinc-500">Price</dt>
+            <dd className="text-2xl font-semibold text-amber-300">{formatUsdCents(listing.price_cents)}</dd>
+            <dt className="text-zinc-500">Availability</dt>
+            <dd className="text-zinc-400">{stockLabel(sellable)}</dd>
+          </dl>
           {listing.description ? (
             <p className="whitespace-pre-wrap text-sm text-zinc-300">
               {listing.description}

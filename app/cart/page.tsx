@@ -117,12 +117,12 @@ export default async function CartPage({
           </div>
         </div>
       ) : (
-        <div className="grid gap-8 lg:grid-cols-[1fr_minmax(0,320px)]">
-          <ul aria-label="Cart items" className="space-y-4">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
+          <ul aria-label="Cart items" className="min-w-0 space-y-4">
             {lines.map((line) => (
               <li
                 key={line.listingId}
-                className="flex gap-4 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4"
+                className="grid grid-cols-[4rem_minmax(0,1fr)] gap-4 rounded-[14px] border border-zinc-800 bg-zinc-900/40 p-4 sm:grid-cols-[4rem_minmax(0,1fr)_auto]"
               >
                 <Link href={listingHref(line.listingId)} prefetch={false} aria-label={`View ${line.listing.title}`} className="relative h-24 w-16 flex-shrink-0 overflow-hidden rounded-[10px] border border-zinc-800 bg-zinc-950 transition hover:border-amber-400/60 focus-visible:outline-2 focus-visible:outline-amber-400">
                   {line.image ? (
@@ -139,7 +139,7 @@ export default async function CartPage({
                     </span>
                   )}
                 </Link>
-                <div className="min-w-0 flex-1 space-y-2">
+                <div className="min-w-0 space-y-2 break-words">
                   <Link href={listingHref(line.listingId)} prefetch={false} className="font-medium text-white hover:text-amber-300 hover:underline">{line.listing.title}</Link>
                   <p className="text-xs text-zinc-500">{listingSummary(line.listing.kind, line.listing.condition)}</p>
                   <p className="text-sm text-amber-300">
@@ -155,7 +155,7 @@ export default async function CartPage({
                     label={line.listing.title}
                   />
                 </div>
-                <div className="text-right">
+                <div className="col-start-2 text-left sm:col-start-3 sm:row-start-1 sm:text-right">
                   <p className="text-xs text-zinc-500">Line total</p>
                   <p className="text-sm font-medium text-white">
                     {formatUsdCents(line.lineTotal)}

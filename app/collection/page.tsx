@@ -4,6 +4,8 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { CollectionStats } from "@/components/collection/CollectionStats";
 import { CollectionInventory } from "@/components/collection/CollectionInventory";
 import { CopyShareLink } from "@/components/collection/CopyShareLink";
+import { CollectionImportDialog } from "@/components/collection/CollectionImportDialog";
+
 import { SetProgress } from "@/components/collection/SetProgress";
 import { TradeAlertsPanel } from "@/components/trades/TradeAlertsPanel";
 import { CollectionValueCard } from "@/components/prices/CollectionValueCard";
@@ -158,7 +160,9 @@ export default async function CollectionPage() {
                 Trades
                 {pendingTradeCount ? ` (${pendingTradeCount})` : ""}
               </Button>
+              <CollectionImportDialog />
               <CopyShareLink username={profile.username} />
+
             </>
           }
         />

@@ -20,7 +20,7 @@ export default function ReturnsPage() {
           Checkout will remain unavailable until the merchant publishes this policy.
         </p>
       </div>
-      <ShopFooterLinks />
+      <ShopFooterLinks current="returns" />
     </PageContainer>
   );
 }

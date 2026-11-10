@@ -37,7 +37,7 @@ export default async function ContactPage() {
         )}
         <p>Include your order number whenever possible.</p>
       </div>
-      <ShopFooterLinks />
+      <ShopFooterLinks current="contact" />
     </PageContainer>
   );
 }

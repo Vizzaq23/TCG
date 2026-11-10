@@ -25,7 +25,7 @@ export default function ShippingPage() {
           shipping details.
         </p>
       </div>
-      <ShopFooterLinks />
+      <ShopFooterLinks current="shipping" />
     </PageContainer>
   );
 }

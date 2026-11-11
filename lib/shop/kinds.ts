@@ -64,6 +64,10 @@ export function listingSummary(kind: string, condition: string | null): string {
   return condition ? `${kindLabel(kind)} · ${condition}` : kindLabel(kind);
 }
 
+export function listingPriceUnit(kind: string): string {
+  return kind === "single" ? "per card" : kind === "playset" ? "per playset" : kind === "bulk_lot" ? "per bulk lot" : kind === "rarity_set" ? "per C/UC set" : "per listing";
+}
+
 export function listingHref(listingId: string, returnTo?: string): string {
   const base = `/shop/${encodeURIComponent(listingId)}`;
   if (!returnTo || returnTo === "/shop") return base;

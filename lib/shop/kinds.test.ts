@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
-import { emptyShopMessage, listingHref, listingItemCountLabel, listingItemSummary, listingReturnHref, listingSummary } from "@/lib/shop/kinds";
+import { emptyShopMessage, listingHref, listingItemCountLabel, listingItemSummary, listingPriceUnit, listingReturnHref, listingSummary } from "@/lib/shop/kinds";
+it("clarifies price units for every listing kind", () => expect(["single", "playset", "bulk_lot", "rarity_set", "unknown"].map(listingPriceUnit)).toEqual(["per card", "per playset", "per bulk lot", "per C/UC set", "per listing"]));
 it("summarizes cart listing details", () => expect([listingSummary("playset", "Near Mint"), listingSummary("single", null)]).toEqual(["Playset · Near Mint", "Single"]));
 it("builds safe listing links", () => expect([listingHref("listing / 1"), listingHref("listing / 1", "/shop?kind=playset")]).toEqual(["/shop/listing%20%2F%201", "/shop/listing%20%2F%201?returnTo=%2Fshop%3Fkind%3Dplayset"]));
 it("accepts only shop return links", () => expect([listingReturnHref("/shop?q=luffy"), listingReturnHref("https://example.com"), listingReturnHref("/cart")]).toEqual(["/shop?q=luffy", "/shop", "/shop"]));

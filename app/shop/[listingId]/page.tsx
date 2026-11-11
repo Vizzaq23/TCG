@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { kindLabel, listingItemCountLabel, listingItemSummary, listingReturnHref } from "@/lib/shop/kinds";
+import { kindLabel, listingItemCountLabel, listingItemSummary, listingPriceUnit, listingReturnHref } from "@/lib/shop/kinds";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
@@ -132,7 +132,7 @@ export default async function ListingDetailPage({
           </div>
           <dl className="grid max-w-xs grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1 text-sm">
             <dt className="text-zinc-500">Price</dt>
-            <dd className="text-2xl font-semibold text-amber-300">{formatUsdCents(listing.price_cents)}</dd>
+            <dd className="text-2xl font-semibold text-amber-300">{formatUsdCents(listing.price_cents)} <span className="text-sm font-normal text-zinc-400">{listingPriceUnit(listing.kind)}</span></dd>
             <dt className="text-zinc-500">Availability</dt>
             <dd className="text-zinc-400">{stockLabel(sellable)}</dd>
           </dl>

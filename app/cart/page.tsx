@@ -7,7 +7,7 @@ import { formatUsdCents } from "@/lib/money";
 import { cartCountLabel } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { listingHref, listingSummary } from "@/lib/shop/kinds";
+import { listingHref, listingPriceUnit, listingSummary } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { CartLineControls } from "@/components/shop/CartLineControls";
 import { CheckoutForm } from "@/components/shop/CheckoutForm";
@@ -146,6 +146,9 @@ export default async function CartPage({
                     {formatUsdCents(line.listing.price_cents)}
                     <span className="ml-2 text-xs text-zinc-500">
                       · {stockLabel(line.sellable)}
+                    </span>
+                    <span className="block text-xs text-zinc-400">
+                      {listingPriceUnit(line.listing.kind)}
                     </span>
                   </p>
                   <CartLineControls

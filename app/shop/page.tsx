@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { emptyShopMessage, kindLabel, listingHref, SHOP_CONDITIONS } from "@/lib/shop/kinds";
+import { emptyShopMessage, kindLabel, listingHref, listingPriceUnit, SHOP_CONDITIONS } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
@@ -296,6 +296,9 @@ export default async function ShopPage({
                         {formatUsdCents(listing.price_cents)}
                         <span className="ml-2 text-xs text-zinc-500">
                           · {stockLabel(listing.sellable)}
+                        </span>
+                        <span className="block text-xs text-zinc-400">
+                          {listingPriceUnit(listing.kind)}
                         </span>
                       </p>
                       <span aria-hidden="true" className="shrink-0 text-xs font-medium text-amber-200 underline underline-offset-2">

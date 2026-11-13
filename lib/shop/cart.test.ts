@@ -4,11 +4,18 @@ import {
   MAX_ITEM_QUANTITY,
   cartCount,
   cartCountLabel,
+  emptyCartMessage,
   parseCart,
   removeCartItem,
   serializeCart,
   setCartItem,
 } from "@/lib/shop/cart";
+
+it("distinguishes an empty cart from saved items that could not be displayed", () => {
+  expect(emptyCartMessage(0)).toBe("Your cart is empty.");
+  expect(emptyCartMessage(1)).toContain("saved cart items could not be displayed");
+  expect(emptyCartMessage(2)).toContain("Try loading your cart again.");
+});
 
 describe("cart", () => {
   it("parses and merges duplicate lines", () => {

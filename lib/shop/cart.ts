@@ -15,6 +15,10 @@ export function emptyCart(): CartState {
   return { items: [] };
 }
 
+export function emptyCartMessage(savedItemCount: number): string {
+  return savedItemCount > 0 ? "Your saved cart items could not be displayed. They may no longer be available. Try loading your cart again." : "Your cart is empty.";
+}
+
 export function parseCart(raw: string | undefined | null): CartState {
   if (!raw) return emptyCart();
   try {

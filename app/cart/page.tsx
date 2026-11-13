@@ -4,7 +4,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
-import { cartCountLabel } from "@/lib/shop/cart";
+import { cartCountLabel, emptyCartMessage } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { listingHref, listingPriceUnit, listingSummary } from "@/lib/shop/kinds";
@@ -111,8 +111,15 @@ export default async function CartPage({
 
       {!lines.length ? (
         <div className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
-          <p role="status" className="text-sm text-zinc-400">Your cart is empty.</p>
-          <div className="mt-5">
+          <p role="status" className="text-sm text-zinc-400">
+            {emptyCartMessage(cart.items.length)}
+          </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {cart.items.length > 0 ? (
+              <a href="/cart" className="inline-flex min-h-10 items-center rounded-md border border-zinc-700 px-4 text-sm text-zinc-200 hover:border-amber-400 focus-visible:outline-2 focus-visible:outline-amber-400">
+                Try loading cart again
+              </a>
+            ) : null}
             <Button href="/shop">Browse shop</Button>
           </div>
         </div>

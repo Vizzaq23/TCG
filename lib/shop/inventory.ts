@@ -39,3 +39,7 @@ export function stockLabel(quantity: number): string {
 export function cartQuantityLabel(quantity: number, maxQuantity: number): string {
   return `${quantity} of ${maxQuantity} max`;
 }
+
+export function addToCartAvailability(remaining: number, stock: number): string {
+  return remaining > 0 ? `${remaining} ${remaining === 1 ? "item" : "items"} available to add` : stock <= 0 ? "This listing is sold out." : "Maximum quantity already in cart.";
+}

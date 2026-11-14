@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { MAX_ITEM_QUANTITY } from "@/lib/shop/cart";
+import { addToCartAvailability } from "@/lib/shop/inventory";
 
 type Props = {
   listingId: string;
@@ -69,7 +70,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
         </label>
       ) : null}
       <p className="text-center text-xs text-zinc-500" id="add-to-cart-availability">
-        {quantityLimit} {quantityLimit === 1 ? "item" : "items"} available to add
+        {addToCartAvailability(quantityLimit, maxQuantity)}
       </p>
       <Button
         type="button"

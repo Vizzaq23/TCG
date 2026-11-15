@@ -174,7 +174,8 @@ export default async function ShopPage({
         <label htmlFor="shop-search" className="sr-only">Search listings</label>
         <input
           id="shop-search" name="q" type="search"
-          defaultValue={searchQuery ?? ""} placeholder="Search title, set, number, color, or type"
+          defaultValue={searchQuery ?? ""} placeholder="Search title, set, number, rarity, color, or type"
+          aria-describedby="shop-search-help"
           className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
         />
         <label htmlFor="shop-condition" className="text-zinc-500">Condition</label>
@@ -198,6 +199,9 @@ export default async function ShopPage({
             Clear filters
           </Button>
         ) : null}
+        <p id="shop-search-help" className="basis-full text-xs text-zinc-400">
+          Combine words in any order, such as “Luffy red” or “OP01 leader”.
+        </p>
       </form>
 
       {activeFilters.length > 0 ? (

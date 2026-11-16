@@ -8,6 +8,9 @@ it("shows remaining quantity and links existing cart context", () => {
   expect(markup).toMatch(/<input(?=[^>]*name="quantity")(?=[^>]*min="1")(?=[^>]*max="3")(?=[^>]*step="1")[^>]*>/);
   expect(markup).toContain('id="add-to-cart-availability">3 items available to add');
   expect(markup).toContain('aria-describedby="add-to-cart-availability"');
+  expect(markup).toMatch(/<input[^>]*aria-describedby="add-to-cart-availability"/);
+  expect(markup.match(/focus-visible:ring-2/g)).toHaveLength(3);
+  expect(markup).toContain('aria-busy="false"');
   expect(markup).toContain(">Add 1 to cart</button>");
   expect(markup).toMatch(/<a href="\/cart"[^>]*>.*2 items already in cart.*View cart →.*<\/a>/);
   const singularMarkup = renderToStaticMarkup(createElement(AddToCartButton, { listingId: "listing", maxQuantity: 2, existingQuantity: 1 }));

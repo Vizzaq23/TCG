@@ -18,6 +18,8 @@ type Feedback = {
   kind: "success" | "error";
 };
 
+const purchaseFocus = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950";
+
 export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, disabled }: Props) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -56,9 +58,9 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" aria-busy={pending}>
       {existingQuantity > 0 ? (
-        <a href="/cart" className="flex min-h-10 items-center justify-between gap-3 rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition hover:border-amber-500/50">
+        <a href="/cart" className={`flex min-h-10 items-center justify-between gap-3 rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 transition hover:border-amber-500/50 ${purchaseFocus}`}>
           <span>{existingQuantity} {existingQuantity === 1 ? "item" : "items"} already in cart</span>
           <span className="font-semibold text-amber-400 underline underline-offset-2">View cart →</span>
         </a>
@@ -66,7 +68,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
       {quantityLimit > 1 ? (
         <label className="flex items-center justify-between gap-3 text-sm text-zinc-400">
           Quantity
-          <input type="number" name="quantity" min={1} max={quantityLimit} step={1} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} className="min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200" />
+          <input type="number" name="quantity" min={1} max={quantityLimit} step={1} inputMode="numeric" value={selectedQuantity} disabled={disabled || pending} onChange={(event) => setQuantity(Number(event.target.value) || 1)} aria-describedby="add-to-cart-availability" className={`min-h-10 w-20 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 ${purchaseFocus}`} />
         </label>
       ) : null}
       <p className="text-center text-xs text-zinc-500" id="add-to-cart-availability">
@@ -90,7 +92,7 @@ export function AddToCartButton({ listingId, maxQuantity, existingQuantity = 0, 
         >
           {message.text}{" "}
           {message.kind === "success" && existingQuantity === 0 ? (
-            <a href="/cart" className="text-amber-400 underline underline-offset-2">
+            <a href="/cart" className={`text-amber-400 underline underline-offset-2 ${purchaseFocus}`}>
               View cart
             </a>
           ) : null}

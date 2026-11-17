@@ -6,7 +6,7 @@ import { CardImage } from "@/components/cards/CardImage";
 import { formatUsdCents } from "@/lib/money";
 import { cartCountLabel, emptyCartMessage } from "@/lib/shop/cart";
 import { readCartCookie } from "@/lib/shop/cart-cookie";
-import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
+import { cartAvailabilityWarning, sellableQuantity, stockLabel } from "@/lib/shop/inventory";
 import { listingHref, listingPriceUnit, listingSummary } from "@/lib/shop/kinds";
 import { getPublicShopSettings } from "@/lib/shop/owner";
 import { CartLineControls } from "@/components/shop/CartLineControls";
@@ -59,6 +59,7 @@ export default async function CartPage({
             ...item,
             listing,
             sellable,
+            availabilityWarning: cartAvailabilityWarning(item.quantity, sellable),
             image: listing.image_url || card?.image_url,
             lineTotal: listing.price_cents * item.quantity,
           };
@@ -164,6 +165,11 @@ export default async function CartPage({
                     maxQuantity={line.sellable}
                     label={line.listing.title}
                   />
+                  {line.availabilityWarning ? (
+                    <p role="alert" className="rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-xs text-amber-100">
+                      {line.availabilityWarning}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="col-start-2 text-left sm:col-start-3 sm:row-start-1 sm:text-right">
                   <p className="text-xs text-zinc-500">Line total</p>

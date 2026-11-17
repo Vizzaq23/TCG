@@ -40,6 +40,13 @@ export function cartQuantityLabel(quantity: number, maxQuantity: number): string
   return `${quantity} of ${maxQuantity} max`;
 }
 
+export function cartAvailabilityWarning(quantity: number, available: number): string | null {
+  if (quantity <= available) return null;
+  return available <= 0
+    ? "This listing is sold out. Remove it from your cart before checkout."
+    : `Your cart contains ${quantity}; only ${available} currently available. Remove and re-add this listing to choose a new quantity.`;
+}
+
 export function addToCartAvailability(remaining: number, stock: number): string {
   return remaining > 0 ? `${remaining} ${remaining === 1 ? "item" : "items"} available to add` : stock <= 0 ? "This listing is sold out." : "Maximum quantity already in cart.";
 }

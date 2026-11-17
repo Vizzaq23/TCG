@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  cartAvailabilityWarning,
   addToCartAvailability,
   cartQuantityLabel,
   collectionUnitsForSale,
@@ -7,6 +8,13 @@ import {
   sellableQuantity,
   stockLabel,
 } from "@/lib/shop/inventory";
+
+it("warns only when saved cart quantity exceeds current availability", () => {
+  expect(cartAvailabilityWarning(2, 3)).toBeNull();
+  expect(cartAvailabilityWarning(3, 3)).toBeNull();
+  expect(cartAvailabilityWarning(3, 1)).toBe("Your cart contains 3; only 1 currently available. Remove and re-add this listing to choose a new quantity.");
+  expect(cartAvailabilityWarning(1, 0)).toBe("This listing is sold out. Remove it from your cart before checkout.");
+});
 
 it("explains remaining, sold-out, and cart-limit states", () => expect([addToCartAvailability(2, 5), addToCartAvailability(1, 5), addToCartAvailability(0, 0), addToCartAvailability(0, 5)]).toEqual(["2 items available to add", "1 item available to add", "This listing is sold out.", "Maximum quantity already in cart."]));
 

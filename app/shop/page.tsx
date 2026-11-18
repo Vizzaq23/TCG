@@ -229,9 +229,12 @@ export default async function ShopPage({
           </p>
         </div>
       ) : error ? (
-        <p role="alert" className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-          {error.message}
-        </p>
+        <div role="alert" className="space-y-3 rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+          <p>We couldn’t load the listings. Please try again.</p>
+          <a href={currentShopHref} className="inline-flex min-h-10 items-center rounded-md border border-red-400/40 px-3 font-semibold underline underline-offset-2 hover:bg-red-500/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400">
+            Try loading listings again
+          </a>
+        </div>
       ) : !withStock.length ? (
         <div role="status" className="rounded-[16px] border border-zinc-800 bg-zinc-900/40 px-6 py-14 text-center">
           <p className="text-sm text-zinc-400">{searchQuery ? `No listings match “${searchQuery}”.` : conditionFilter ? `No ${conditionFilter.toLowerCase()} listings match these filters.` : emptyShopMessage(kindFilter, owner)}</p>

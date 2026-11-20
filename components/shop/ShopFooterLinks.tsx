@@ -6,6 +6,11 @@ export function ShopFooterLinks({ current }: { current?: "shipping" | "returns" 
       aria-label="Shop policies"
       className="flex flex-wrap gap-x-2 text-xs text-zinc-500"
     >
+      {current ? (
+        <Link href="/shop" prefetch={false} className="inline-flex min-h-10 items-center px-2 font-medium text-amber-300 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400">
+          ← Back to shop
+        </Link>
+      ) : null}
       <Link
         href="/shop/shipping"
         aria-current={current === "shipping" ? "page" : undefined}

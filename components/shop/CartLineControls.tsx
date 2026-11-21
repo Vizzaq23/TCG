@@ -77,6 +77,11 @@ export function CartLineControls({ listingId, quantity, maxQuantity, label }: Pr
       >
         Remove
       </Button>
+      {pending ? (
+        <p role="status" className="basis-full text-xs text-zinc-400">
+          Updating cart…
+        </p>
+      ) : null}
       {error ? (
         <p role="alert" className="basis-full text-xs text-red-300">
           {error}

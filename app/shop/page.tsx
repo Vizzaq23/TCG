@@ -13,7 +13,7 @@ import { readCartCookie } from "@/lib/shop/cart-cookie";
 import { getShopOwnerUserId, isShopOwner } from "@/lib/shop/config";
 import { ShopFooterLinks } from "@/components/shop/ShopFooterLinks";
 import { sellableQuantity, stockLabel } from "@/lib/shop/inventory";
-import { activeShopFilters, matchesShopSearch, shopCardDetails, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
+import { activeShopFilters, matchesShopSearch, shopCardDetails, shopCategoryHref, shopPageTitle, shopResultLabel } from "@/lib/shop/search";
 import { isVisibleCatalogCard } from "@/lib/catalog/don-scope";
 import { tryCreateAdminClient } from "@/lib/supabase/admin";
 import { getVerifiedServerUser } from "@/lib/supabase/server-user";
@@ -22,11 +22,18 @@ import {
   type SearchParamValue,
 } from "@/lib/search-params";
 
-export const metadata: Metadata = {
-  title: "Shop",
-  description: "Buy One Piece TCG singles, playsets, and bulk lots.",
-  alternates: { canonical: "/shop" },
-};
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: SearchParamValue; kind?: SearchParamValue; condition?: SearchParamValue }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  return {
+    title: shopPageTitle(firstSearchParam(params.q), firstSearchParam(params.kind), firstSearchParam(params.condition)),
+    description: "Buy One Piece TCG singles, playsets, and bulk lots.",
+    alternates: { canonical: "/shop" },
+  };
+}
 
 export default async function ShopPage({
   searchParams,

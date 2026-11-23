@@ -1,5 +1,6 @@
 import { expect, it } from "vitest";
-import { activeShopFilters, matchesShopSearch, shopCardDetails, shopCategoryHref, shopResultLabel } from "@/lib/shop/search";
+import { activeShopFilters, matchesShopSearch, shopCardDetails, shopCategoryHref, shopPageTitle, shopResultLabel } from "@/lib/shop/search";
+it("names shop views while ignoring blank searches and invalid filters", () => expect([shopPageTitle(), shopPageTitle("  Luffy  ", "playset", "Near Mint"), shopPageTitle(" ", "unknown", "unknown"), shopPageTitle(undefined, "single"), shopPageTitle(undefined, "bulk_lot"), shopPageTitle(undefined, "rarity_set"), shopPageTitle(undefined, undefined, "Damaged")]).toEqual(["Shop", "Shop · “Luffy” · Playset · Near Mint", "Shop", "Shop · Single", "Shop · Bulk lot", "Shop · C/UC set", "Shop · Damaged"]));
 it("ignores punctuation and spacing while rejecting punctuation-only searches", () => expect([matchesShopSearch("OP-01 Romance Dawn", "op01"), matchesShopSearch("Roronoa Zoro", "roronoa-zoro"), matchesShopSearch("Nami", "!!!")]).toEqual([true, true, false]));
 it("matches search terms in any order without mixing unrelated cards", () => expect([matchesShopSearch("Roronoa Zoro", "zoro roronoa"), matchesShopSearch("Roronoa Zoro", "zoro nami")]).toEqual([true, false]));
 it("matches diacritic-free searches against accented card names", () => expect([matchesShopSearch("Kōzuki Oden", "kozuki"), matchesShopSearch("Koala", "kōala"), matchesShopSearch("Kōzuki Oden", "nami")]).toEqual([true, true, false]));

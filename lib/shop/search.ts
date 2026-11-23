@@ -1,3 +1,12 @@
+import { isShopListingKind, kindLabel, SHOP_CONDITIONS } from "@/lib/shop/kinds";
+
+export function shopPageTitle(query?: string, kind?: string, condition?: string): string {
+  const search = query?.trim();
+  const category = kind && isShopListingKind(kind) ? kindLabel(kind) : undefined;
+  const selectedCondition = SHOP_CONDITIONS.find((value) => value === condition);
+  return ["Shop", search ? `“${search}”` : undefined, category, selectedCondition].filter(Boolean).join(" · ");
+}
+
 function shopSearchTerms(value: string): string[] {
   return value.normalize("NFD").replace(/(\p{Script=Latin})\p{M}+/gu, "$1").normalize("NFC").toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
 }

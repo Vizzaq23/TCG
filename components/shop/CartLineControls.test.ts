@@ -12,4 +12,10 @@ it("names each cart control for its listing", () => {
   expect(markup).toContain('aria-label="Decrease quantity for Monkey D. Luffy"');
   expect(markup).toContain('aria-label="Increase quantity for Monkey D. Luffy"');
   expect(markup).toContain('aria-label="Remove Monkey D. Luffy from cart"');
+  expect(markup).not.toContain("Use Remove to take this item out of your cart.");
+});
+
+it("explains removal at quantity one", () => {
+  const markup = renderToStaticMarkup(createElement(CartLineControls, { listingId: "listing", quantity: 1, maxQuantity: 4, label: "Luffy" }));
+  expect(markup).toContain("Use Remove to take this item out of your cart.");
 });

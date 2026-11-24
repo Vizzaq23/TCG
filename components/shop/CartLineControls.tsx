@@ -77,6 +77,11 @@ export function CartLineControls({ listingId, quantity, maxQuantity, label }: Pr
       >
         Remove
       </Button>
+      {quantity === 1 ? (
+        <p className="basis-full text-xs text-zinc-400">
+          Use Remove to take this item out of your cart.
+        </p>
+      ) : null}
       {pending ? (
         <p role="status" className="basis-full text-xs text-zinc-400">
           Updating cart…

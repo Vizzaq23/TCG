@@ -176,13 +176,17 @@ export default async function ShopPage({
         ))}
       </nav>
 
-      <form action="/shop" aria-label="Search and filter listings" className="flex flex-wrap items-center gap-2 text-sm">
+      <form action="/shop" role="search" aria-label="Search and filter listings" className="flex flex-wrap items-center gap-2 text-sm">
         {kindFilter ? <input type="hidden" name="kind" value={kindFilter} /> : null}
         <label htmlFor="shop-search" className="sr-only">Search listings</label>
         <input
           id="shop-search" name="q" type="search"
           defaultValue={searchQuery ?? ""} placeholder="Search title, set, number, rarity, color, or type"
           aria-describedby="shop-search-help"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          enterKeyHint="search"
           className="min-h-10 min-w-56 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
         />
         <label htmlFor="shop-condition" className="text-zinc-500">Condition</label>
